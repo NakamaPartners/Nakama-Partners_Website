@@ -1,519 +1,609 @@
-import React, { useEffect, useRef } from 'react';
-import { ArrowRight, MessageSquare, Globe, Home, PenTool, TrendingUp, Users, Building2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowRight, MessageSquare, Globe, PenTool, Users, CheckCircle, Star, ChevronRight } from 'lucide-react';
 
 export function LandingPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [activeService, setActiveService] = useState(0);
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-sketch-in');
+            entry.target.classList.add('sk-in');
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
-    const elements = document.querySelectorAll('.sketch-hidden');
-    elements.forEach((el) => observerRef.current?.observe(el));
+    document.querySelectorAll('.sk').forEach((el) => observerRef.current?.observe(el));
     return () => observerRef.current?.disconnect();
   }, []);
 
+  const services = [
+    {
+      num: '01',
+      title: 'Property Website',
+      sub: 'Direct booking. Zero commission.',
+      desc: 'We design and build bespoke websites that convert visitors into paying guests — bypassing OTA commissions entirely. Each site is crafted around your property\'s character, not a generic template.',
+      points: ['Custom design & copywriting', 'Direct booking engine', 'SEO optimised from day one', 'Mobile-first, fast loading'],
+    },
+    {
+      num: '02',
+      title: 'WhatsApp Automation',
+      sub: '24/7 responses in your voice.',
+      desc: 'An intelligent assistant that answers guest enquiries instantly, qualifies leads, and confirms bookings — even while you sleep. Feels human, works around the clock.',
+      points: ['Instant enquiry responses', 'Lead qualification flows', 'Booking confirmation links', 'Bilingual support ready'],
+    },
+    {
+      num: '03',
+      title: 'OTA Integration',
+      sub: 'One calendar, every platform.',
+      desc: 'We sync your property across Airbnb, Booking.com, Agoda, and VRBO — eliminating double bookings and maximising your occupancy with real-time channel management.',
+      points: ['Real-time calendar sync', 'Dynamic pricing rules', 'Centralised inbox', 'Analytics dashboard'],
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: 'Rina Hartono',
+      role: 'Villa Owner · Bali',
+      quote: 'Within 3 months of working with Nakama, our direct bookings tripled. The website they built tells our story in a way no listing page ever could.',
+      stars: 5,
+    },
+    {
+      name: 'Ahmad Zulkifli',
+      role: 'Property Manager · KL',
+      quote: 'The WhatsApp bot they set up handles 80% of our enquiries automatically. We spend our time hosting guests, not answering the same questions.',
+      stars: 5,
+    },
+    {
+      name: 'Sita Pramana',
+      role: 'Boutique Hotel · Yogyakarta',
+      quote: 'Professional, caring, and genuinely invested in our success. They feel like an extension of our team, not an outside agency.',
+      stars: 5,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-white text-[#1a1a1a] overflow-x-hidden" style={{ fontFamily: "'Outfit', sans-serif" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <div className="min-h-screen bg-white text-[#1a1a1a]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
       <style dangerouslySetInnerHTML={{ __html: `
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .font-sketch { font-family: 'Caveat', cursive; }
-
-        .sketch-hidden {
+        .sk {
           opacity: 0;
-          transform: translateY(18px);
-          transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+          transform: translateY(24px);
+          transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .animate-sketch-in {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-        }
+        .sk.sk-in { opacity: 1; transform: none; }
+        .sk-d1 { transition-delay: 0.1s; }
+        .sk-d2 { transition-delay: 0.18s; }
+        .sk-d3 { transition-delay: 0.26s; }
 
-        @keyframes drawPath {
-          from { stroke-dashoffset: 2000; opacity: 0.2; }
-          to   { stroke-dashoffset: 0; opacity: 1; }
-        }
-        @keyframes drawPathFade {
-          from { stroke-dashoffset: 1000; opacity: 0; }
-          to   { stroke-dashoffset: 0; opacity: 0.55; }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes blink {
-          0%, 100% { opacity: 1; } 50% { opacity: 0; }
-        }
+        .f-sketch { font-family: 'Caveat', cursive; }
+        .f-body   { font-family: 'Outfit', sans-serif; }
 
-        .arch-line {
-          stroke-dasharray: 2000;
-          stroke-dashoffset: 2000;
-          animation: drawPath 2.4s ease forwards;
+        /* Hand-drawn border — wobble border-radius trick */
+        .hd-border {
+          border: 1.8px solid #1a1a1a;
+          border-radius: 255px 8px 230px 8px / 8px 230px 8px 255px;
+          transition: box-shadow 0.2s ease, transform 0.2s ease;
         }
-        .arch-line-delay {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 1000;
-          animation: drawPathFade 2.8s ease 0.4s forwards;
-        }
-
-        .sketch-btn {
-          border: 2px solid #1a1a1a;
-          border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-          transition: all 0.25s ease;
-          cursor: pointer;
-          background: #1a1a1a;
-          color: white;
-        }
-        .sketch-btn:hover {
-          background: transparent;
-          color: #1a1a1a;
-          box-shadow: 3px 4px 0 #ccc;
-          transform: translateY(-2px);
-        }
-        .sketch-btn-outline {
-          border: 2px solid #1a1a1a;
-          border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-          transition: all 0.25s ease;
-          cursor: pointer;
-          background: transparent;
-          color: #1a1a1a;
-        }
-        .sketch-btn-outline:hover {
-          background: #1a1a1a;
-          color: white;
+        .hd-border:hover {
+          box-shadow: 3px 4px 0 #d0d0d0;
           transform: translateY(-2px);
         }
 
-        .sketch-card {
-          border: 1.5px solid #1a1a1a;
-          border-radius: 8px 2px 6px 2px / 2px 6px 2px 8px;
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
+        /* Subtle sketch card */
+        .sk-card {
+          border: 1px solid #e8e8e8;
+          border-radius: 4px 12px 4px 12px / 12px 4px 12px 4px;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
           background: white;
         }
-        .sketch-card:hover {
-          transform: translateY(-4px);
+        .sk-card:hover {
+          border-color: #1a1a1a;
+          box-shadow: 4px 6px 0 #f0f0f0;
+          transform: translateY(-3px);
+        }
+
+        /* Trust badge */
+        .trust-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          border: 1px solid #e0e0e0;
+          border-radius: 100px;
+          padding: 4px 12px;
+          font-size: 12px;
+          color: #666;
+          background: #fafafa;
+        }
+
+        /* Primary button */
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          background: #1a1a1a;
+          color: white;
+          font-family: 'Caveat', cursive;
+          font-size: 22px;
+          font-weight: 600;
+          padding: 14px 36px;
+          border: 2px solid #1a1a1a;
+          border-radius: 255px 8px 230px 8px / 8px 230px 8px 255px;
+          cursor: pointer;
+          transition: all 0.22s ease;
+        }
+        .btn-primary:hover {
+          background: transparent;
+          color: #1a1a1a;
           box-shadow: 4px 6px 0 #e0e0e0;
+          transform: translateY(-2px);
+        }
+        .btn-ghost {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          color: #1a1a1a;
+          font-family: 'Outfit', sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          padding: 12px 0;
+          border: none;
+          cursor: pointer;
+          border-bottom: 1.5px solid #1a1a1a;
+          transition: gap 0.2s ease;
+          letter-spacing: 0.01em;
+        }
+        .btn-ghost:hover { gap: 14px; }
+
+        /* Service tab */
+        .svc-tab {
+          padding: 20px 24px;
+          border-left: 2px solid transparent;
+          cursor: pointer;
+          transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .svc-tab.active {
+          border-left-color: #1a1a1a;
+          background: #fafafa;
         }
 
-        .dim-line {
-          stroke: #888;
-          stroke-width: 0.8;
-          stroke-dasharray: 4 3;
+        /* Soft section separator */
+        .sep {
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #e5e5e5 20%, #e5e5e5 80%, transparent);
         }
 
-        /* grid blueprint bg */
-        .arch-grid {
-          background-image:
-            linear-gradient(rgba(180,195,210,0.18) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(180,195,210,0.18) 1px, transparent 1px);
-          background-size: 32px 32px;
+        /* Stat counter */
+        .stat-num {
+          font-family: 'Caveat', cursive;
+          font-size: 52px;
+          font-weight: 700;
+          line-height: 1;
+          color: #1a1a1a;
         }
 
-        .section-tag {
-          font-family: 'Outfit', monospace;
-          font-size: 10px;
-          letter-spacing: 0.2em;
+        /* Inline sketch dashes for headings */
+        .underline-sketch {
+          position: relative;
+          display: inline-block;
+        }
+        .underline-sketch::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -4px;
+          width: 100%;
+          height: 3px;
+          background: url("data:image/svg+xml,%3Csvg width='200' height='6' viewBox='0 0 200 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4 Q50 1 100 4 T200 4' stroke='%231a1a1a' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center;
+          background-size: 100% 100%;
+        }
+
+        /* Checklist */
+        .check-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          padding: 8px 0;
+          border-bottom: 1px solid #f5f5f5;
+          font-size: 15px;
+          color: #444;
+        }
+        .check-item:last-child { border-bottom: none; }
+
+        /* Tag label */
+        .tag {
+          font-size: 11px;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
           color: #999;
-          border: 1px solid #ddd;
-          padding: 2px 8px;
-          border-radius: 2px;
-          display: inline-block;
-          margin-bottom: 12px;
+          font-family: 'Outfit', sans-serif;
         }
 
-        .annotation {
-          font-family: 'Caveat', cursive;
-          font-size: 13px;
-          color: #888;
-          fill: #888;
+        /* Marquee strip */
+        @keyframes marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
         }
+        .marquee-inner {
+          display: flex;
+          gap: 0;
+          animation: marquee 22s linear infinite;
+          width: max-content;
+        }
+
+        /* Arch grid subtle */
+        .arch-grid-subtle {
+          background-image:
+            linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+          background-size: 40px 40px;
+        }
+
+        /* Process step */
+        .process-step {
+          display: flex;
+          gap: 24px;
+          align-items: flex-start;
+          padding: 32px 0;
+          border-bottom: 1px solid #f0f0f0;
+        }
+        .process-step:last-child { border-bottom: none; }
+
+        /* Star rating */
+        .stars { color: #1a1a1a; letter-spacing: 2px; font-size: 14px; }
       `}} />
 
-      {/* NAV */}
-      <nav className="fixed top-0 w-full z-50 bg-white border-b border-[#e5e5e5]" style={{ backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.94)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <rect x="2" y="8" width="24" height="18" rx="1" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
-              <path d="M2 14 L14 4 L26 14" stroke="#1a1a1a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-              <rect x="10" y="18" width="8" height="8" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
-              <line x1="7" y1="14" x2="7" y2="8" stroke="#888" strokeWidth="0.8" strokeDasharray="2 2"/>
-              <line x1="21" y1="14" x2="21" y2="8" stroke="#888" strokeWidth="0.8" strokeDasharray="2 2"/>
+      {/* ─── NAV ─────────────────────────────────────────────────── */}
+      <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 50, background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #f0f0f0' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 32px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="2" y="8" width="22" height="16" rx="1" stroke="#1a1a1a" strokeWidth="1.6" fill="none"/>
+              <path d="M2 13 L13 3 L24 13" stroke="#1a1a1a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <rect x="10" y="17" width="6" height="7" stroke="#1a1a1a" strokeWidth="1.3" fill="none"/>
             </svg>
-            <span className="font-sketch text-3xl font-bold tracking-wide">Nakama.</span>
+            <span className="f-sketch" style={{ fontSize: 28, fontWeight: 700, letterSpacing: '0.02em' }}>Nakama.</span>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm text-[#555]" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <a href="#services" className="hover:text-[#1a1a1a] transition-colors">Services</a>
-            <a href="#process" className="hover:text-[#1a1a1a] transition-colors">Process</a>
-            <a href="#about" className="hover:text-[#1a1a1a] transition-colors">About</a>
+          <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
+            {['Services', 'Process', 'About', 'Work'].map(l => (
+              <a key={l} href={`#${l.toLowerCase()}`} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s ease' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#1a1a1a')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#555')}>{l}</a>
+            ))}
+            <button className="btn-primary" style={{ fontSize: 18, padding: '10px 28px' }}>
+              Grow with Nakama
+            </button>
           </div>
-          <button className="sketch-btn font-sketch text-xl px-6 py-2">
-            Grow with Nakama
-          </button>
         </div>
       </nav>
 
-      <main className="pt-20">
+      <main style={{ paddingTop: 68 }}>
 
-        {/* ── HERO ── */}
-        <section className="min-h-[90vh] arch-grid flex flex-col items-center justify-center relative px-6 overflow-hidden">
+        {/* ─── HERO ──────────────────────────────────────────────── */}
+        <section className="arch-grid-subtle" style={{ minHeight: '88vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '80px 32px 60px', position: 'relative', overflow: 'hidden' }}>
 
-          {/* Corner annotation marks */}
-          <svg className="absolute top-8 left-8 opacity-30" width="40" height="40" viewBox="0 0 40 40">
-            <path d="M2 20 L2 2 L20 2" stroke="#888" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-          </svg>
-          <svg className="absolute top-8 right-8 opacity-30" width="40" height="40" viewBox="0 0 40 40">
-            <path d="M38 20 L38 2 L20 2" stroke="#888" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-          </svg>
-          <svg className="absolute bottom-8 left-8 opacity-30" width="40" height="40" viewBox="0 0 40 40">
-            <path d="M2 20 L2 38 L20 38" stroke="#888" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-          </svg>
-          <svg className="absolute bottom-8 right-8 opacity-30" width="40" height="40" viewBox="0 0 40 40">
-            <path d="M38 20 L38 38 L20 38" stroke="#888" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-          </svg>
-
-          {/* Architectural building illustration */}
-          <div className="absolute right-0 top-0 bottom-0 w-[45%] opacity-[0.07] pointer-events-none overflow-hidden">
-            <svg width="100%" height="100%" viewBox="0 0 500 700" fill="none">
-              {/* Tower building */}
-              <rect x="160" y="100" width="180" height="560" stroke="#1a1a1a" strokeWidth="1.5"/>
-              <rect x="180" y="120" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="225" y="120" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="270" y="120" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="180" y="180" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="225" y="180" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="270" y="180" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="180" y="240" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="225" y="240" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="270" y="240" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="180" y="300" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="225" y="300" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="270" y="300" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="180" y="360" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="225" y="360" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="270" y="360" width="30" height="40" stroke="#1a1a1a" strokeWidth="1"/>
-              <line x1="160" y1="450" x2="340" y2="450" stroke="#1a1a1a" strokeWidth="1"/>
-              <rect x="205" y="580" width="90" height="80" stroke="#1a1a1a" strokeWidth="1.5"/>
-              {/* Dimension lines */}
-              <line x1="340" y1="100" x2="380" y2="100" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
-              <line x1="340" y1="660" x2="380" y2="660" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
-              <line x1="370" y1="100" x2="370" y2="660" stroke="#888" strokeWidth="0.8"/>
-              <line x1="365" y1="100" x2="375" y2="100" stroke="#888" strokeWidth="0.8"/>
-              <line x1="365" y1="660" x2="375" y2="660" stroke="#888" strokeWidth="0.8"/>
+          {/* Corner markers */}
+          {[['top:24px;left:24px', 'M2 18 L2 2 L18 2'], ['top:24px;right:24px', 'M22 18 L22 2 L6 2'], ['bottom:24px;left:24px', 'M2 6 L2 22 L18 22'], ['bottom:24px;right:24px', 'M22 6 L22 22 L6 22']].map(([pos, d], i) => (
+            <svg key={i} width="24" height="24" viewBox="0 0 24 24" style={{ position: 'absolute', ...Object.fromEntries(pos.split(';').map(p => p.split(':'))), opacity: 0.2 }} fill="none">
+              <path d={d as string} stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
             </svg>
-          </div>
+          ))}
 
-          <div className="relative z-10 max-w-3xl text-center sketch-hidden">
-            <div className="section-tag">Property Branding Studio — Est. 2024</div>
-            <h1 className="font-sketch text-7xl md:text-8xl leading-none mb-2 text-[#1a1a1a]">
-              Grow together.
-            </h1>
-            <h1 className="font-sketch text-7xl md:text-8xl leading-none mb-8 text-[#555]">
-              Stand apart.
-            </h1>
-            <p className="text-lg text-[#666] max-w-xl mx-auto mb-10 leading-relaxed">
-              We turn ordinary properties into extraordinary brands—so guests choose <em>you</em> over every other listing on the market.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="sketch-btn font-sketch text-2xl px-10 py-3 flex items-center gap-3">
-                <PenTool className="w-5 h-5" />
-                Grow with Nakama
-              </button>
-              <button className="sketch-btn-outline font-sketch text-2xl px-10 py-3">
-                See our work
-              </button>
-            </div>
-          </div>
-
-          {/* Architectural floor plan annotation in the bottom-left */}
-          <div className="absolute bottom-12 left-12 opacity-25 pointer-events-none">
-            <svg width="160" height="120" viewBox="0 0 160 120" fill="none">
-              {/* Mini floor plan */}
-              <rect x="10" y="10" width="80" height="60" stroke="#333" strokeWidth="1.2"/>
-              <rect x="10" y="10" width="40" height="30" stroke="#333" strokeWidth="0.8"/>
-              <rect x="50" y="10" width="40" height="30" stroke="#333" strokeWidth="0.8"/>
-              <line x1="30" y1="40" x2="30" y2="70" stroke="#333" strokeWidth="0.8"/>
-              <line x1="20" y1="70" x2="20" y2="85" stroke="#888" strokeWidth="0.7" strokeDasharray="3 2"/>
-              <line x1="90" y1="70" x2="90" y2="85" stroke="#888" strokeWidth="0.7" strokeDasharray="3 2"/>
-              <line x1="20" y1="82" x2="90" y2="82" stroke="#888" strokeWidth="0.7"/>
-              <text x="52" y="96" fontSize="8" fill="#888" textAnchor="middle" fontFamily="Outfit, sans-serif">Floor Plan — Lvl 1</text>
-              {/* North arrow */}
-              <path d="M130 30 L130 10 M125 18 L130 10 L135 18" stroke="#555" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-              <text x="130" y="45" fontSize="8" fill="#555" textAnchor="middle" fontFamily="Outfit, sans-serif">N</text>
-            </svg>
-          </div>
-
-          <div className="absolute bottom-6 w-full flex justify-center animate-bounce opacity-30">
-            <ArrowRight className="w-6 h-6 rotate-90 text-[#1a1a1a]" />
-          </div>
-        </section>
-
-        <ArchDivider label="§ 01 — About" />
-
-        {/* ── PHILOSOPHY + FOUNDERS ── */}
-        <section id="about" className="py-24 px-6 max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-20 items-center">
-            <div className="sketch-hidden">
-              <div className="section-tag">Philosophy</div>
-              <h2 className="font-sketch text-5xl mb-6 text-[#1a1a1a]">Companions first.</h2>
-              <p className="text-[#555] text-lg leading-relaxed mb-4">
-                <strong className="font-sketch text-2xl text-[#1a1a1a]">仲間 (Nakama)</strong> — people who grow together. Not a corporation. Not a vendor. Two people who obsess over making your property unforgettable.
+          <div style={{ maxWidth: 1160, margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
+            <div className="sk">
+              <div className="trust-pill" style={{ marginBottom: 24 }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+                Property Branding Studio · Est. 2024
+              </div>
+              <h1 className="f-sketch" style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.05, marginBottom: 24, letterSpacing: '-0.01em' }}>
+                Your property,<br />
+                <span className="underline-sketch">unforgettable.</span>
+              </h1>
+              <p className="f-body" style={{ fontSize: 18, color: '#555', lineHeight: 1.7, marginBottom: 36, maxWidth: 440 }}>
+                We build the brand, website, and digital systems that turn your property into a sought-after destination — and keep guests coming back.
               </p>
-              <p className="text-[#555] text-lg leading-relaxed mb-4">
-                When you work with Nakama, you're not a client number. We sit on the same side of the drafting table, sketching out the future of your property.
-              </p>
-              <p className="text-[#666] text-base leading-relaxed italic">
-                "The best properties don't compete on price — they compete on identity."
-              </p>
+              <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+                <button className="btn-primary">
+                  <Users size={18} />
+                  Grow with Nakama
+                </button>
+                <button className="btn-ghost">
+                  See how it works <ArrowRight size={15} />
+                </button>
+              </div>
+              <div style={{ marginTop: 40, display: 'flex', gap: 32 }}>
+                {[['3×', 'More bookings'], ['40%', 'Higher ADR'], ['24/7', 'Guest support']].map(([n, l]) => (
+                  <div key={l}>
+                    <div className="f-sketch" style={{ fontSize: 28, fontWeight: 700, color: '#1a1a1a', lineHeight: 1 }}>{n}</div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{l}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Architectural elevation of two figures + building */}
-            <div className="sketch-hidden flex justify-center">
-              <svg width="340" height="300" viewBox="0 0 340 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Ground line */}
-                <line x1="20" y1="270" x2="320" y2="270" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round"/>
-                {/* Dimension line below ground */}
-                <line x1="20" y1="280" x2="320" y2="280" stroke="#888" strokeWidth="0.6" strokeDasharray="4 3"/>
-                <line x1="20" y1="276" x2="20" y2="284" stroke="#888" strokeWidth="0.8"/>
-                <line x1="320" y1="276" x2="320" y2="284" stroke="#888" strokeWidth="0.8"/>
-                <text x="170" y="296" textAnchor="middle" className="annotation" fontSize="11">Property Elevation — Front View</text>
+            {/* Architectural property illustration */}
+            <div className="sk sk-d1" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Ground */}
+                <line x1="30" y1="370" x2="390" y2="370" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round"/>
 
-                {/* Building body */}
-                <rect x="100" y="80" width="140" height="190" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
+                {/* Main building body */}
+                <rect x="110" y="120" width="200" height="250" stroke="#1a1a1a" strokeWidth="2" fill="white"/>
                 {/* Roof */}
-                <path d="M85 80 L170 30 L255 80" stroke="#1a1a1a" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                {/* Windows row 1 */}
-                <rect x="115" y="100" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                <rect x="156" y="100" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                <rect x="197" y="100" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                {/* Windows row 2 */}
-                <rect x="115" y="155" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                <rect x="197" y="155" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
+                <path d="M95 120 L210 40 L325 120" stroke="#1a1a1a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="white"/>
+                {/* Chimney */}
+                <rect x="240" y="52" width="20" height="38" stroke="#1a1a1a" strokeWidth="1.5" fill="white"/>
+
+                {/* Windows — row 1 */}
+                <rect x="126" y="148" width="36" height="44" rx="2" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                <line x1="144" y1="148" x2="144" y2="192" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <line x1="126" y1="170" x2="162" y2="170" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <rect x="192" y="148" width="36" height="44" rx="2" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                <line x1="210" y1="148" x2="210" y2="192" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <line x1="192" y1="170" x2="228" y2="170" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <rect x="258" y="148" width="36" height="44" rx="2" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                <line x1="276" y1="148" x2="276" y2="192" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <line x1="258" y1="170" x2="294" y2="170" stroke="#1a1a1a" strokeWidth="0.9"/>
+
+                {/* Windows — row 2 */}
+                <rect x="126" y="218" width="36" height="44" rx="2" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                <line x1="144" y1="218" x2="144" y2="262" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <line x1="126" y1="240" x2="162" y2="240" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <rect x="258" y="218" width="36" height="44" rx="2" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                <line x1="276" y1="218" x2="276" y2="262" stroke="#1a1a1a" strokeWidth="0.9"/>
+                <line x1="258" y1="240" x2="294" y2="240" stroke="#1a1a1a" strokeWidth="0.9"/>
+
                 {/* Door */}
-                <rect x="148" y="210" width="44" height="60" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
-                <circle cx="188" cy="240" r="2" fill="#1a1a1a"/>
-                {/* Centre window crosshair */}
-                <line x1="170" y1="155" x2="170" y2="187" stroke="#1a1a1a" strokeWidth="1"/>
-                <line x1="156" y1="171" x2="184" y2="171" stroke="#1a1a1a" strokeWidth="1"/>
+                <rect x="176" y="290" width="68" height="80" rx="2" stroke="#1a1a1a" strokeWidth="1.6" fill="none"/>
+                <path d="M176 290 Q210 268 244 290" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
+                <circle cx="239" cy="330" r="3" fill="#1a1a1a"/>
 
-                {/* Figure LEFT — companion 1 */}
-                <circle cx="52" cy="190" r="14" stroke="#1a1a1a" strokeWidth="1.5" fill="none"/>
-                <line x1="52" y1="204" x2="52" y2="248" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M30 225 L52 215 L74 232" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                <line x1="52" y1="248" x2="40" y2="270" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="52" y1="248" x2="64" y2="270" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round"/>
-                <text x="52" y="185" textAnchor="middle" className="annotation" fontSize="10">You</text>
+                {/* Steps */}
+                <rect x="166" y="362" width="88" height="8" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
+                <rect x="174" y="356" width="72" height="8" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
 
-                {/* Figure RIGHT — companion 2 */}
-                <circle cx="290" cy="190" r="14" stroke="#555" strokeWidth="1.5" fill="none"/>
-                <line x1="290" y1="204" x2="290" y2="248" stroke="#555" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M268 232 L290 215 L312 225" stroke="#555" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                <line x1="290" y1="248" x2="278" y2="270" stroke="#555" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="290" y1="248" x2="302" y2="270" stroke="#555" strokeWidth="1.5" strokeLinecap="round"/>
-                <text x="290" y="185" textAnchor="middle" className="annotation" fontSize="10">Nakama</text>
+                {/* Dimension lines */}
+                <line x1="330" y1="120" x2="348" y2="120" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
+                <line x1="330" y1="370" x2="348" y2="370" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
+                <line x1="344" y1="120" x2="344" y2="370" stroke="#888" strokeWidth="0.8"/>
+                <line x1="340" y1="120" x2="348" y2="120" stroke="#888" strokeWidth="1"/>
+                <line x1="340" y1="370" x2="348" y2="370" stroke="#888" strokeWidth="1"/>
+                <text x="356" y="250" fill="#999" fontSize="11" fontFamily="Outfit, sans-serif">H</text>
 
-                {/* Connector dashed arc between figures */}
-                <path d="M70 225 Q170 140 268 225" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="5 4" fill="none" strokeLinecap="round"/>
+                <line x1="110" y1="385" x2="110" y2="400" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
+                <line x1="310" y1="385" x2="310" y2="400" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
+                <line x1="110" y1="396" x2="310" y2="396" stroke="#888" strokeWidth="0.8"/>
+                <line x1="110" y1="392" x2="110" y2="400" stroke="#888" strokeWidth="1"/>
+                <line x1="310" y1="392" x2="310" y2="400" stroke="#888" strokeWidth="1"/>
+                <text x="204" y="414" fill="#999" fontSize="11" fontFamily="Outfit, sans-serif" textAnchor="middle">W</text>
 
-                {/* Height annotation */}
-                <line x1="260" y1="30" x2="276" y2="30" stroke="#888" strokeWidth="0.7" strokeDasharray="3 2"/>
-                <line x1="260" y1="270" x2="276" y2="270" stroke="#888" strokeWidth="0.7" strokeDasharray="3 2"/>
-                <line x1="272" y1="30" x2="272" y2="270" stroke="#888" strokeWidth="0.7"/>
-                <line x1="268" y1="30" x2="276" y2="30" stroke="#888" strokeWidth="0.8"/>
-                <line x1="268" y1="270" x2="276" y2="270" stroke="#888" strokeWidth="0.8"/>
-                <text x="282" y="155" className="annotation" fontSize="10">H</text>
+                {/* Annotation label */}
+                <text x="210" y="24" fill="#aaa" fontSize="10" fontFamily="Outfit, sans-serif" textAnchor="middle" letterSpacing="2">ELEVATION — FRONT VIEW</text>
+
+                {/* Small stars floating */}
+                <text x="68" y="180" fill="#1a1a1a" fontSize="13" fontFamily="Caveat, cursive" opacity="0.5">★★★★★</text>
+                <text x="56" y="198" fill="#888" fontSize="9" fontFamily="Outfit, sans-serif" opacity="0.5">Fully Booked</text>
+
+                {/* Sketch hatching on roof — light */}
+                <line x1="155" y1="110" x2="210" y2="55" stroke="#ddd" strokeWidth="0.7"/>
+                <line x1="175" y1="115" x2="240" y2="50" stroke="#ddd" strokeWidth="0.7"/>
+                <line x1="200" y1="118" x2="268" y2="52" stroke="#ddd" strokeWidth="0.7"/>
               </svg>
             </div>
           </div>
         </section>
 
-        <ArchDivider label="§ 02 — Problem" />
+        {/* ─── MARQUEE TRUST STRIP ──────────────────────────────── */}
+        <div style={{ background: '#1a1a1a', color: 'white', padding: '14px 0', overflow: 'hidden' }}>
+          <div className="marquee-inner">
+            {Array(2).fill(null).map((_, ri) => (
+              <React.Fragment key={ri}>
+                {['Property Website Design', '✦', 'WhatsApp Bot Automation', '✦', 'OTA Integration', '✦', 'Brand Identity', '✦', 'Guest Experience Strategy', '✦', 'Revenue Optimisation', '✦'].map((item, i) => (
+                  <span key={`${ri}-${i}`} className="f-sketch" style={{ fontSize: 18, whiteSpace: 'nowrap', padding: '0 28px', opacity: item === '✦' ? 0.4 : 1 }}>{item}</span>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
 
-        {/* ── THE PROBLEM ── */}
-        <section className="py-24 px-6 max-w-4xl mx-auto text-center">
-          <div className="sketch-hidden">
-            <div className="section-tag">Market Reality</div>
-            <h2 className="font-sketch text-5xl mb-6 text-[#1a1a1a]">The sea of sameness.</h2>
-            <p className="text-[#666] text-lg leading-relaxed mb-16 max-w-2xl mx-auto">
-              Most properties list themselves as "cosy" or "well-located." Guests scroll past them in seconds. The ones that stop thumbs have a brand — a soul — and a story worth sharing.
-            </p>
-
-            {/* Architectural comparison diagram */}
-            <div className="flex gap-8 justify-center items-end flex-wrap">
-              {/* Generic property */}
-              <div className="flex flex-col items-center gap-3">
-                <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
-                  <rect x="20" y="40" width="80" height="110" stroke="#ccc" strokeWidth="1.5" fill="none" strokeDasharray="5 4"/>
-                  <path d="M10 40 L60 5 L110 40" stroke="#ccc" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                  <rect x="35" y="60" width="20" height="25" stroke="#ccc" strokeWidth="1" fill="none"/>
-                  <rect x="65" y="60" width="20" height="25" stroke="#ccc" strokeWidth="1" fill="none"/>
-                  <rect x="44" y="105" width="32" height="45" stroke="#ccc" strokeWidth="1" fill="none"/>
-                  <text x="60" y="150" textAnchor="middle" style={{ fontFamily: 'Outfit, sans-serif', fontSize: '9px', fill: '#bbb' }}>Generic listing</text>
-                </svg>
-                <div className="text-xs text-[#ccc] font-sketch text-lg">Ignored</div>
+        {/* ─── STATS / TRUST BAR ───────────────────────────────── */}
+        <section style={{ padding: '72px 32px', background: '#fafafa', borderBottom: '1px solid #f0f0f0' }}>
+          <div style={{ maxWidth: 1160, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 40, textAlign: 'center' }}>
+            {[
+              { num: '3×', label: 'More bookings', sub: 'vs generic listings' },
+              { num: '40%', label: 'Higher nightly rate', sub: 'for branded properties' },
+              { num: '85%', label: 'Enquiries automated', sub: 'via WhatsApp bot' },
+              { num: '100%', label: 'Hands-on partnership', sub: 'not a template factory' },
+            ].map((s, i) => (
+              <div key={i} className="sk" style={{ transitionDelay: `${i * 80}ms` }}>
+                <div className="stat-num">{s.num}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', marginTop: 8 }}>{s.label}</div>
+                <div style={{ fontSize: 12, color: '#aaa', marginTop: 4 }}>{s.sub}</div>
               </div>
+            ))}
+          </div>
+        </section>
 
-              {/* Arrow */}
-              <div className="flex flex-col items-center">
-                <svg width="60" height="40" viewBox="0 0 60 40" fill="none">
-                  <path d="M5 20 Q30 5 55 20" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                  <path d="M48 15 L55 20 L48 25" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                </svg>
-                <span className="font-sketch text-sm text-[#888]">Nakama</span>
-              </div>
+        {/* ─── ABOUT ───────────────────────────────────────────── */}
+        <section id="about" style={{ padding: '100px 32px' }}>
+          <div style={{ maxWidth: 1160, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'center' }}>
 
-              {/* Branded property */}
-              <div className="flex flex-col items-center gap-3">
-                <svg width="140" height="180" viewBox="0 0 140 180" fill="none">
-                  <rect x="20" y="50" width="100" height="120" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
-                  <path d="M8 50 L70 8 L132 50" stroke="#1a1a1a" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                  <rect x="32" y="70" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                  <line x1="46" y1="70" x2="46" y2="102" stroke="#1a1a1a" strokeWidth="0.8"/>
-                  <line x1="32" y1="86" x2="60" y2="86" stroke="#1a1a1a" strokeWidth="0.8"/>
-                  <rect x="80" y="70" width="28" height="32" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                  <line x1="94" y1="70" x2="94" y2="102" stroke="#1a1a1a" strokeWidth="0.8"/>
-                  <line x1="80" y1="86" x2="108" y2="86" stroke="#1a1a1a" strokeWidth="0.8"/>
-                  <rect x="50" y="128" width="40" height="42" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
-                  <circle cx="86" cy="149" r="2.5" fill="#1a1a1a"/>
-                  {/* Stars */}
-                  <text x="70" y="20" textAnchor="middle" style={{ fontFamily: 'Caveat, cursive', fontSize: '14px', fill: '#1a1a1a' }}>★★★★★</text>
-                  <text x="70" y="170" textAnchor="middle" style={{ fontFamily: 'Outfit, sans-serif', fontSize: '9px', fill: '#888' }}>Branded property</text>
-                </svg>
-                <div className="font-sketch text-lg text-[#1a1a1a]">Booked</div>
+            {/* Left: illustrated portrait of 2 founders */}
+            <div className="sk" style={{ position: 'relative' }}>
+              <svg width="440" height="380" viewBox="0 0 440 380" fill="none">
+                {/* Background grid suggestion */}
+                <rect x="20" y="20" width="400" height="340" stroke="#f0f0f0" strokeWidth="1" rx="4"/>
+
+                {/* Desk surface */}
+                <rect x="40" y="280" width="360" height="20" stroke="#e0e0e0" strokeWidth="1" fill="#fafafa"/>
+                {/* Laptop suggestion */}
+                <rect x="100" y="220" width="100" height="68" rx="3" stroke="#1a1a1a" strokeWidth="1.6" fill="white"/>
+                <rect x="104" y="224" width="92" height="56" rx="1" stroke="#e0e0e0" strokeWidth="0.8" fill="#fafafa"/>
+                <rect x="82" y="288" width="136" height="6" rx="2" stroke="#1a1a1a" strokeWidth="1.2" fill="white"/>
+                {/* Screen content lines */}
+                <line x1="112" y1="236" x2="188" y2="236" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="112" y1="246" x2="170" y2="246" stroke="#eee" strokeWidth="1" strokeLinecap="round"/>
+                <line x1="112" y1="254" x2="180" y2="254" stroke="#eee" strokeWidth="1" strokeLinecap="round"/>
+                <rect x="112" y="262" width="28" height="10" rx="2" stroke="#1a1a1a" strokeWidth="1" fill="none"/>
+
+                {/* Figure 1 — left, seated */}
+                <ellipse cx="140" cy="175" rx="24" ry="24" stroke="#1a1a1a" strokeWidth="2" fill="white"/>
+                {/* Hair lines */}
+                <path d="M116 162 Q120 148, 140 146 Q160 148 164 162" stroke="#1a1a1a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                {/* Body */}
+                <path d="M140 199 L140 230" stroke="#1a1a1a" strokeWidth="2.2" strokeLinecap="round"/>
+                {/* Arms on desk */}
+                <path d="M115 215 L140 210 L165 218" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                {/* Legs */}
+                <path d="M140 230 L125 280" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M140 230 L155 280" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round"/>
+
+                {/* Figure 2 — right, standing, pointing */}
+                <ellipse cx="290" cy="130" rx="24" ry="24" stroke="#666" strokeWidth="2" fill="white"/>
+                <path d="M266 118 Q270 104, 290 102 Q310 104 314 118" stroke="#666" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                <path d="M290 154 L290 240" stroke="#666" strokeWidth="2.2" strokeLinecap="round"/>
+                {/* Arm pointing at screen */}
+                <path d="M290 185 L240 220" stroke="#666" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M237 218 L235 226 L244 224" stroke="#666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                {/* Other arm */}
+                <path d="M290 185 L320 175" stroke="#666" strokeWidth="2" strokeLinecap="round"/>
+                {/* Legs */}
+                <path d="M290 240 L275 280" stroke="#666" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M290 240 L305 280" stroke="#666" strokeWidth="2" strokeLinecap="round"/>
+
+                {/* Dashed line connecting the two */}
+                <path d="M164 185 Q215 160 266 148" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="4 4" fill="none" strokeLinecap="round"/>
+
+                {/* Labels */}
+                <text x="140" y="142" textAnchor="middle" fill="#aaa" fontSize="10" fontFamily="Outfit, sans-serif">You</text>
+                <text x="290" y="97" textAnchor="middle" fill="#aaa" fontSize="10" fontFamily="Outfit, sans-serif">Nakama</text>
+
+                {/* Speech bubble */}
+                <rect x="300" y="54" width="110" height="36" rx="6" stroke="#1a1a1a" strokeWidth="1.3" fill="white"/>
+                <path d="M308 90 L302 100 L316 90" stroke="#1a1a1a" strokeWidth="1.3" fill="white" strokeLinejoin="round"/>
+                <text x="355" y="76" textAnchor="middle" fill="#1a1a1a" fontSize="10" fontFamily="Caveat, cursive" fontWeight="600">Let's grow this.</text>
+
+                {/* Floor plan inset — bottom right */}
+                <rect x="330" y="210" width="80" height="60" stroke="#ddd" strokeWidth="1" fill="white"/>
+                <rect x="330" y="210" width="40" height="30" stroke="#eee" strokeWidth="0.8" fill="none"/>
+                <rect x="370" y="210" width="40" height="30" stroke="#eee" strokeWidth="0.8" fill="none"/>
+                <rect x="345" y="240" width="30" height="30" stroke="#eee" strokeWidth="0.8" fill="none"/>
+                <text x="370" y="278" textAnchor="middle" fill="#ccc" fontSize="8" fontFamily="Outfit, sans-serif">Floor Plan</text>
+              </svg>
+            </div>
+
+            <div className="sk sk-d1">
+              <div className="tag" style={{ marginBottom: 14 }}>About Nakama</div>
+              <h2 className="f-sketch" style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.1, marginBottom: 24 }}>
+                Two companions.<br/>One mission.
+              </h2>
+              <p style={{ fontSize: 16, color: '#555', lineHeight: 1.8, marginBottom: 16 }}>
+                <strong className="f-sketch" style={{ fontSize: 20, color: '#1a1a1a' }}>仲間 (Nakama)</strong> means people who grow together. We're not an agency with a roster of account managers — we're two people who genuinely care about your property's success.
+              </p>
+              <p style={{ fontSize: 16, color: '#555', lineHeight: 1.8, marginBottom: 32 }}>
+                When you work with us, you get direct access to the people doing the work. No hand-offs, no junior teams. We sit on the same side of the table and build something that lasts.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {['Dedicated point of contact from day one', 'Strategy, design, and tech — all in-house', 'Long-term partnerships, not one-off projects'].map(item => (
+                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <CheckCircle size={16} style={{ color: '#1a1a1a', flexShrink: 0 }} />
+                    <span style={{ fontSize: 15, color: '#444' }}>{item}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <ArchDivider label="§ 03 — Services" />
+        <div className="sep" />
 
-        {/* ── SERVICES ── */}
-        <section id="services" className="py-24 px-6 max-w-6xl mx-auto">
-          <div className="text-center mb-16 sketch-hidden">
-            <div className="section-tag">Our Canvas</div>
-            <h2 className="font-sketch text-5xl text-[#1a1a1a]">What we build together.</h2>
-          </div>
+        {/* ─── SERVICES ─────────────────────────────────────────── */}
+        <section id="services" style={{ padding: '100px 32px' }}>
+          <div style={{ maxWidth: 1160, margin: '0 auto' }}>
+            <div className="sk" style={{ marginBottom: 60 }}>
+              <div className="tag" style={{ marginBottom: 14 }}>What we do</div>
+              <h2 className="f-sketch" style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.1 }}>
+                Our services.
+              </h2>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <ServiceCard
-              icon={
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect x="4" y="8" width="40" height="32" rx="2" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
-                  <line x1="4" y1="16" x2="44" y2="16" stroke="#1a1a1a" strokeWidth="1.2"/>
-                  <circle cx="10" cy="12" r="2" fill="#1a1a1a"/>
-                  <circle cx="17" cy="12" r="2" fill="#888"/>
-                  <circle cx="24" cy="12" r="2" fill="#ccc"/>
-                  <rect x="10" y="22" width="28" height="3" rx="1" stroke="#888" strokeWidth="0.8" fill="none"/>
-                  <rect x="10" y="29" width="20" height="3" rx="1" stroke="#ccc" strokeWidth="0.8" fill="none"/>
-                  <rect x="10" y="36" width="24" height="2" rx="1" stroke="#ddd" strokeWidth="0.8" fill="none"/>
-                </svg>
-              }
-              tag="01"
-              title="Property Websites"
-              desc="Bespoke, conversion-led websites that tell your property's story and drive direct bookings — bypassing OTA commissions entirely."
-            />
-            <ServiceCard
-              icon={
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect x="6" y="4" width="36" height="40" rx="3" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
-                  <line x1="14" y1="4" x2="14" y2="44" stroke="#888" strokeWidth="0.8" strokeDasharray="3 2"/>
-                  <rect x="10" y="14" width="20" height="10" rx="2" stroke="#1a1a1a" strokeWidth="1.2" fill="none"/>
-                  <rect x="18" y="28" width="20" height="10" rx="2" stroke="#888" strokeWidth="1.2" fill="none"/>
-                  <circle cx="42" cy="8" r="4" stroke="#1a1a1a" strokeWidth="1.2" fill="white"/>
-                  <path d="M40 8 L41.5 9.5 L44 6.5" stroke="#1a1a1a" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              }
-              tag="02"
-              title="WhatsApp Automation"
-              desc="Intelligent 24/7 chatbots that respond to guests in your property's voice — answering enquiries, collecting leads, and booking stays automatically."
-            />
-            <ServiceCard
-              icon={
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <circle cx="24" cy="24" r="18" stroke="#1a1a1a" strokeWidth="1.8" fill="none"/>
-                  <ellipse cx="24" cy="24" rx="8" ry="18" stroke="#888" strokeWidth="1.2" fill="none"/>
-                  <line x1="6" y1="24" x2="42" y2="24" stroke="#1a1a1a" strokeWidth="1.2"/>
-                  <line x1="9" y1="15" x2="39" y2="15" stroke="#ccc" strokeWidth="0.8"/>
-                  <line x1="9" y1="33" x2="39" y2="33" stroke="#ccc" strokeWidth="0.8"/>
-                </svg>
-              }
-              tag="03"
-              title="OTA Integration"
-              desc="Seamlessly sync your calendar across Airbnb, Booking.com, Agoda, and VRBO — maximising occupancy with zero double-bookings."
-            />
-          </div>
-        </section>
-
-        <ArchDivider label="§ 04 — Process" />
-
-        {/* ── PROCESS ── */}
-        <section id="process" className="py-24 px-6 max-w-5xl mx-auto">
-          <div className="text-center mb-16 sketch-hidden">
-            <div className="section-tag">Methodology</div>
-            <h2 className="font-sketch text-5xl text-[#1a1a1a]">The Drafting Process.</h2>
-          </div>
-
-          {/* Process as architectural phases */}
-          <div className="relative">
-            {/* Vertical spine line */}
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-[#e5e5e5]" style={{ borderLeft: '1.5px dashed #ddd' }}></div>
-
-            <div className="space-y-12 pl-24">
-              {[
-                {
-                  num: "01",
-                  phase: "Survey",
-                  title: "The Site Assessment",
-                  desc: "We begin by understanding your property's unique character, your target guests, competitors, and revenue goals. No templates — fresh eyes every time.",
-                  icon: "◎"
-                },
-                {
-                  num: "02",
-                  phase: "Design",
-                  title: "The Blueprint",
-                  desc: "We sketch the brand identity, messaging architecture, website wireframes, and chatbot conversation flows. You review and we refine together.",
-                  icon: "◈"
-                },
-                {
-                  num: "03",
-                  phase: "Build",
-                  title: "The Construction",
-                  desc: "We bring the blueprint to life — building the website, deploying the bot, connecting OTA channels. Everything is tested before handover.",
-                  icon: "◉"
-                },
-                {
-                  num: "04",
-                  phase: "Launch",
-                  title: "The Opening",
-                  desc: "You open your doors with a brand behind you. We stay close — monitoring, refining, and growing alongside you long after launch day.",
-                  icon: "◆"
-                }
-              ].map((step, i) => (
-                <div key={i} className="relative sketch-hidden flex gap-6 items-start group">
-                  {/* Node on timeline */}
-                  <div className="absolute -left-[76px] w-8 h-8 rounded-full border-2 border-[#1a1a1a] bg-white flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-[#1a1a1a] group-hover:scale-150 transition-transform"></div>
+            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 0, border: '1px solid #e8e8e8', borderRadius: 8 }} className="sk sk-d1">
+              {/* Tab list */}
+              <div style={{ borderRight: '1px solid #e8e8e8' }}>
+                {services.map((s, i) => (
+                  <div
+                    key={i}
+                    className={`svc-tab${activeService === i ? ' active' : ''}`}
+                    onClick={() => setActiveService(i)}
+                  >
+                    <div className="tag" style={{ marginBottom: 4 }}>{s.num}</div>
+                    <div className="f-sketch" style={{ fontSize: 22, fontWeight: 600, color: '#1a1a1a' }}>{s.title}</div>
+                    <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>{s.sub}</div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="sketch-card p-6 flex-1">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <span className="text-xs text-[#aaa] font-mono uppercase tracking-widest">{step.phase} — Phase {step.num}</span>
-                        <h3 className="font-sketch text-3xl text-[#1a1a1a] mt-1">{step.title}</h3>
-                      </div>
-                      <span className="font-sketch text-3xl text-[#ddd]">{step.icon}</span>
+              {/* Tab content */}
+              <div style={{ padding: '40px 48px' }}>
+                <h3 className="f-sketch" style={{ fontSize: 38, fontWeight: 700, marginBottom: 16, color: '#1a1a1a' }}>
+                  {services[activeService].title}
+                </h3>
+                <p style={{ fontSize: 16, color: '#555', lineHeight: 1.8, marginBottom: 32 }}>
+                  {services[activeService].desc}
+                </p>
+                <div>
+                  {services[activeService].points.map((pt) => (
+                    <div key={pt} className="check-item">
+                      <CheckCircle size={16} style={{ color: '#1a1a1a', flexShrink: 0, marginTop: 2 }} />
+                      <span>{pt}</span>
                     </div>
-                    <p className="text-[#666] leading-relaxed">{step.desc}</p>
+                  ))}
+                </div>
+                <button className="btn-ghost" style={{ marginTop: 36 }}>
+                  Learn more <ChevronRight size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="sep" />
+
+        {/* ─── PROCESS ──────────────────────────────────────────── */}
+        <section id="process" style={{ padding: '100px 32px', background: '#fafafa' }}>
+          <div style={{ maxWidth: 1160, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100 }}>
+            <div className="sk">
+              <div className="tag" style={{ marginBottom: 14 }}>How it works</div>
+              <h2 className="f-sketch" style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.1, marginBottom: 20 }}>
+                The drafting process.
+              </h2>
+              <p style={{ fontSize: 16, color: '#666', lineHeight: 1.8 }}>
+                We follow a clear, repeatable process — so you always know what's happening and what's next. No surprises, no ghosting.
+              </p>
+            </div>
+
+            <div className="sk sk-d1">
+              {[
+                { num: '01', title: 'Site Assessment', desc: 'We learn your property — its character, guests, market position, and revenue goals.' },
+                { num: '02', title: 'Brand Blueprint', desc: 'We sketch the identity, messaging, website wireframes, and automation flows together.' },
+                { num: '03', title: 'Build & Connect', desc: 'We construct and connect everything — tested, polished, and ready to launch.' },
+                { num: '04', title: 'Grow Together', desc: 'Post-launch, we stay close — monitoring results and refining what we\'ve built.' },
+              ].map((step, i) => (
+                <div key={i} className="process-step">
+                  <div className="f-sketch" style={{ fontSize: 36, fontWeight: 700, color: '#e0e0e0', width: 52, flexShrink: 0, lineHeight: 1 }}>{step.num}</div>
+                  <div>
+                    <div className="f-sketch" style={{ fontSize: 24, fontWeight: 600, color: '#1a1a1a', marginBottom: 6 }}>{step.title}</div>
+                    <div style={{ fontSize: 15, color: '#666', lineHeight: 1.7 }}>{step.desc}</div>
                   </div>
                 </div>
               ))}
@@ -521,121 +611,114 @@ export function LandingPage() {
           </div>
         </section>
 
-        <ArchDivider label="§ 05 — Why It Works" />
+        <div className="sep" />
 
-        {/* ── STATS / PROOF SECTION ── */}
-        <section className="py-24 px-6 arch-grid">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16 sketch-hidden">
-              <div className="section-tag">The Evidence</div>
-              <h2 className="font-sketch text-5xl text-[#1a1a1a]">Branding = Revenue.</h2>
+        {/* ─── TESTIMONIALS ─────────────────────────────────────── */}
+        <section style={{ padding: '100px 32px' }}>
+          <div style={{ maxWidth: 1160, margin: '0 auto' }}>
+            <div className="sk" style={{ textAlign: 'center', marginBottom: 60 }}>
+              <div className="tag" style={{ marginBottom: 14 }}>Client stories</div>
+              <h2 className="f-sketch" style={{ fontSize: 52, fontWeight: 700 }}>What our partners say.</h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              {[
-                { stat: "3×", label: "more bookings", detail: "Branded properties outperform generic listings by an average of 3× on OTA platforms." },
-                { stat: "40%", label: "higher ADR", detail: "A strong brand commands premium rates — guests pay more when they feel a connection." },
-                { stat: "85%", label: "direct enquiries", detail: "WhatsApp automation converts social enquiries into confirmed bookings without lifting a finger." }
-              ].map((item, i) => (
-                <div key={i} className="sketch-card p-8 sketch-hidden">
-                  <div className="font-sketch text-6xl text-[#1a1a1a] mb-2">{item.stat}</div>
-                  <div className="font-sketch text-xl text-[#555] mb-4">{item.label}</div>
-                  <p className="text-[#888] text-sm leading-relaxed">{item.detail}</p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 28 }}>
+              {testimonials.map((t, i) => (
+                <div key={i} className={`sk-card sk sk-d${i + 1}`} style={{ padding: 32 }}>
+                  <div className="stars" style={{ marginBottom: 16 }}>{'★'.repeat(t.stars)}</div>
+                  <p style={{ fontSize: 15, color: '#444', lineHeight: 1.75, marginBottom: 24, fontStyle: 'italic' }}>
+                    "{t.quote}"
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="20" r="19" stroke="#e0e0e0" strokeWidth="1"/>
+                      <circle cx="20" cy="16" r="7" stroke="#1a1a1a" strokeWidth="1.4" fill="none"/>
+                      <path d="M6 36 Q20 28 34 36" stroke="#1a1a1a" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+                    </svg>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>{t.name}</div>
+                      <div style={{ fontSize: 12, color: '#aaa' }}>{t.role}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <ArchDivider label="§ 06 — CTA" />
+        <div className="sep" />
 
-        {/* ── CTA ── */}
-        <section className="py-32 px-6 text-center relative overflow-hidden">
-          {/* Large architectural background sketch */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.04] pointer-events-none" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" fill="none">
-            <rect x="200" y="40" width="400" height="320" stroke="#1a1a1a" strokeWidth="2"/>
-            <path d="M180 40 L400 10 L620 40" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round"/>
-            <rect x="240" y="100" width="60" height="80" stroke="#1a1a1a" strokeWidth="1.5"/>
-            <rect x="340" y="100" width="60" height="80" stroke="#1a1a1a" strokeWidth="1.5"/>
-            <rect x="440" y="100" width="60" height="80" stroke="#1a1a1a" strokeWidth="1.5"/>
-            <rect x="340" y="240" width="120" height="120" stroke="#1a1a1a" strokeWidth="1.5"/>
-            <line x1="400" y1="10" x2="400" y2="0" stroke="#1a1a1a" strokeWidth="1.5"/>
-            <line x1="60" y1="360" x2="740" y2="360" stroke="#1a1a1a" strokeWidth="2"/>
-          </svg>
+        {/* ─── CTA ─────────────────────────────────────────────── */}
+        <section style={{ padding: '120px 32px', position: 'relative', overflow: 'hidden' }}>
+          {/* Arch grid subtle background */}
+          <div className="arch-grid-subtle" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
 
-          <div className="relative z-10 max-w-3xl mx-auto sketch-hidden">
-            {/* Corner brackets */}
-            <div className="flex justify-between mb-8 opacity-20">
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M2 12 L2 2 L12 2" stroke="#1a1a1a" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 12 L22 2 L12 2" stroke="#1a1a1a" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
-            </div>
+          {/* Corner markers */}
+          {[['top:32px;left:32px', 'M2 18 L2 2 L18 2'], ['top:32px;right:32px', 'M22 18 L22 2 L6 2'], ['bottom:32px;left:32px', 'M2 6 L2 22 L18 22'], ['bottom:32px;right:32px', 'M22 6 L22 22 L6 22']].map(([pos, d], i) => (
+            <svg key={i} width="24" height="24" viewBox="0 0 24 24" style={{ position: 'absolute', ...Object.fromEntries(pos.split(';').map(p => p.split(':'))), opacity: 0.15 }} fill="none">
+              <path d={d as string} stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+            </svg>
+          ))}
 
-            <div className="section-tag">Ready to start?</div>
-            <h2 className="font-sketch text-6xl md:text-7xl text-[#1a1a1a] mb-4 leading-tight">
+          <div className="sk" style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+            <div className="tag" style={{ marginBottom: 20 }}>Ready to start?</div>
+            <h2 className="f-sketch" style={{ fontSize: 64, fontWeight: 700, lineHeight: 1.05, marginBottom: 20 }}>
               Let's grow together.
             </h2>
-            <p className="text-[#666] text-lg mb-12 leading-relaxed">
-              Your property has a story worth telling. We'll help you find it, brand it, and make it earn.
+            <p style={{ fontSize: 18, color: '#666', lineHeight: 1.7, marginBottom: 44 }}>
+              Your property has a story worth telling. We'll help you find it, brand it, and make it earn — as true partners, not just service providers.
             </p>
 
-            <button className="sketch-btn font-sketch text-3xl px-14 py-4 flex items-center gap-4 mx-auto">
-              <Users className="w-7 h-7" />
+            <button className="btn-primary" style={{ fontSize: 22, padding: '16px 44px', margin: '0 auto' }}>
+              <Users size={20} />
               Grow with Nakama
             </button>
 
-            <p className="text-[#bbb] text-sm mt-8" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <p style={{ fontSize: 13, color: '#bbb', marginTop: 20 }}>
               No sales pitch. Just a conversation between companions.
             </p>
 
-            <div className="flex justify-between mt-8 opacity-20">
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M2 12 L2 22 L12 22" stroke="#1a1a1a" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 12 L22 22 L12 22" stroke="#1a1a1a" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+            {/* Reassurance badges */}
+            <div style={{ marginTop: 48, display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {['Response within 24h', 'No lock-in contracts', 'Bilingual team', 'Based in Southeast Asia'].map(badge => (
+                <div key={badge} className="trust-pill">
+                  <CheckCircle size={11} style={{ color: '#22c55e' }} />
+                  {badge}
+                </div>
+              ))}
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-[#f0f0f0] py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-sketch text-2xl text-[#1a1a1a]">Nakama.</span>
-            <span className="text-[#ccc] text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>— Property Branding Studio</span>
+      {/* ─── FOOTER ──────────────────────────────────────────────── */}
+      <footer style={{ background: '#1a1a1a', color: 'white', padding: '56px 32px 32px' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 48, marginBottom: 56 }}>
+            <div>
+              <div className="f-sketch" style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>Nakama.</div>
+              <p style={{ fontSize: 13, color: '#888', lineHeight: 1.7 }}>
+                Property branding studio.<br/>Growing together since 2024.
+              </p>
+            </div>
+            {[
+              { head: 'Services', links: ['Property Websites', 'WhatsApp Bots', 'OTA Integration', 'Brand Strategy'] },
+              { head: 'Company', links: ['About Us', 'Our Process', 'Client Work', 'Contact'] },
+              { head: 'Connect', links: ['hello@nakama.studio', 'WhatsApp Us', 'LinkedIn', 'Instagram'] },
+            ].map(col => (
+              <div key={col.head}>
+                <div style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#555', marginBottom: 16 }}>{col.head}</div>
+                {col.links.map(l => (
+                  <div key={l} style={{ fontSize: 14, color: '#888', marginBottom: 10, cursor: 'pointer', transition: 'color 0.2s' }}>{l}</div>
+                ))}
+              </div>
+            ))}
           </div>
-          <p className="font-sketch text-lg text-[#bbb]">© {new Date().getFullYear()} · Drawn with care, built with purpose.</p>
-          <div className="flex gap-6 text-sm text-[#bbb]" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <a href="#" className="hover:text-[#1a1a1a] transition-colors">Privacy</a>
-            <a href="#" className="hover:text-[#1a1a1a] transition-colors">Contact</a>
+          <div style={{ borderTop: '1px solid #2d2d2d', paddingTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p className="f-sketch" style={{ fontSize: 15, color: '#555' }}>© {new Date().getFullYear()} Nakama Studio. Drawn with care.</p>
+            <p style={{ fontSize: 13, color: '#555' }}>Privacy · Terms</p>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function ArchDivider({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-4 px-6 max-w-6xl mx-auto py-4 sketch-hidden">
-      <span className="text-[10px] tracking-[0.25em] text-[#bbb] uppercase whitespace-nowrap" style={{ fontFamily: 'Outfit, monospace' }}>{label}</span>
-      <svg className="flex-1" height="12" viewBox="0 0 400 12" preserveAspectRatio="none" fill="none">
-        <path d="M0 6 Q100 2, 200 6 T 400 6" stroke="#e0e0e0" strokeWidth="1" strokeLinecap="round"/>
-      </svg>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-        <rect x="1" y="1" width="10" height="10" stroke="#ddd" strokeWidth="1" transform="rotate(45 6 6)"/>
-      </svg>
-    </div>
-  );
-}
-
-function ServiceCard({ icon, tag, title, desc }: { icon: React.ReactNode, tag: string, title: string, desc: string }) {
-  return (
-    <div className="sketch-card p-8 sketch-hidden flex flex-col gap-4">
-      <div className="flex items-start justify-between">
-        <div className="text-[#1a1a1a]">{icon}</div>
-        <span className="text-xs font-mono text-[#ddd] tracking-widest">{tag}</span>
-      </div>
-      <div>
-        <h3 className="font-sketch text-3xl text-[#1a1a1a] mb-2">{title}</h3>
-        <p className="text-[#666] leading-relaxed text-sm">{desc}</p>
-      </div>
     </div>
   );
 }
