@@ -1,543 +1,492 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Users, CheckCircle, ChevronRight } from 'lucide-react';
 
-/* ─────────────────────────────────────────────────────────────
-   NAKAMA — Corporate Balinese / Luxury Wood aesthetic
-   Palette: Espresso · Teak · Warm Gold · Cream · Stone
-───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────
+   NAKAMA  — Warm, professional, playful agency landing page
+   Vibe: bold modern agency × Southeast Asian warmth × friendship studio
+   Fonts: Syne (display) + Plus Jakarta Sans (body)
+   Palette: deep warm black · terracotta · amber · coral · cream
+───────────────────────────────────────────────────────────────────── */
 
 const C = {
-  espresso: '#120A04',
-  teak:     '#7B4A28',
-  teakLight:'#A86C45',
-  gold:     '#C9A46A',
-  goldLight:'#E2C99A',
+  bg:       '#0F0905',
+  bgCard:   '#1C1108',
+  bgLight:  '#FAF5EE',
+  bgMid:    '#F3EAD8',
+  terra:    '#C95240',
+  amber:    '#D4884A',
+  coral:    '#E07860',
+  gold:     '#F0A84C',
   cream:    '#F5EDD8',
-  creamDark:'#EDE0C4',
-  stone:    '#9E9287',
-  stoneLight:'#C8BFB4',
-  white:    '#FDFAF5',
+  warmText: '#FDF8F4',
+  stone:    '#9B8474',
+  stoneL:   '#C4B4A8',
+  espresso: '#120A04',
 };
 
-/* Balinese-inspired ornamental divider SVG */
-function Ornament({ color = C.gold, opacity = 0.6 }: { color?: string; opacity?: number }) {
-  return (
-    <svg width="120" height="20" viewBox="0 0 120 20" fill="none" style={{ opacity }}>
-      <line x1="0" y1="10" x2="46" y2="10" stroke={color} strokeWidth="0.8"/>
-      <path d="M50 10 L55 4 L60 10 L65 16 L70 10" stroke={color} strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-      <line x1="74" y1="10" x2="120" y2="10" stroke={color} strokeWidth="0.8"/>
-      <circle cx="60" cy="10" r="2" fill={color}/>
-    </svg>
-  );
-}
+/* Gradient text helper */
+const GradText: React.FC<{ children: React.ReactNode; from?: string; to?: string }> = ({
+  children, from = C.terra, to = C.gold,
+}) => (
+  <span style={{
+    background: `linear-gradient(135deg, ${from}, ${to})`,
+    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+  }}>{children}</span>
+);
 
-/* Balinese geometric lotus pattern — used as background motif */
-function LotusBg({ size = 400, color = C.gold, opacity = 0.04 }: { size?: number; color?: string; opacity?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 200 200" fill="none" style={{ opacity, position: 'absolute', pointerEvents: 'none' }}>
-      {/* Outer petals */}
-      {[0,45,90,135,180,225,270,315].map((deg, i) => (
-        <ellipse key={i} cx="100" cy="100" rx="12" ry="38"
-          stroke={color} strokeWidth="0.8" fill="none"
-          transform={`rotate(${deg} 100 100)`}/>
-      ))}
-      {/* Inner ring */}
-      <circle cx="100" cy="100" r="22" stroke={color} strokeWidth="0.8" fill="none"/>
-      <circle cx="100" cy="100" r="10" stroke={color} strokeWidth="0.8" fill="none"/>
-      {/* Outer frame */}
-      <circle cx="100" cy="100" r="90" stroke={color} strokeWidth="0.4" fill="none"/>
-      {/* Corner marks */}
-      {[0,90,180,270].map((deg, i) => (
-        <line key={i} x1="100" y1="12" x2="100" y2="20"
-          stroke={color} strokeWidth="0.6"
-          transform={`rotate(${deg} 100 100)`}/>
-      ))}
-    </svg>
-  );
+/* Pill badge */
+const Pill: React.FC<{ children: React.ReactNode; light?: boolean }> = ({ children, light }) => (
+  <span style={{
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    background: light ? 'rgba(201,82,64,0.10)' : 'rgba(255,255,255,0.07)',
+    border: `1px solid ${light ? 'rgba(201,82,64,0.25)' : 'rgba(255,255,255,0.12)'}`,
+    borderRadius: 999, padding: '7px 16px',
+    fontSize: 12, fontWeight: 600, letterSpacing: '0.06em',
+    color: light ? C.terra : C.stoneL, fontFamily: "'Plus Jakarta Sans', sans-serif",
+  }}>{children}</span>
+);
+
+/* Service card */
+interface ServiceCardProps {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  tag: string;
+  accent: string;
+  dark?: boolean;
 }
+const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, desc, tag, accent, dark }) => {
+  const [hov, setHov] = useState(false);
+  return (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        background: dark ? (hov ? '#231408' : C.bgCard) : (hov ? '#FFFFFF' : '#F9F4EC'),
+        border: `1px solid ${hov ? accent + '60' : dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+        borderRadius: 20, padding: '36px 32px',
+        transition: 'all 0.3s ease', cursor: 'default',
+        boxShadow: hov ? `0 20px 60px ${accent}20` : 'none',
+      }}>
+      <div style={{
+        width: 52, height: 52, borderRadius: 14,
+        background: hov ? accent + '22' : dark ? 'rgba(255,255,255,0.06)' : 'rgba(201,82,64,0.08)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: 20, transition: 'background 0.3s ease',
+      }}>{icon}</div>
+      <div style={{ fontSize: 10, letterSpacing: '0.18em', fontWeight: 700, color: accent, marginBottom: 8, textTransform: 'uppercase' }}>{tag}</div>
+      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: dark ? C.warmText : C.espresso, marginBottom: 12, lineHeight: 1.25 }}>{title}</div>
+      <p style={{ fontSize: 14, color: dark ? C.stone : '#6B5C52', lineHeight: 1.75, fontWeight: 400 }}>{desc}</p>
+    </div>
+  );
+};
+
+/* Process step */
+const Step: React.FC<{ num: string; title: string; desc: string; accent: string }> = ({ num, title, desc, accent }) => (
+  <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+    <div style={{ width: 48, height: 48, borderRadius: 12, background: accent + '18', border: `1.5px solid ${accent}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: accent }}>{num}</span>
+    </div>
+    <div>
+      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 19, fontWeight: 700, color: C.espresso, marginBottom: 6 }}>{title}</div>
+      <p style={{ fontSize: 14, color: '#7A6558', lineHeight: 1.75 }}>{desc}</p>
+    </div>
+  </div>
+);
 
 export function LandingPage() {
-  const [activeService, setActiveService] = useState(0);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const [activeSvc, setActiveSvc] = useState(0);
+  const obsRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('nk-in'); }),
-      { threshold: 0.07, rootMargin: '0px 0px -40px 0px' }
+    obsRef.current = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }),
+      { threshold: 0.06, rootMargin: '0px 0px -30px 0px' },
     );
-    document.querySelectorAll('.nk').forEach(el => observer.current?.observe(el));
-    return () => observer.current?.disconnect();
+    document.querySelectorAll('.fade').forEach(el => obsRef.current?.observe(el));
+    return () => obsRef.current?.disconnect();
   }, []);
 
   const services = [
     {
-      num: '01', title: 'Property Website',
-      tagline: 'Your digital address, perfected.',
-      desc: 'A bespoke website crafted around your property\'s identity — not a template. Designed to convert visitors into guests and to eliminate dependency on OTA commissions.',
-      points: ['Custom brand-led design & copywriting', 'Direct booking engine integration', 'SEO-optimised architecture', 'Performance-first development'],
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="8" width="20" height="14" rx="3" stroke={C.terra} strokeWidth="1.8"/><path d="M7 8V5a5 5 0 0 1 10 0v3" stroke={C.terra} strokeWidth="1.8" strokeLinecap="round"/><circle cx="12" cy="15" r="2" fill={C.terra} opacity="0.7"/></svg>,
+      title: 'Property Website', desc: 'Bespoke websites built around your property\'s soul — converting browsers to guests and reducing OTA dependency.', tag: '01 · Design', accent: C.terra,
     },
     {
-      num: '02', title: 'WhatsApp Automation',
-      tagline: 'Present 24 hours. Perfectly consistent.',
-      desc: 'An intelligent guest-facing system that responds to enquiries instantly, qualifies leads, and guides bookings — maintaining the warmth of your brand voice around the clock.',
-      points: ['Automated enquiry qualification', 'Bilingual response flows', 'Booking confirmation pipeline', 'CRM and analytics integration'],
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke={C.amber} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+      title: 'WhatsApp Automation', desc: 'A smart guest system that responds instantly, qualifies bookings, and never sleeps — in your brand\'s voice.', tag: '02 · Automation', accent: C.amber,
     },
     {
-      num: '03', title: 'OTA Integration',
-      tagline: 'One inventory. Every platform.',
-      desc: 'We connect your property across Airbnb, Booking.com, Agoda, and VRBO through a unified channel manager — eliminating double bookings and maximising calendar occupancy.',
-      points: ['Real-time multi-channel sync', 'Dynamic pricing automation', 'Centralised revenue inbox', 'Performance reporting dashboard'],
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={C.gold} strokeWidth="1.8"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" stroke={C.gold} strokeWidth="1.8"/></svg>,
+      title: 'OTA Integration', desc: 'One inventory synced across Airbnb, Booking.com, Agoda, and VRBO — no double-bookings, max occupancy.', tag: '03 · Distribution', accent: C.gold,
     },
   ];
 
   const testimonials = [
-    { quote: 'Within three months of working with Nakama, our direct bookings tripled. They understand that a property isn\'t just a listing — it\'s an experience.', name: 'Rina H.', role: 'Villa Owner · Seminyak, Bali' },
-    { quote: 'The WhatsApp system they built handles 80% of our enquiries automatically. Our team now spends its energy hosting, not answering the same questions.', name: 'Ahmad Z.', role: 'Property Group · Kuala Lumpur' },
-    { quote: 'Professional, deeply attentive, and genuinely invested. They feel less like a vendor and more like a partner who holds a stake in our success.', name: 'Sita P.', role: 'Boutique Retreat · Ubud' },
+    { quote: 'Within 3 months our direct bookings tripled. Nakama doesn\'t just build websites — they become part of your team.', name: 'Rina H.', loc: 'Villa Owner · Seminyak', initials: 'RH' },
+    { quote: 'They handled 80% of our guest enquiries automatically. Our staff now actually has time to host properly.', name: 'Ahmad Z.', loc: 'Property Group · KL', initials: 'AZ' },
+    { quote: 'The word nakama really fits. I felt like they were genuinely invested in my success, not just the invoice.', name: 'Sita P.', loc: 'Boutique Retreat · Ubud', initials: 'SP' },
   ];
 
   return (
-    <div style={{ background: C.espresso, color: C.cream, fontFamily: "'DM Sans', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: C.bg, color: C.warmText, overflowX: 'hidden' }}>
+      {/* Fonts */}
+      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
       <style dangerouslySetInnerHTML={{ __html: `
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .nk {
-          opacity: 0;
-          transform: translateY(28px);
-          transition: opacity 0.85s cubic-bezier(0.22,1,0.36,1), transform 0.85s cubic-bezier(0.22,1,0.36,1);
-        }
-        .nk.nk-in { opacity: 1; transform: none; }
-        .nk.d1 { transition-delay: 0.1s; }
-        .nk.d2 { transition-delay: 0.2s; }
-        .nk.d3 { transition-delay: 0.3s; }
+        .fade { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1); }
+        .fade.vis { opacity: 1; transform: none; }
+        .d1 { transition-delay: 0.08s !important; }
+        .d2 { transition-delay: 0.16s !important; }
+        .d3 { transition-delay: 0.24s !important; }
+        .d4 { transition-delay: 0.32s !important; }
 
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .sans  { font-family: 'DM Sans', sans-serif; }
-
-        .gold-rule { height: 1px; background: linear-gradient(90deg, transparent, ${C.gold}, transparent); border: none; margin: 0; }
-        .stone-rule { height: 1px; background: linear-gradient(90deg, transparent, ${C.stone}55, transparent); border: none; margin: 0; }
-
-        .btn-gold {
-          display: inline-flex; align-items: center; gap: 10px;
-          background: ${C.gold}; color: ${C.espresso};
-          font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
-          letter-spacing: 0.12em; text-transform: uppercase;
-          padding: 15px 36px; border: none; cursor: pointer;
-          transition: background 0.25s ease, transform 0.2s ease;
-        }
-        .btn-gold:hover { background: ${C.goldLight}; transform: translateY(-1px); }
-
-        .btn-outline-cream {
+        .btn-primary {
           display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: ${C.cream};
-          font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-          letter-spacing: 0.1em; text-transform: uppercase;
-          padding: 15px 36px; border: 1px solid ${C.stone}; cursor: pointer;
-          transition: border-color 0.25s ease, color 0.25s ease;
+          background: linear-gradient(135deg, ${C.terra}, ${C.amber});
+          color: white; font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+          padding: 14px 32px; border-radius: 100px; border: none;
+          cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 4px 24px rgba(201,82,64,0.35);
         }
-        .btn-outline-cream:hover { border-color: ${C.gold}; color: ${C.gold}; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,82,64,0.45); }
 
-        .btn-text-gold {
+        .btn-ghost {
           display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: ${C.gold};
-          font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
-          letter-spacing: 0.14em; text-transform: uppercase;
-          border: none; cursor: pointer; padding: 0;
-          border-bottom: 1px solid transparent;
-          transition: border-color 0.2s ease, gap 0.2s ease;
+          background: rgba(255,255,255,0.06); color: ${C.stoneL};
+          font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600;
+          padding: 14px 28px; border-radius: 100px;
+          border: 1px solid rgba(255,255,255,0.10); cursor: pointer;
+          transition: all 0.2s ease;
         }
-        .btn-text-gold:hover { border-bottom-color: ${C.gold}; gap: 12px; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.10); color: ${C.warmText}; border-color: rgba(255,255,255,0.2); }
 
-        .nav-link {
-          font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
-          letter-spacing: 0.08em; color: ${C.stoneLight}; text-decoration: none;
-          transition: color 0.2s ease;
+        .btn-terra-outline {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: transparent; color: ${C.terra};
+          font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
+          letter-spacing: 0.04em; padding: 12px 28px; border-radius: 100px;
+          border: 2px solid ${C.terra}50; cursor: pointer; transition: all 0.2s ease;
         }
-        .nav-link:hover { color: ${C.cream}; }
+        .btn-terra-outline:hover { background: ${C.terra}12; border-color: ${C.terra}; }
+
+        .nav-a { color: ${C.stone}; font-size: 14px; font-weight: 500; text-decoration: none; transition: color 0.2s ease; cursor: pointer; }
+        .nav-a:hover { color: ${C.warmText}; }
 
         .svc-tab {
-          padding: 24px 28px; border-left: 1px solid transparent;
-          cursor: pointer; transition: all 0.2s ease;
+          padding: 16px 20px; border-radius: 12px; cursor: pointer;
+          transition: all 0.2s ease; display: flex; align-items: center; gap: 12px;
         }
-        .svc-tab.active {
-          border-left-color: ${C.gold};
-          background: rgba(201,164,106,0.06);
-        }
-        .svc-tab:not(.active):hover {
-          border-left-color: ${C.stone};
-          background: rgba(255,255,255,0.03);
-        }
+        .svc-tab:hover { background: rgba(255,255,255,0.05); }
+        .svc-tab.on { background: rgba(201,82,64,0.10); }
 
-        .check-row {
-          display: flex; align-items: flex-start; gap: 12px;
-          padding: 12px 0; border-bottom: 1px solid rgba(201,164,106,0.12);
-          font-size: 14px; color: ${C.stoneLight}; letter-spacing: 0.01em;
-        }
-        .check-row:last-child { border-bottom: none; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .marquee { display: flex; width: max-content; animation: scroll 28s linear infinite; }
 
-        .tag-label {
-          font-family: 'DM Sans', sans-serif; font-size: 10px;
-          letter-spacing: 0.22em; text-transform: uppercase;
-          color: ${C.gold}; margin-bottom: 16px; display: block;
-        }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        .float-card { animation: float 4s ease-in-out infinite; }
+        .float-card:nth-child(2) { animation-delay: 1.3s; }
+        .float-card:nth-child(3) { animation-delay: 2.6s; }
 
-        .stat-block { text-align: center; padding: 40px 20px; }
-        .stat-num {
-          font-family: 'Cormorant Garamond', serif; font-size: 58px;
-          font-weight: 300; color: ${C.gold}; line-height: 1;
-        }
-
-        .testi-card {
-          padding: 48px 40px;
-          border: 1px solid rgba(201,164,106,0.15);
-          transition: border-color 0.25s ease;
-        }
-        .testi-card:hover { border-color: rgba(201,164,106,0.4); }
-
-        @keyframes marquee {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .marquee-inner {
-          display: flex; gap: 0; width: max-content;
-          animation: marquee 30s linear infinite;
-        }
-
-        /* Wood grain texture overlay on sections */
-        .wood-overlay {
-          background-image: repeating-linear-gradient(
-            88deg,
-            transparent,
-            transparent 8px,
-            rgba(139,94,60,0.025) 8px,
-            rgba(139,94,60,0.025) 9px
-          );
-        }
-
-        /* Batik/weave micro-pattern */
-        .batik-bg {
-          background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L22 12 L12 22 L2 12 Z' stroke='%23C9A46A' stroke-width='0.3' fill='none' opacity='0.18'/%3E%3C/svg%3E");
-          background-size: 24px 24px;
-        }
+        @keyframes orb-pulse { 0%,100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.05); } }
       `}} />
 
-      {/* ─── NAV ──────────────────────────────────────────────── */}
-      <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100, background: C.espresso + 'F2', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${C.stone}22` }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
-              <path d="M2 22 L2 10 L14 1 L26 10 L26 22" stroke={C.gold} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-              <rect x="10" y="14" width="8" height="8" stroke={C.gold} strokeWidth="1.2" fill="none"/>
-              <line x1="2" y1="22" x2="26" y2="22" stroke={C.gold} strokeWidth="1.4" strokeLinecap="round"/>
+      {/* ── NAV ───────────────────────────────────────────────────── */}
+      <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100, background: C.bg + 'E8', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* Logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="11" cy="16" r="8" stroke={C.terra} strokeWidth="2" fill="none"/>
+              <circle cx="21" cy="16" r="8" stroke={C.amber} strokeWidth="2" fill="none"/>
+              <path d="M16 10 Q18 16 16 22" stroke="url(#lg1)" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              <defs>
+                <linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor={C.terra}/><stop offset="1" stopColor={C.amber}/>
+                </linearGradient>
+              </defs>
             </svg>
-            <span className="serif" style={{ fontSize: 26, fontWeight: 400, letterSpacing: '0.08em', color: C.cream }}>NAKAMA</span>
+            <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, letterSpacing: '0.02em', color: C.warmText }}>nakama</span>
           </div>
-          <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-            {['Services', 'Process', 'About', 'Work'].map(l => (
-              <a key={l} href={`#${l.toLowerCase()}`} className="nav-link">{l}</a>
+
+          {/* Links */}
+          <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
+            {['Services', 'Process', 'About', 'Stories'].map(l => (
+              <span key={l} className="nav-a">{l}</span>
             ))}
           </div>
-          <button className="btn-gold">Grow with Nakama</button>
+
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <button className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13 }}>Chat with us 💬</button>
+            <button className="btn-primary" style={{ padding: '10px 24px', fontSize: 13 }}>Grow with us →</button>
+          </div>
         </div>
       </nav>
 
-      {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="batik-bg" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '120px 48px 80px', position: 'relative', overflow: 'hidden' }}>
-        {/* Lotus motif background */}
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
-          <LotusBg size={700} color={C.gold} opacity={0.055} />
+      {/* ── HERO ──────────────────────────────────────────────────── */}
+      <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '120px 40px 80px', position: 'relative', overflow: 'hidden' }}>
+        {/* Gradient orbs */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', width: 700, height: 600, top: '-5%', left: '-8%', background: `radial-gradient(ellipse, ${C.terra}50 0%, transparent 65%)`, animation: 'orb-pulse 6s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', width: 600, height: 500, top: '10%', right: '-5%', background: `radial-gradient(ellipse, ${C.amber}40 0%, transparent 65%)`, animation: 'orb-pulse 8s ease-in-out infinite 2s' }} />
+          <div style={{ position: 'absolute', width: 400, height: 400, bottom: '5%', left: '30%', background: `radial-gradient(ellipse, ${C.coral}30 0%, transparent 65%)`, animation: 'orb-pulse 7s ease-in-out infinite 4s' }} />
         </div>
 
-        {/* Corner wood-trim lines */}
-        {(['top:48px;left:48px', 'top:48px;right:48px', 'bottom:80px;left:48px', 'bottom:80px;right:48px'] as const).map((pos, i) => {
-          const isRight = pos.includes('right');
-          const isBottom = pos.includes('bottom');
-          const posObj: React.CSSProperties = {
-            position: 'absolute',
-            top: pos.includes('top') ? 48 : undefined,
-            bottom: pos.includes('bottom') ? 80 : undefined,
-            left: !isRight ? 48 : undefined,
-            right: isRight ? 48 : undefined,
-          };
-          return (
-            <svg key={i} width="32" height="32" viewBox="0 0 32 32" style={{ ...posObj, opacity: 0.4 }} fill="none">
-              <path
-                d={isBottom
-                  ? (isRight ? 'M32 16 L32 32 L16 32' : 'M0 16 L0 32 L16 32')
-                  : (isRight ? 'M32 16 L32 0 L16 0'  : 'M0 16 L0 0 L16 0')}
-                stroke={C.gold} strokeWidth="1" strokeLinecap="round" fill="none"
-              />
-            </svg>
-          );
-        })}
+        <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+          {/* Left */}
+          <div>
+            <div className="fade" style={{ marginBottom: 28 }}>
+              <Pill>🌿 Property Branding Studio · Southeast Asia</Pill>
+            </div>
+            <h1 className="fade d1" style={{ fontFamily: "'Syne', sans-serif", fontSize: 72, fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: 24 }}>
+              Your property's<br />
+              <GradText from={C.terra} to={C.gold}>best friend</GradText><br />
+              is here.
+            </h1>
+            <p className="fade d2" style={{ fontSize: 17, color: C.stone, lineHeight: 1.8, maxWidth: 460, marginBottom: 36, fontWeight: 400 }}>
+              We're not just an agency. <strong style={{ color: C.stoneL }}>Nakama (仲間) means companions.</strong> We grow alongside your property — building the brand, digital systems, and guest experience that make guests return.
+            </p>
+            <div className="fade d3" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <button className="btn-primary">🤝 Grow with Nakama</button>
+              <button className="btn-ghost">See our work ↓</button>
+            </div>
 
-        <div className="nk" style={{ position: 'relative', zIndex: 1, maxWidth: 800 }}>
-          <span className="tag-label">Property Branding Studio · Southeast Asia</span>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 32 }}>
-            <Ornament color={C.gold} opacity={0.7} />
+            {/* Micro stats */}
+            <div className="fade d4" style={{ display: 'flex', gap: 32, marginTop: 48, paddingTop: 36, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+              {[['3×', 'More direct bookings'], ['40%', 'Higher room rates'], ['24/7', 'Guest automation']].map(([n, l]) => (
+                <div key={n}>
+                  <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, background: `linear-gradient(135deg, ${C.terra}, ${C.gold})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{n}</div>
+                  <div style={{ fontSize: 12, color: C.stone, marginTop: 4, fontWeight: 500 }}>{l}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className="serif" style={{ fontSize: 80, fontWeight: 300, lineHeight: 1.08, letterSpacing: '0.03em', color: C.cream, marginBottom: 12 }}>
-            Your property,
-          </h1>
-          <h1 className="serif" style={{ fontSize: 80, fontWeight: 300, lineHeight: 1.08, letterSpacing: '0.03em', color: C.gold, marginBottom: 36, fontStyle: 'italic' }}>
-            unforgettable.
-          </h1>
-          <p style={{ fontSize: 17, color: C.stoneLight, lineHeight: 1.8, maxWidth: 520, margin: '0 auto 48px', fontWeight: 300 }}>
-            We build the brand, digital infrastructure, and guest systems that transform your property from a listing into a destination guests seek out — and return to.
-          </p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center' }}>
-            <button className="btn-gold">
-              <Users size={15} />
-              Grow with Nakama
-            </button>
-            <button className="btn-outline-cream">
-              Our Work <ArrowRight size={13} />
-            </button>
-          </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div className="nk d2" style={{ position: 'absolute', bottom: 36, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: 0.4 }}>
-          <span style={{ fontSize: 10, letterSpacing: '0.2em', color: C.stone }}>SCROLL</span>
-          <div style={{ width: 1, height: 40, background: `linear-gradient(${C.gold}, transparent)` }} />
+          {/* Right — floating cards */}
+          <div className="fade d1" style={{ position: 'relative', height: 480 }}>
+            {/* Main card */}
+            <div className="float-card" style={{ position: 'absolute', top: 40, left: 20, right: 20, background: C.bgCard, border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '28px 28px', boxShadow: '0 24px 80px rgba(0,0,0,0.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ADE80' }} />
+                <span style={{ fontSize: 12, color: C.stoneL, fontWeight: 500 }}>Live · Property Dashboard</span>
+              </div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 32, fontWeight: 800, color: C.warmText, marginBottom: 4 }}>🏡 The Sari Villa</div>
+              <div style={{ fontSize: 13, color: C.stone, marginBottom: 20 }}>Seminyak, Bali · 4 rooms</div>
+              {/* Mini chart */}
+              <svg width="100%" height="70" viewBox="0 0 340 70" fill="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop stopColor={C.terra} stopOpacity="0.5"/>
+                    <stop offset="1" stopColor={C.terra} stopOpacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0 55 Q40 50 60 42 Q80 34 110 28 Q140 22 170 18 Q200 14 230 10 Q260 6 290 8 Q320 10 340 5" stroke={C.terra} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                <path d="M0 55 Q40 50 60 42 Q80 34 110 28 Q140 22 170 18 Q200 14 230 10 Q260 6 290 8 Q320 10 340 5 L340 70 L0 70Z" fill="url(#chartGrad)"/>
+              </svg>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
+                {[['Direct Bookings', '+127%', C.terra], ['Occupancy', '94%', C.amber], ['ADR', 'IDR 3.2M', C.gold]].map(([l, v, col]) => (
+                  <div key={String(l)}>
+                    <div style={{ fontSize: 11, color: C.stone, marginBottom: 2 }}>{l}</div>
+                    <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: String(col) }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Floating mini card 1 */}
+            <div className="float-card" style={{ position: 'absolute', bottom: 60, right: -10, background: 'linear-gradient(135deg, #C95240, #D4884A)', borderRadius: 16, padding: '18px 22px', width: 190, boxShadow: '0 16px 40px rgba(201,82,64,0.4)' }}>
+              <div style={{ fontSize: 22, marginBottom: 6 }}>✨</div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 16, fontWeight: 700, color: 'white', marginBottom: 4 }}>New booking!</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>Via direct website<br />3 nights · 2 guests</div>
+            </div>
+
+            {/* Floating mini card 2 */}
+            <div className="float-card" style={{ position: 'absolute', bottom: 130, left: -10, background: C.bgCard, border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '16px 20px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 18 }}>💬</div>
+                <div>
+                  <div style={{ fontSize: 12, color: C.warmText, fontWeight: 600 }}>WhatsApp Bot</div>
+                  <div style={{ fontSize: 11, color: C.stone }}>Replied in 2 seconds ⚡</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ─── MARQUEE ──────────────────────────────────────────── */}
-      <div style={{ borderTop: `1px solid ${C.gold}22`, borderBottom: `1px solid ${C.gold}22`, padding: '16px 0', overflow: 'hidden', background: `${C.teak}18` }}>
-        <div className="marquee-inner">
+      {/* ── MARQUEE ───────────────────────────────────────────────── */}
+      <div style={{ padding: '18px 0', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+        <div className="marquee">
           {Array(2).fill(null).map((_, ri) => (
             <React.Fragment key={ri}>
-              {['Property Website Design', '◆', 'WhatsApp Automation', '◆', 'OTA Integration', '◆', 'Brand Identity', '◆', 'Guest Experience Strategy', '◆', 'Revenue Optimisation', '◆'].map((item, i) => (
-                <span key={`${ri}-${i}`} className="serif" style={{ fontSize: 16, whiteSpace: 'nowrap', padding: '0 32px', color: item === '◆' ? C.gold : C.stone, fontStyle: item !== '◆' ? 'italic' : 'normal', letterSpacing: '0.06em' }}>{item}</span>
+              {['🌴 Property Website', '★', '💬 WhatsApp Automation', '★', '🌐 OTA Integration', '★', '📈 Direct Bookings', '★', '🤝 Growing Together', '★', '✨ Brand Identity', '★'].map((item, i) => (
+                <span key={`${ri}-${i}`} style={{ padding: '0 28px', whiteSpace: 'nowrap', fontSize: 14, color: item === '★' ? C.terra + '80' : C.stone, fontWeight: 500, letterSpacing: '0.03em' }}>{item}</span>
               ))}
             </React.Fragment>
           ))}
         </div>
       </div>
 
-      {/* ─── STATS ────────────────────────────────────────────── */}
-      <section style={{ background: C.cream, padding: '0' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+      {/* ── ABOUT ─────────────────────────────────────────────────── */}
+      <section id="about" style={{ padding: '120px 40px', background: C.bgLight }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'center' }}>
+          {/* Text */}
+          <div className="fade">
+            <Pill light>🤝 Who we are</Pill>
+            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 52, fontWeight: 800, lineHeight: 1.1, color: C.espresso, margin: '20px 0 24px', letterSpacing: '-0.02em' }}>
+              Two people.<br />One mission.<br /><GradText from={C.terra} to={C.amber}>All in for you.</GradText>
+            </h2>
+            <p style={{ fontSize: 16, color: '#6B5C52', lineHeight: 1.85, marginBottom: 20 }}>
+              In Japanese, <strong style={{ color: C.espresso }}>仲間 (nakama)</strong> means companions — people who face the journey together. That's exactly who we are to every property we work with.
+            </p>
+            <p style={{ fontSize: 16, color: '#6B5C52', lineHeight: 1.85, marginBottom: 32 }}>
+              We're a two-person studio based in Southeast Asia. No account managers between you and us. No junior teams working on your brand. When you work with Nakama, you get <strong style={{ color: C.espresso }}>both of us — directly</strong>, always.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {[
+                ['🎯', 'Your strategy, brand, and tech — all in one relationship'],
+                ['🗣️', 'Bilingual communication (English & Bahasa)'],
+                ['📍', 'Based in SEA — we understand the market and the culture'],
+                ['🌱', 'Long-term partners, not project-based vendors'],
+              ].map(([emoji, text]) => (
+                <div key={String(text)} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontSize: 14, color: '#5A4C44', lineHeight: 1.7 }}>
+                  <span style={{ fontSize: 16, flexShrink: 0 }}>{emoji}</span>
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Visual — "companion" cards */}
+          <div className="fade d1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            {/* Profile card A */}
+            <div style={{ gridColumn: '1 / -1', background: 'white', borderRadius: 20, padding: '28px 28px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
+                <div style={{ width: 52, height: 52, borderRadius: '50%', background: `linear-gradient(135deg, ${C.terra}, ${C.amber})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🧑‍💻</div>
+                <div>
+                  <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: C.espresso, fontSize: 17 }}>Design & Strategy</div>
+                  <div style={{ fontSize: 13, color: C.stone }}>Brand · UX · Guest Journey</div>
+                </div>
+              </div>
+              <p style={{ fontSize: 13, color: '#7A6558', lineHeight: 1.7 }}>Translating your property's personality into an experience that guests feel before they even arrive.</p>
+            </div>
+            <div style={{ background: 'white', borderRadius: 20, padding: '24px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: 28, marginBottom: 12 }}>⚙️</div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: C.espresso, fontSize: 16, marginBottom: 6 }}>Tech & Automation</div>
+              <p style={{ fontSize: 13, color: '#7A6558', lineHeight: 1.6 }}>Building the systems that run while you sleep.</p>
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${C.terra}12, ${C.amber}12)`, borderRadius: 20, padding: '24px', border: `1px solid ${C.terra}20` }}>
+              <div style={{ fontSize: 28, marginBottom: 12 }}>🌏</div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: C.espresso, fontSize: 16, marginBottom: 6 }}>SEA Market</div>
+              <p style={{ fontSize: 13, color: '#7A6558', lineHeight: 1.6 }}>We know this region because we live in it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVICES ──────────────────────────────────────────────── */}
+      <section id="services" style={{ padding: '120px 40px', background: C.bg, position: 'relative', overflow: 'hidden' }}>
+        {/* Background orb */}
+        <div style={{ position: 'absolute', width: 800, height: 600, top: '20%', right: '-15%', background: `radial-gradient(ellipse, ${C.amber}20 0%, transparent 65%)`, pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="fade" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'flex-end', marginBottom: 60 }}>
+            <div>
+              <Pill>✨ What we do</Pill>
+              <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 52, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: 20, color: C.warmText }}>
+                Three services.<br /><GradText from={C.coral} to={C.gold}>One partnership.</GradText>
+              </h2>
+            </div>
+            <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.8, maxWidth: 360, textAlign: 'right', justifySelf: 'end' }}>Each service is designed to work together — because a great website means nothing without the systems to capture and convert.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+            {services.map((s, i) => (
+              <div key={i} className={`fade d${i + 1}`}>
+                <ServiceCard {...s} dark />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SOCIAL PROOF STRIP ────────────────────────────────────── */}
+      <section style={{ background: `linear-gradient(135deg, ${C.terra}22, ${C.amber}18)`, padding: '60px 40px', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 0 }}>
           {[
-            { num: '3×', label: 'More Bookings', sub: 'vs unbranded listings' },
-            { num: '40%', label: 'Higher ADR', sub: 'for branded properties' },
-            { num: '85%', label: 'Enquiries Handled', sub: 'via WhatsApp automation' },
-            { num: '100%', label: 'Bespoke', sub: 'no templates, ever' },
-          ].map((s, i) => (
-            <div key={i} className={`stat-block nk d${i % 3 + 1}`} style={{ borderRight: i < 3 ? `1px solid ${C.stoneLight}40` : 'none' }}>
-              <div className="stat-num" style={{ color: C.teak }}>{s.num}</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.espresso, marginTop: 10, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{s.label}</div>
-              <div style={{ fontSize: 12, color: C.stone, marginTop: 6 }}>{s.sub}</div>
+            ['🏡', '25+', 'Properties branded'],
+            ['📈', '3×', 'Average booking growth'],
+            ['🤖', '85%', 'Enquiries automated'],
+            ['🌏', '4', 'Countries across SEA'],
+          ].map(([emoji, num, label], i) => (
+            <div key={String(num)} className={`fade d${i + 1}`} style={{ textAlign: 'center', padding: '20px', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>{emoji}</div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 44, fontWeight: 800, background: `linear-gradient(135deg, ${C.terra}, ${C.gold})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{num}</div>
+              <div style={{ fontSize: 13, color: C.stone, marginTop: 8, fontWeight: 500 }}>{label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <hr className="gold-rule" />
-
-      {/* ─── ABOUT ────────────────────────────────────────────── */}
-      <section id="about" className="wood-overlay" style={{ padding: '120px 48px', background: C.espresso }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 120, alignItems: 'center' }}>
-
-          {/* Decorative architectural panel */}
-          <div className="nk" style={{ position: 'relative' }}>
-            <div style={{ border: `1px solid ${C.gold}28`, padding: 48, position: 'relative' }}>
-              {/* Corner accents */}
-              {[{top:0,left:0}, {top:0,right:0}, {bottom:0,left:0}, {bottom:0,right:0}].map((pos, i) => (
-                <div key={i} style={{ position: 'absolute', width: 16, height: 16, ...pos,
-                  borderTop: (pos.top === 0 ? `2px solid ${C.gold}` : 'none'),
-                  borderBottom: (pos.bottom === 0 ? `2px solid ${C.gold}` : 'none'),
-                  borderLeft: (pos.left === 0 ? `2px solid ${C.gold}` : 'none'),
-                  borderRight: (pos.right === 0 ? `2px solid ${C.gold}` : 'none'),
-                }} />
-              ))}
-              <svg width="100%" height="320" viewBox="0 0 380 320" fill="none">
-                {/* Balinese temple gate silhouette — Candi Bentar */}
-                {/* Left gate half */}
-                <path d="M60 280 L60 180 L50 170 L50 120 L60 110 L70 100 L80 80 L90 60 L95 40 L100 20 L105 40 L110 60 L120 80 L130 100 L140 110 L150 120 L150 170 L140 180 L140 280 Z"
-                  stroke={C.gold} strokeWidth="1.2" fill="none" opacity="0.7"/>
-                {/* Left gate decoration layers */}
-                <path d="M70 280 L70 200 L65 190 L65 140 L70 130 L80 110 L90 80 L95 60 L100 40 L105 60 L110 80 L120 110 L130 130 L135 140 L135 190 L130 200 L130 280"
-                  stroke={C.gold} strokeWidth="0.6" fill="none" opacity="0.3"/>
-                <line x1="60" y1="180" x2="140" y2="180" stroke={C.gold} strokeWidth="0.8" opacity="0.4"/>
-                <line x1="50" y1="160" x2="150" y2="160" stroke={C.gold} strokeWidth="0.6" opacity="0.3"/>
-                <line x1="55" y1="140" x2="145" y2="140" stroke={C.gold} strokeWidth="0.6" opacity="0.3"/>
-
-                {/* Right gate half */}
-                <path d="M320 280 L320 180 L330 170 L330 120 L320 110 L310 100 L300 80 L290 60 L285 40 L280 20 L275 40 L270 60 L260 80 L250 100 L240 110 L230 120 L230 170 L240 180 L240 280 Z"
-                  stroke={C.gold} strokeWidth="1.2" fill="none" opacity="0.7"/>
-                <path d="M310 280 L310 200 L315 190 L315 140 L310 130 L300 110 L290 80 L285 60 L280 40 L275 60 L270 80 L260 110 L250 130 L245 140 L245 190 L250 200 L250 280"
-                  stroke={C.gold} strokeWidth="0.6" fill="none" opacity="0.3"/>
-                <line x1="240" y1="180" x2="320" y2="180" stroke={C.gold} strokeWidth="0.8" opacity="0.4"/>
-                <line x1="230" y1="160" x2="330" y2="160" stroke={C.gold} strokeWidth="0.6" opacity="0.3"/>
-                <line x1="235" y1="140" x2="325" y2="140" stroke={C.gold} strokeWidth="0.6" opacity="0.3"/>
-
-                {/* Centre gap — path / void */}
-                <line x1="190" y1="20" x2="190" y2="280" stroke={C.gold} strokeWidth="0.4" strokeDasharray="4 6" opacity="0.3"/>
-
-                {/* Ground line */}
-                <line x1="20" y1="280" x2="360" y2="280" stroke={C.gold} strokeWidth="1" opacity="0.5"/>
-
-                {/* Lotus at top centre */}
-                <circle cx="190" cy="15" r="6" stroke={C.gold} strokeWidth="0.8" fill="none" opacity="0.5"/>
-                <circle cx="190" cy="15" r="3" fill={C.gold} opacity="0.3"/>
-
-                {/* Decorative ground motif */}
-                <path d="M140 290 Q190 278 240 290" stroke={C.gold} strokeWidth="0.7" fill="none" opacity="0.4"/>
-
-                {/* Label */}
-                <text x="190" y="310" textAnchor="middle" fill={C.stone} fontSize="9" fontFamily="DM Sans, sans-serif" letterSpacing="3">CANDI BENTAR · BALI</text>
-              </svg>
-            </div>
-          </div>
-
-          <div className="nk d1">
-            <span className="tag-label">About Nakama</span>
-            <div style={{ marginBottom: 24 }}><Ornament color={C.gold} opacity={0.5} /></div>
-            <h2 className="serif" style={{ fontSize: 52, fontWeight: 300, lineHeight: 1.15, color: C.cream, marginBottom: 28, letterSpacing: '0.02em' }}>
-              Two companions.<br />
-              <span style={{ color: C.gold, fontStyle: 'italic' }}>One philosophy.</span>
+      {/* ── PROCESS ───────────────────────────────────────────────── */}
+      <section id="process" style={{ padding: '120px 40px', background: C.bgLight }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100 }}>
+          <div className="fade">
+            <Pill light>📋 How we work</Pill>
+            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 52, fontWeight: 800, lineHeight: 1.1, color: C.espresso, margin: '20px 0 24px', letterSpacing: '-0.02em' }}>
+              A clear path,<br /><GradText from={C.terra} to={C.amber}>no surprises.</GradText>
             </h2>
-            <p style={{ fontSize: 15, color: C.stoneLight, lineHeight: 1.9, marginBottom: 18, fontWeight: 300 }}>
-              <strong className="serif" style={{ fontSize: 18, color: C.goldLight, fontWeight: 400 }}>仲間 (Nakama)</strong> — those who grow together. We are not an agency with account managers and junior teams. We are two individuals who hold deep personal stakes in your property's success.
+            <p style={{ fontSize: 16, color: '#6B5C52', lineHeight: 1.85 }}>
+              We've built a four-phase process that keeps you in the loop without overwhelming you. You'll always know what's happening, what's next, and what we need from you.
             </p>
-            <p style={{ fontSize: 15, color: C.stoneLight, lineHeight: 1.9, marginBottom: 36, fontWeight: 300 }}>
-              Every property we take on receives our direct attention, from strategy through execution. No hand-offs. No dilution. Just two partners invested in one outcome: yours.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              {['Direct access — always us, never an intermediary', 'Strategy, design, and technology — fully in-house', 'Long-term partnership model, not project-based'].map((item, i) => (
-                <div key={i} className="check-row">
-                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: C.gold, flexShrink: 0, marginTop: 6 }} />
-                  <span>{item}</span>
-                </div>
-              ))}
+            <div style={{ marginTop: 32, padding: '24px 28px', background: 'white', borderRadius: 16, border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+              <div style={{ fontSize: 14, color: C.stone, marginBottom: 8 }}>Typical timeline</div>
+              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, color: C.espresso }}>4–6 weeks</div>
+              <div style={{ fontSize: 13, color: C.stone, marginTop: 4 }}>From onboarding to full launch 🚀</div>
             </div>
+          </div>
+
+          <div className="fade d1" style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
+            <Step num="01" title="Discovery & Audit" accent={C.terra}
+              desc="We deep-dive into your property, market, and current guest touchpoints — understanding what makes you unique before touching a single pixel." />
+            <Step num="02" title="Brand & Blueprint" accent={C.amber}
+              desc="Your brand identity, website wireframes, and automation flows come to life. You review and shape everything before we build." />
+            <Step num="03" title="Build & Integrate" accent={C.coral}
+              desc="Website, WhatsApp bot, OTA channels — we build it all and test thoroughly. You stay informed at every checkpoint." />
+            <Step num="04" title="Launch & Grow" accent={C.gold}
+              desc="You're live. We stick around — monitoring, refining, and growing with you as a real long-term partner." />
           </div>
         </div>
       </section>
 
-      <hr className="gold-rule" />
+      {/* ── TESTIMONIALS ──────────────────────────────────────────── */}
+      <section id="stories" style={{ padding: '120px 40px', background: C.bg, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', width: 600, height: 500, bottom: '-10%', left: '-10%', background: `radial-gradient(ellipse, ${C.terra}22 0%, transparent 65%)`, pointerEvents: 'none' }} />
 
-      {/* ─── SERVICES ─────────────────────────────────────────── */}
-      <section id="services" style={{ padding: '120px 48px', background: C.cream }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div className="nk" style={{ marginBottom: 64, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-            <div>
-              <span className="tag-label" style={{ color: C.teak }}>What We Do</span>
-              <h2 className="serif" style={{ fontSize: 52, fontWeight: 300, lineHeight: 1.1, color: C.espresso, letterSpacing: '0.02em' }}>
-                Our services.
-              </h2>
-            </div>
-            <p style={{ fontSize: 14, color: C.stone, maxWidth: 300, lineHeight: 1.8, textAlign: 'right', fontWeight: 300 }}>
-              Three interlocking disciplines — each reinforcing the other.
-            </p>
-          </div>
-
-          <div className="nk d1" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', border: `1px solid ${C.stoneLight}50` }}>
-            {/* Tab list */}
-            <div style={{ borderRight: `1px solid ${C.stoneLight}40`, background: `${C.creamDark}60` }}>
-              {services.map((s, i) => (
-                <div key={i} className={`svc-tab${activeService === i ? ' active' : ''}`}
-                  onClick={() => setActiveService(i)}
-                  style={{ '--tab-gold': C.gold } as React.CSSProperties}>
-                  <span style={{ fontSize: 10, letterSpacing: '0.2em', color: activeService === i ? C.teak : C.stone, textTransform: 'uppercase' }}>{s.num}</span>
-                  <div className="serif" style={{ fontSize: 20, fontWeight: 500, color: activeService === i ? C.espresso : C.stone, marginTop: 4, letterSpacing: '0.02em' }}>{s.title}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Content */}
-            <div style={{ padding: '48px 56px', background: 'white' }}>
-              <span style={{ fontSize: 11, letterSpacing: '0.2em', color: C.teak, textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>{services[activeService].num}</span>
-              <h3 className="serif" style={{ fontSize: 40, fontWeight: 400, color: C.espresso, marginBottom: 10, letterSpacing: '0.02em' }}>{services[activeService].title}</h3>
-              <p className="serif" style={{ fontSize: 18, color: C.stone, fontStyle: 'italic', marginBottom: 28 }}>{services[activeService].tagline}</p>
-              <p style={{ fontSize: 15, color: '#4a3f35', lineHeight: 1.85, marginBottom: 36, fontWeight: 300 }}>{services[activeService].desc}</p>
-              <div>
-                {services[activeService].points.map((pt) => (
-                  <div key={pt} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 0', borderBottom: `1px solid ${C.stoneLight}40`, fontSize: 14, color: '#5a4f44' }}>
-                    <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.teak, flexShrink: 0, marginTop: 6 }} />
-                    <span>{pt}</span>
-                  </div>
-                ))}
-              </div>
-              <button className="btn-text-gold" style={{ marginTop: 32, color: C.teak }}>
-                Learn more <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <hr className="gold-rule" />
-
-      {/* ─── PROCESS ──────────────────────────────────────────── */}
-      <section id="process" className="wood-overlay" style={{ padding: '120px 48px', background: C.espresso }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 120, alignItems: 'start' }}>
-          <div className="nk">
-            <span className="tag-label">Methodology</span>
-            <div style={{ marginBottom: 24 }}><Ornament /></div>
-            <h2 className="serif" style={{ fontSize: 52, fontWeight: 300, lineHeight: 1.1, color: C.cream, marginBottom: 28 }}>
-              The drafting<br /><span style={{ color: C.gold, fontStyle: 'italic' }}>process.</span>
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="fade" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <Pill>💬 Stories from the field</Pill>
+            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 52, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: 20, color: C.warmText }}>
+              Hear it from our<br /><GradText from={C.terra} to={C.gold}>nakama.</GradText>
             </h2>
-            <p style={{ fontSize: 15, color: C.stoneLight, lineHeight: 1.9, fontWeight: 300 }}>
-              We follow a clear, phase-based process that keeps you informed and in control at every milestone. No surprises. No missed deadlines. No ghosting.
-            </p>
-            <div style={{ marginTop: 48, padding: '24px 32px', border: `1px solid ${C.gold}22`, background: `${C.gold}06` }}>
-              <p className="serif" style={{ fontSize: 20, fontStyle: 'italic', color: C.goldLight, lineHeight: 1.7, fontWeight: 300 }}>
-                "A house is just a building until it holds a story worth sharing."
-              </p>
-              <p style={{ fontSize: 12, color: C.stone, marginTop: 12, letterSpacing: '0.1em' }}>— NAKAMA STUDIO</p>
-            </div>
           </div>
 
-          <div className="nk d1">
-            {[
-              { num: '01', phase: 'Assessment', title: 'Site & Market Analysis', desc: 'We begin by understanding your property\'s unique character, competitive landscape, guest profile, and revenue benchmarks.' },
-              { num: '02', phase: 'Design', title: 'Brand & Strategy Blueprint', desc: 'We develop the brand identity, messaging architecture, website wireframes, and automation conversation flows — together.' },
-              { num: '03', phase: 'Build', title: 'Construction & Integration', desc: 'We bring every element to life: website, WhatsApp system, OTA channels — tested thoroughly before anything goes live.' },
-              { num: '04', phase: 'Launch', title: 'Opening & Growth', desc: 'You launch. We remain present — monitoring performance, refining systems, and growing the asset alongside you.' },
-            ].map((step, i) => (
-              <div key={i} style={{ display: 'flex', gap: 24, padding: '32px 0', borderBottom: i < 3 ? `1px solid ${C.stone}22` : 'none' }}>
-                <div className="serif" style={{ fontSize: 40, fontWeight: 300, color: `${C.gold}30`, lineHeight: 1, width: 56, flexShrink: 0 }}>{step.num}</div>
-                <div>
-                  <span style={{ fontSize: 10, letterSpacing: '0.2em', color: C.gold, textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>{step.phase}</span>
-                  <div className="serif" style={{ fontSize: 22, fontWeight: 400, color: C.cream, marginBottom: 8 }}>{step.title}</div>
-                  <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.8, fontWeight: 300 }}>{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <hr className="gold-rule" />
-
-      {/* ─── TESTIMONIALS ─────────────────────────────────────── */}
-      <section style={{ padding: '120px 48px', background: C.cream }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div className="nk" style={{ textAlign: 'center', marginBottom: 72 }}>
-            <span className="tag-label" style={{ color: C.teak }}>Client Voices</span>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}><Ornament color={C.teak} opacity={0.5} /></div>
-            <h2 className="serif" style={{ fontSize: 52, fontWeight: 300, color: C.espresso, lineHeight: 1.1 }}>What our partners say.</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 2 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
             {testimonials.map((t, i) => (
-              <div key={i} className={`testi-card nk d${i + 1}`} style={{ background: i === 1 ? C.espresso : 'white' }}>
-                {/* Gold quote mark */}
-                <div className="serif" style={{ fontSize: 72, color: C.gold, lineHeight: 0.6, marginBottom: 32, opacity: 0.4 }}>"</div>
-                <p className="serif" style={{ fontSize: 18, fontStyle: 'italic', fontWeight: 300, color: i === 1 ? C.cream : '#3a2f26', lineHeight: 1.8, marginBottom: 36 }}>
-                  {t.quote}
-                </p>
-                <hr style={{ border: 'none', borderTop: `1px solid ${i === 1 ? C.gold + '30' : C.stoneLight + '50'}`, marginBottom: 24 }} />
+              <div key={i} className={`fade d${i + 1}`} style={{
+                background: i === 1 ? `linear-gradient(135deg, ${C.terra}28, ${C.amber}20)` : C.bgCard,
+                border: `1px solid ${i === 1 ? C.terra + '40' : 'rgba(255,255,255,0.06)'}`,
+                borderRadius: 20, padding: '36px 32px',
+              }}>
+                <div style={{ display: 'flex', gap: 2, marginBottom: 20 }}>
+                  {[...Array(5)].map((_, si) => <span key={si} style={{ fontSize: 14, color: C.gold }}>★</span>)}
+                </div>
+                <p style={{ fontSize: 15, color: C.stoneL, lineHeight: 1.8, marginBottom: 28, fontStyle: 'italic' }}>"{t.quote}"</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: '50%', border: `1px solid ${i === 1 ? C.gold + '40' : C.stoneLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span className="serif" style={{ fontSize: 14, color: i === 1 ? C.gold : C.teak }}>{t.name[0]}</span>
-                  </div>
+                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: `linear-gradient(135deg, ${C.terra}, ${C.amber})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: 'white' }}>{t.initials}</div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: i === 1 ? C.cream : C.espresso }}>{t.name}</div>
-                    <div style={{ fontSize: 11, color: i === 1 ? C.stone : C.stone, letterSpacing: '0.05em' }}>{t.role}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: C.warmText }}>{t.name}</div>
+                    <div style={{ fontSize: 12, color: C.stone }}>{t.loc}</div>
                   </div>
                 </div>
               </div>
@@ -546,78 +495,65 @@ export function LandingPage() {
         </div>
       </section>
 
-      <hr className="gold-rule" />
-
-      {/* ─── CTA ──────────────────────────────────────────────── */}
-      <section className="batik-bg" style={{ padding: '140px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden', background: C.espresso }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
-          <LotusBg size={600} color={C.gold} opacity={0.04} />
-        </div>
-        <div className="nk" style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <span className="tag-label">Begin the Journey</span>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 36 }}><Ornament /></div>
-          <h2 className="serif" style={{ fontSize: 68, fontWeight: 300, lineHeight: 1.08, color: C.cream, marginBottom: 8, letterSpacing: '0.02em' }}>
-            Let's grow
+      {/* ── CTA ───────────────────────────────────────────────────── */}
+      <section style={{ padding: '140px 40px', background: C.bgLight }}>
+        <div className="fade" style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+          <Pill light>🌱 Ready to grow?</Pill>
+          <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 68, fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', color: C.espresso, margin: '24px 0 20px' }}>
+            Let's build<br />something<br /><GradText from={C.terra} to={C.amber}>great together.</GradText>
           </h2>
-          <h2 className="serif" style={{ fontSize: 68, fontWeight: 300, lineHeight: 1.08, color: C.gold, fontStyle: 'italic', marginBottom: 40 }}>
-            together.
-          </h2>
-          <p style={{ fontSize: 16, color: C.stoneLight, lineHeight: 1.8, marginBottom: 52, fontWeight: 300 }}>
-            Your property has a story worth telling. We will help you find it, build around it, and make it earn — as true partners from the very first conversation.
+          <p style={{ fontSize: 17, color: '#7A6558', lineHeight: 1.8, marginBottom: 40, maxWidth: 480, margin: '0 auto 40px' }}>
+            Your property deserves a brand that feels as good as the experience itself. Tell us about your property — the rest is on us.
           </p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
-            <button className="btn-gold" style={{ fontSize: 13 }}>
-              <Users size={14} />
-              Grow with Nakama
-            </button>
-            <button className="btn-outline-cream" style={{ fontSize: 13 }}>
-              View Our Work <ArrowRight size={13} />
-            </button>
+          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-primary" style={{ fontSize: 16, padding: '16px 36px' }}>🤝 Start the conversation</button>
+            <button className="btn-terra-outline" style={{ fontSize: 14, padding: '14px 28px' }}>See our work →</button>
           </div>
 
-          {/* Reassurance strip */}
-          <div style={{ marginTop: 56, display: 'flex', gap: 0, justifyContent: 'center', borderTop: `1px solid ${C.stone}20`, paddingTop: 40 }}>
-            {['Response within 24h', 'No lock-in contracts', 'Bilingual team', 'SE Asia-based'].map((badge, i) => (
-              <div key={badge} style={{ padding: '0 28px', borderRight: i < 3 ? `1px solid ${C.stone}25` : 'none', textAlign: 'center' }}>
-                <div style={{ fontSize: 11, color: C.gold, letterSpacing: '0.06em' }}>✦</div>
-                <div style={{ fontSize: 12, color: C.stoneLight, marginTop: 6, fontWeight: 300, letterSpacing: '0.04em' }}>{badge}</div>
-              </div>
+          {/* Reassurance badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginTop: 40 }}>
+            {['✅ Response within 24h', '🤝 No lock-in contracts', '🌏 Bilingual team', '💯 Always us, never a middleman'].map(b => (
+              <span key={b} style={{ fontSize: 13, color: '#7A6558', background: 'rgba(201,82,64,0.08)', borderRadius: 100, padding: '8px 16px', border: '1px solid rgba(201,82,64,0.15)', fontWeight: 500 }}>{b}</span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── FOOTER ───────────────────────────────────────────── */}
-      <footer style={{ background: '#0A0602', borderTop: `1px solid ${C.stone}18`, padding: '64px 48px 32px' }}>
+      {/* ── FOOTER ────────────────────────────────────────────────── */}
+      <footer style={{ background: C.espresso, borderTop: '1px solid rgba(255,255,255,0.05)', padding: '64px 40px 32px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 48, marginBottom: 56, paddingBottom: 56, borderBottom: `1px solid ${C.stone}20` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 56, paddingBottom: 48, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <svg width="22" height="18" viewBox="0 0 22 18" fill="none">
-                  <path d="M1 18 L1 8 L11 1 L21 8 L21 18" stroke={C.gold} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                  <rect x="8" y="12" width="6" height="6" stroke={C.gold} strokeWidth="1" fill="none"/>
+                <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+                  <circle cx="11" cy="16" r="8" stroke={C.terra} strokeWidth="2" fill="none"/>
+                  <circle cx="21" cy="16" r="8" stroke={C.amber} strokeWidth="2" fill="none"/>
                 </svg>
-                <span className="serif" style={{ fontSize: 20, color: C.cream, letterSpacing: '0.08em' }}>NAKAMA</span>
+                <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 20, fontWeight: 800, color: C.warmText }}>nakama</span>
               </div>
-              <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.8, fontWeight: 300 }}>Property branding studio.<br />Growing together since 2024.</p>
+              <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.7, maxWidth: 260, fontWeight: 400 }}>Property branding studio based in Southeast Asia. Growing alongside our clients since 2024.</p>
+              <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+                {['🟢 WA', '📸 IG', '💼 LI'].map(s => (
+                  <span key={s} style={{ fontSize: 12, color: C.stone, background: 'rgba(255,255,255,0.05)', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.06)' }}>{s}</span>
+                ))}
+              </div>
             </div>
             {[
-              { head: 'Services', links: ['Property Websites', 'WhatsApp Bots', 'OTA Integration', 'Brand Strategy'] },
-              { head: 'Company', links: ['About Us', 'Our Process', 'Client Work', 'Contact'] },
-              { head: 'Connect', links: ['hello@nakama.studio', 'WhatsApp', 'LinkedIn', 'Instagram'] },
+              { head: 'Services', links: ['Property Websites', 'WhatsApp Bots', 'OTA Integration'] },
+              { head: 'Company', links: ['About', 'Process', 'Work', 'Contact'] },
+              { head: 'Connect', links: ['hello@nakama.studio', 'WhatsApp Us', 'Instagram'] },
             ].map(col => (
               <div key={col.head}>
-                <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: 20, opacity: 0.7 }}>{col.head}</div>
+                <div style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.terra, marginBottom: 18, fontWeight: 700 }}>{col.head}</div>
                 {col.links.map(l => (
-                  <div key={l} style={{ fontSize: 13, color: C.stone, marginBottom: 12, cursor: 'pointer', fontWeight: 300, letterSpacing: '0.02em' }}>{l}</div>
+                  <div key={l} style={{ fontSize: 13, color: C.stone, marginBottom: 12, cursor: 'pointer', fontWeight: 400 }}>{l}</div>
                 ))}
               </div>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p className="serif" style={{ fontSize: 14, color: `${C.stone}80`, fontStyle: 'italic' }}>© {new Date().getFullYear()} Nakama Studio. Crafted with intention.</p>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><Ornament color={C.stone} opacity={0.3} /></div>
-            <p style={{ fontSize: 12, color: `${C.stone}60`, letterSpacing: '0.08em' }}>PRIVACY · TERMS</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <p style={{ fontSize: 13, color: `${C.stone}90` }}>© {new Date().getFullYear()} Nakama Studio · 仲間 · Growing together.</p>
+            <p style={{ fontSize: 12, color: `${C.stone}60`, letterSpacing: '0.06em' }}>PRIVACY · TERMS</p>
           </div>
         </div>
       </footer>
