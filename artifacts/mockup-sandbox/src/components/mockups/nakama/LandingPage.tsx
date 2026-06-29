@@ -62,6 +62,22 @@ const CSS = `
   @keyframes dotPop   { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
   @keyframes labelIn  { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
 
+  /* ── SVG funnel — scroll-triggered CSS transitions ── */
+  .funnel-wrap .f-line  { stroke-dasharray:1010; stroke-dashoffset:1010; transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1); }
+  .funnel-wrap.on .f-line  { stroke-dashoffset:0; }
+
+  .funnel-wrap .f-label { opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }
+  .funnel-wrap.on .f-label { opacity:1; transform:none; }
+
+  .funnel-wrap .f-div   { opacity:0; transition:opacity 0.4s ease; }
+  .funnel-wrap.on .f-div   { opacity:1; }
+
+  .funnel-wrap .f-dot   { opacity:0; transition:opacity 0.5s ease; }
+  .funnel-wrap.on .f-dot   { opacity:1; }
+
+  .funnel-wrap .f-glow  { opacity:0; transition:opacity 1.2s ease; }
+  .funnel-wrap.on .f-glow  { opacity:1; }
+
   /* Initial hidden state */
   .funnel-wrap .pipe-card    { opacity:0; }
   .funnel-wrap .pipe-border  { transform:scaleY(0); transform-origin:top; }
@@ -344,9 +360,8 @@ const DOTS: Array<{x:number; y:number; inside:boolean; stageIdx:number; delay:nu
 ];
 
 export function LandingPage() {
-  const obsRef      = useRef<IntersectionObserver | null>(null);
-  const funnelRef   = useRef<HTMLDivElement | null>(null);
-  const [funnelActive, setFunnelActive] = useState(false);
+  const obsRef    = useRef<IntersectionObserver | null>(null);
+  const funnelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     obsRef.current = new IntersectionObserver(
@@ -359,13 +374,21 @@ export function LandingPage() {
     return () => obsRef.current?.disconnect();
   }, []);
 
+  // Scroll-listener trigger for the SVG funnel — works reliably inside iframes
   useEffect(() => {
-    const obs2 = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setFunnelActive(true); obs2.disconnect(); } },
-      { threshold: 0.08 },
-    );
-    if (funnelRef.current) obs2.observe(funnelRef.current);
-    return () => obs2.disconnect();
+    const el = funnelRef.current;
+    if (!el) return;
+    const trigger = () => {
+      if (el.classList.contains('on')) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.88) {
+        el.classList.add('on');
+      }
+    };
+    const scrollRoot = el.closest('[style*="overflow"]') ?? window;
+    scrollRoot.addEventListener('scroll', trigger as EventListener, { passive: true });
+    trigger(); // fire immediately in case already visible
+    return () => scrollRoot.removeEventListener('scroll', trigger as EventListener);
   }, []);
 
   return (
@@ -490,9 +513,10 @@ export function LandingPage() {
             </div>
           </div>
 
-          {/* SVG scatter funnel */}
+          {/* SVG scatter funnel — animated via .funnel-wrap.on class toggle */}
           <div
             ref={funnelRef}
+            className="funnel-wrap"
             style={{
               background: C.bgSoft,
               border: `1px solid rgba(255,255,255,0.06)`,
@@ -501,21 +525,18 @@ export function LandingPage() {
               overflow: 'hidden',
             }}
           >
-            <svg viewBox="0 0 900 280" width="100%" style={{ display: 'block', overflow: 'visible', height: 'auto' }}>
+            <svg viewBox="0 0 900 280" width="100%" style={{ display: 'block', height: 'auto' }}>
 
               {/* Stage labels */}
               {['Brand', 'Awareness', 'Pitch', 'Revenue'].map((lbl, i) => (
                 <text
                   key={lbl}
+                  className="f-label"
                   x={i * 225 + 112} y={15}
                   textAnchor="middle"
                   fontFamily="'Jost',sans-serif" fontSize={9} letterSpacing={1.8}
                   fill={i === 3 ? C.siennaL : C.sienna}
-                  style={{
-                    textTransform: 'uppercase',
-                    opacity: 0,
-                    animation: funnelActive ? `labelIn 0.5s ease ${0.2 + i * 0.1}s both` : 'none',
-                  }}
+                  style={{ transitionDelay: `${0.3 + i * 0.1}s` }}
                 >
                   {lbl.toUpperCase()}
                 </text>
@@ -523,62 +544,43 @@ export function LandingPage() {
 
               {/* Vertical stage dividers */}
               {[225, 450, 675].map((x, i) => (
-                <line key={x} x1={x} y1={22} x2={x} y2={270}
+                <line key={x} className="f-div"
+                  x1={x} y1={22} x2={x} y2={270}
                   stroke="rgba(255,255,255,0.05)" strokeWidth={1}
-                  style={{
-                    opacity: 0,
-                    animation: funnelActive ? `labelIn 0.4s ease ${0.75 + i * 0.04}s both` : 'none',
-                  }}
+                  style={{ transitionDelay: `${0.8 + i * 0.05}s` }}
                 />
               ))}
 
-              {/* Funnel upper boundary: (0,40) → (900,130) */}
-              <line x1={0} y1={40} x2={900} y2={130}
-                stroke={`${C.sienna}45`} strokeWidth={1}
-                strokeDasharray={1000}
-                style={{
-                  strokeDashoffset: funnelActive ? 0 : 1000,
-                  transition: funnelActive ? 'stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1) 0.1s' : 'none',
-                }}
+              {/* Funnel upper boundary — draws left to right */}
+              <line className="f-line"
+                x1={0} y1={40} x2={900} y2={130}
+                stroke={`${C.sienna}55`} strokeWidth={1}
+                style={{ transitionDelay: '0.1s' }}
               />
 
-              {/* Funnel lower boundary: (0,240) → (900,150) */}
-              <line x1={0} y1={240} x2={900} y2={150}
-                stroke={`${C.sienna}45`} strokeWidth={1}
-                strokeDasharray={1000}
-                style={{
-                  strokeDashoffset: funnelActive ? 0 : 1000,
-                  transition: funnelActive ? 'stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1) 0.1s' : 'none',
-                }}
+              {/* Funnel lower boundary */}
+              <line className="f-line"
+                x1={0} y1={240} x2={900} y2={150}
+                stroke={`${C.sienna}55`} strokeWidth={1}
+                style={{ transitionDelay: '0.18s' }}
               />
 
               {/* Revenue cluster glow ellipse */}
-              <ellipse cx={765} cy={139} rx={88} ry={26}
-                fill={`${C.sienna}0D`}
-                style={{
-                  opacity: 0,
-                  animation: funnelActive ? `labelIn 1.2s ease 2.4s both` : 'none',
-                }}
+              <ellipse className="f-glow"
+                cx={765} cy={139} rx={88} ry={26}
+                fill={`${C.sienna}12`}
+                style={{ transitionDelay: '2.6s' }}
               />
 
-              {/* Dots */}
+              {/* Dots — staggered by stage */}
               {DOTS.map((dot, i) => (
                 <circle
                   key={i}
+                  className="f-dot"
                   cx={dot.x} cy={dot.y}
                   r={dot.inside ? (dot.stageIdx === 3 ? 4.2 : 3.5) : 2.5}
-                  fill={
-                    dot.inside
-                      ? (dot.stageIdx === 3 ? C.siennaL : `${C.sienna}CC`)
-                      : `${C.stone}30`
-                  }
-                  style={{
-                    transformOrigin: `${dot.x}px ${dot.y}px`,
-                    opacity: 0,
-                    animation: funnelActive
-                      ? `dotPop 0.45s cubic-bezier(.22,1,.36,1) ${dot.delay}s both`
-                      : 'none',
-                  }}
+                  fill={dot.inside ? (dot.stageIdx === 3 ? C.siennaL : `${C.sienna}CC`) : `${C.stone}30`}
+                  style={{ transitionDelay: `${dot.delay}s` }}
                 />
               ))}
 
