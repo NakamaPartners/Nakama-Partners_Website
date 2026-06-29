@@ -53,23 +53,40 @@ const CSS = `
   }
   .rule-r.on { opacity:1; transform:scaleX(1); }
 
-  /* ── Pipeline animation (Quantiva-style sequential reveal) ── */
-  @keyframes pNode { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:none; } }
-  @keyframes pLine { from { transform:scaleY(0); } to { transform:scaleY(1); } }
-  @keyframes pGlow { from { box-shadow:none; } to { box-shadow:0 0 18px rgba(196,122,85,0.5); } }
+  /* ── Pipeline diagram — Quantiva-style sequential build ──── */
+  @keyframes pCard    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  @keyframes pBorder  { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+  @keyframes pContent { from { opacity:0; transform:translateX(6px); } to { opacity:1; transform:none; } }
+  @keyframes pLine    { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+  @keyframes pGlow    { 0% { opacity:0; box-shadow:none; } 100% { opacity:1; box-shadow:0 0 28px rgba(196,122,85,0.3); } }
 
-  .funnel-wrap .pipe-node { opacity:0; }
-  .funnel-wrap .pipe-fill  { transform:scaleY(0); transform-origin:top; }
+  /* Initial hidden state */
+  .funnel-wrap .pipe-card    { opacity:0; }
+  .funnel-wrap .pipe-border  { transform:scaleY(0); transform-origin:top; }
+  .funnel-wrap .pipe-content { opacity:0; }
+  .funnel-wrap .pipe-fill    { transform:scaleY(0); transform-origin:top; }
+  .funnel-wrap .pipe-glow    { opacity:0; }
 
-  .funnel-wrap.on .pipe-n1 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 0.0s  both; }
-  .funnel-wrap.on .pipe-n2 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 0.85s both; }
-  .funnel-wrap.on .pipe-n3 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 1.70s both; }
-  .funnel-wrap.on .pipe-n4 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 2.55s both; }
-
-  .funnel-wrap.on .pipe-c1 .pipe-fill { animation: pLine 0.55s ease 0.55s both; }
-  .funnel-wrap.on .pipe-c2 .pipe-fill { animation: pLine 0.55s ease 1.40s both; }
-  .funnel-wrap.on .pipe-c3 .pipe-fill { animation: pLine 0.55s ease 2.25s both; }
-  .funnel-wrap.on .pipe-glow { animation: pGlow 1s ease 2.9s both; }
+  /* Stage 1: card → border → content → connector */
+  .funnel-wrap.on .pn1 .pipe-card    { animation: pCard    0.45s cubic-bezier(.22,1,.36,1) 0.0s  both; }
+  .funnel-wrap.on .pn1 .pipe-border  { animation: pBorder  0.35s ease                     0.2s  both; }
+  .funnel-wrap.on .pn1 .pipe-content { animation: pContent 0.4s  ease                     0.4s  both; }
+  .funnel-wrap.on .pc1 .pipe-fill    { animation: pLine    0.35s ease                     0.7s  both; }
+  /* Stage 2 */
+  .funnel-wrap.on .pn2 .pipe-card    { animation: pCard    0.45s cubic-bezier(.22,1,.36,1) 0.85s both; }
+  .funnel-wrap.on .pn2 .pipe-border  { animation: pBorder  0.35s ease                     1.05s both; }
+  .funnel-wrap.on .pn2 .pipe-content { animation: pContent 0.4s  ease                     1.25s both; }
+  .funnel-wrap.on .pc2 .pipe-fill    { animation: pLine    0.35s ease                     1.55s both; }
+  /* Stage 3 */
+  .funnel-wrap.on .pn3 .pipe-card    { animation: pCard    0.45s cubic-bezier(.22,1,.36,1) 1.7s  both; }
+  .funnel-wrap.on .pn3 .pipe-border  { animation: pBorder  0.35s ease                     1.9s  both; }
+  .funnel-wrap.on .pn3 .pipe-content { animation: pContent 0.4s  ease                     2.1s  both; }
+  .funnel-wrap.on .pc3 .pipe-fill    { animation: pLine    0.35s ease                     2.4s  both; }
+  /* Stage 4 — Revenue: card + border + content + glow */
+  .funnel-wrap.on .pn4 .pipe-card    { animation: pCard    0.45s cubic-bezier(.22,1,.36,1) 2.55s both; }
+  .funnel-wrap.on .pn4 .pipe-border  { animation: pBorder  0.35s ease                     2.75s both; }
+  .funnel-wrap.on .pn4 .pipe-content { animation: pContent 0.4s  ease                     2.95s both; }
+  .funnel-wrap.on .pipe-glow         { animation: pGlow    1.0s  ease                     2.75s both; }
 
   /* Pipeline layout */
   .pipe-grid {
@@ -239,26 +256,33 @@ const CSS = `
   @media (max-width: 600px) { .scroll-hint { display: none !important; } }
 `;
 
-const PIPELINE = [
+const PIPELINE: Array<{
+  num: string; label: string; title: string; body: string;
+  tags: string[]; highlight?: boolean;
+}> = [
   {
-    num: '01', label: 'Brand', cls: 'pipe-n1',
+    num: '01', label: 'Brand',
     title: 'Build your identity',
     body: 'Your property name, visual language, tone of voice, and story. The foundation that makes everything downstream recognisable and memorable.',
+    tags: ['Property Name', 'Visual Language', 'Brand Story'],
   },
   {
-    num: '02', label: 'Awareness', cls: 'pipe-n2',
+    num: '02', label: 'Awareness',
     title: 'Reach the right guests',
     body: 'A website and digital presence built to be found — on search, on OTAs, and through direct channels. Visible where your guests are looking.',
+    tags: ['Website', 'OTA Presence', 'Search Visibility'],
   },
   {
-    num: '03', label: 'Pitch', cls: 'pipe-n3',
+    num: '03', label: 'Pitch',
     title: 'Convert the interest',
     body: 'WhatsApp automation, fast response, and frictionless booking flows that turn curiosity into commitment — without a slow back-and-forth.',
+    tags: ['WhatsApp Bot', 'Instant Response', 'Direct Booking'],
   },
   {
-    num: '04', label: 'Revenue', cls: 'pipe-n4',
+    num: '04', label: 'Revenue',
     title: 'Grow the value',
     body: 'More direct bookings, fewer platform fees, and a brand guests seek out and return to. Revenue that compounds as your reputation does.',
+    tags: ['Direct Bookings', 'Lower Fees', 'Returning Guests'],
     highlight: true,
   },
 ];
@@ -324,7 +348,7 @@ export function LandingPage() {
         }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100 }}>
           <p className="h-pre label" style={{ color: C.sienna, marginBottom: 'clamp(20px,3vw,36px)' }}>
-            Villa Onboarding & Branding · Bali & Southeast Asia
+            Property Onboarding & Branding · Bali & Southeast Asia
           </p>
           <h1 style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, lineHeight:0.95, letterSpacing:'-0.03em' }}>
             <div style={{ overflow:'hidden', marginBottom:'0.06em' }}>
@@ -340,7 +364,7 @@ export function LandingPage() {
           <div className="hero-lower">
             <div className="h-sub">
               <p style={{ fontSize:'clamp(14px,1.8vw,17px)', color:C.stone, lineHeight:1.85, fontWeight:300, maxWidth:500 }}>
-                <strong style={{ color:C.cream, fontWeight:500 }}>Nakama means companions.</strong> You've invested in a Bali villa — now let's make it earn. We onboard your property from day one: brand, digital presence, and guest systems built to grow alongside you.
+                <strong style={{ color:C.cream, fontWeight:500 }}>Nakama means companions.</strong> You've invested in a property — now let's make it earn. We onboard from day one: brand, digital presence, and guest systems built to grow alongside you.
               </p>
             </div>
             <div className="h-cta">
@@ -361,14 +385,14 @@ export function LandingPage() {
       <section className="sec-pad-sm" style={{ background:C.bgSoft, borderTop:`1px solid rgba(255,255,255,0.05)` }}>
         <div style={{ maxWidth:960, margin:'0 auto' }}>
           <p className="reveal display" style={{ fontSize:'clamp(18px,2.8vw,32px)', fontWeight:400, lineHeight:1.65, color:`${C.cream}90`, textAlign:'center', marginBottom:'clamp(40px,5vw,64px)' }}>
-            Most foreign villa investors face the same moment: the property is ready, the keys are in hand —{' '}
+            Most foreign property investors face the same moment: the property is ready, the keys are in hand —{' '}
             <span style={{ color:C.cream, fontWeight:600 }}>and there's no plan for what comes next.</span>{' '}
             No brand. No website. No system. <span style={{ color:C.siennaL }}>That's exactly where we begin.</span>
           </p>
           {/* Three investor scenarios */}
           <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:2 }}>
             {[
-              { tag:'First-time investor', line:'You own the villa. You need it to earn — and you\'re not sure where to start.' },
+              { tag:'First-time investor', line:'You own the property. You need it to earn — and you\'re not sure where to start.' },
               { tag:'No marketing strategy', line:'You have a property but no brand, no website, and enquiries going unanswered.' },
               { tag:'Ready to grow', line:'You want more direct bookings, fewer OTA fees, and a property that works for you.' },
             ].map((s, i) => (
@@ -388,15 +412,15 @@ export function LandingPage() {
 
             {/* LEFT — narrative context */}
             <div className="reveal" style={{ position:'sticky', top:100 }}>
-              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>Villa onboarding</span>
+              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>Property onboarding</span>
               <h2 className="display" style={{ fontSize:'clamp(28px,3.8vw,48px)', fontWeight:700, lineHeight:1.1, color:C.cream, marginBottom:24 }}>
                 From new acquisition to earning destination.
               </h2>
               <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:32 }}>
-                Most villa investors arrive with a great property and no clear path forward. No brand, no digital presence, no system for managing guests. We built Nakama specifically for this moment.
+                Most property investors arrive with a great asset and no clear path forward. No brand, no digital presence, no system for managing guests. We built Nakama specifically for this moment.
               </p>
               <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:36 }}>
-                We onboard your villa end-to-end — brand, website, automation — as one connected system. You focus on the investment. We handle everything that makes it earn.
+                We onboard your property end-to-end — brand, website, automation — as one connected system. You focus on the investment. We handle everything that makes it earn.
               </p>
               <div style={{ display:'flex', flexDirection:'column', gap:0, borderTop:`1px solid rgba(255,255,255,0.07)` }}>
                 {['Brand identity built for your property','Website engineered for direct bookings','WhatsApp & OTA systems, fully automated','Grow together — long-term, as true companions'].map((item, i) => (
@@ -408,53 +432,98 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* RIGHT — animated pipeline visual */}
-            <div className="funnel-wrap" ref={funnelRef} style={{ paddingTop:4 }}>
+            {/* RIGHT — animated diagram (Quantiva-style) */}
+            <div className="funnel-wrap" ref={funnelRef}>
               {PIPELINE.map((stage, i) => (
                 <React.Fragment key={i}>
-                  {/* Stage node */}
-                  <div className={`pipe-node ${stage.cls}`} style={{ display:'flex', gap:'clamp(18px,3vw,28px)', alignItems:'flex-start' }}>
-                    {/* Left: dot indicator */}
-                    <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center', paddingTop:3 }}>
+
+                  {/* Stage card */}
+                  <div className={`pn${i + 1}`}>
+                    <div
+                      className="pipe-card"
+                      style={{
+                        position: 'relative',
+                        padding: 'clamp(18px,2.5vw,24px) clamp(16px,2.5vw,22px) clamp(18px,2.5vw,24px) clamp(20px,3vw,26px)',
+                        background: stage.highlight ? `rgba(155,93,63,0.07)` : 'rgba(255,255,255,0.025)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        borderLeft: 'none',
+                      }}
+                    >
+                      {/* Left border — draws from top */}
                       <div
-                        className={stage.highlight ? 'pipe-glow' : ''}
+                        className="pipe-border"
                         style={{
-                          width: 14, height: 14, borderRadius: '50%',
-                          background: stage.highlight ? C.siennaL : C.bg,
-                          border: `1.5px solid ${stage.highlight ? C.siennaL : C.sienna}`,
-                          zIndex: 1, position:'relative',
+                          position: 'absolute', left: 0, top: 0,
+                          width: stage.highlight ? 3 : 2,
+                          height: '100%',
+                          background: stage.highlight
+                            ? `linear-gradient(${C.siennaL}, ${C.sienna})`
+                            : `linear-gradient(${C.sienna}90, ${C.sienna}30)`,
+                          transformOrigin: 'top',
                         }}
                       />
-                    </div>
-                    {/* Right: content */}
-                    <div style={{ paddingBottom: i < PIPELINE.length - 1 ? 'clamp(10px,2vw,16px)' : 0 }}>
-                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-                        <span className="label" style={{ color: stage.highlight ? C.siennaL : C.sienna, fontSize:9 }}>
-                          {stage.num} · {stage.label}
-                        </span>
+
+                      {/* Glow border on Revenue card */}
+                      {stage.highlight && (
+                        <div
+                          className="pipe-glow"
+                          style={{
+                            position: 'absolute', inset: 0,
+                            border: `1px solid ${C.siennaL}40`,
+                            pointerEvents: 'none',
+                          }}
+                        />
+                      )}
+
+                      {/* Card content */}
+                      <div className="pipe-content">
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                          <span className="label" style={{ color: stage.highlight ? C.siennaL : C.sienna, fontSize: 9 }}>
+                            {stage.num} · {stage.label}
+                          </span>
+                          <span className="display" style={{
+                            fontSize: 28, fontWeight: 800, lineHeight: 1,
+                            color: stage.highlight ? `${C.siennaL}35` : `${C.stoneL}18`,
+                            flexShrink: 0, marginLeft: 12,
+                          }}>{stage.num}</span>
+                        </div>
+                        <h3 className="display" style={{
+                          fontSize: 'clamp(16px,2vw,20px)', fontWeight: 700, lineHeight: 1.3,
+                          color: stage.highlight ? C.siennaL : C.cream, marginBottom: 10,
+                        }}>{stage.title}</h3>
+                        <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.85, fontWeight: 300, marginBottom: 14 }}>{stage.body}</p>
+                        {/* Tags */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {stage.tags.map(tag => (
+                            <span key={tag} style={{
+                              fontSize: 11, color: stage.highlight ? `${C.siennaL}80` : `${C.stone}80`,
+                              fontFamily: "'Jost', sans-serif", fontWeight: 300,
+                              padding: '3px 10px',
+                              border: `1px solid ${stage.highlight ? `${C.sienna}35` : 'rgba(255,255,255,0.07)'}`,
+                            }}>{tag}</span>
+                          ))}
+                        </div>
                       </div>
-                      <h3 className="display" style={{
-                        fontSize:'clamp(17px,2.2vw,22px)', fontWeight:700, lineHeight:1.25,
-                        color: stage.highlight ? C.siennaL : C.cream, marginBottom:10,
-                      }}>{stage.title}</h3>
-                      <p style={{ fontSize:14, color:C.stone, lineHeight:1.85, fontWeight:300 }}>{stage.body}</p>
                     </div>
                   </div>
 
-                  {/* Connector between stages */}
+                  {/* Connector line between stages */}
                   {i < PIPELINE.length - 1 && (
                     <div
-                      className={`pipe-c${i + 1}`}
+                      className={`pc${i + 1}`}
                       style={{
-                        marginLeft:6, width:1, height:'clamp(44px,6vw,64px)',
-                        background:'rgba(255,255,255,0.06)', overflow:'hidden', position:'relative',
+                        marginLeft: 1, width: 2,
+                        height: 'clamp(24px,3.5vw,36px)',
+                        background: 'rgba(255,255,255,0.05)',
+                        overflow: 'hidden', position: 'relative',
                       }}
                     >
                       <div
                         className="pipe-fill"
                         style={{
-                          position:'absolute', top:0, left:0, width:'100%', height:'100%',
-                          background:`linear-gradient(${C.sienna}, ${C.siennaL}60)`,
+                          position: 'absolute', top: 0, left: 0,
+                          width: '100%', height: '100%',
+                          background: `linear-gradient(${C.sienna}, ${C.siennaL}50)`,
                         }}
                       />
                     </div>
@@ -462,10 +531,10 @@ export function LandingPage() {
                 </React.Fragment>
               ))}
 
-              {/* Closing note */}
-              <div className="pipe-node pipe-n4" style={{ marginTop:'clamp(28px,4vw,40px)', paddingTop:'clamp(20px,3vw,28px)', borderTop:`1px solid rgba(255,255,255,0.07)` }}>
-                <p style={{ fontSize:13, color:`${C.stone}80`, lineHeight:1.8, fontWeight:300, fontStyle:'italic' }}>
-                  Each stage is connected. Brand makes awareness possible. Awareness makes pitch effective. Pitch makes revenue sustainable. We design for the whole journey, not just one part of it.
+              {/* Closing line */}
+              <div style={{ marginTop: 'clamp(20px,3vw,28px)', paddingTop: 'clamp(16px,2.5vw,20px)', borderTop: `1px solid rgba(255,255,255,0.06)` }}>
+                <p style={{ fontSize: 13, color: `${C.stone}65`, lineHeight: 1.85, fontWeight: 300, fontStyle: 'italic' }}>
+                  Each stage compounds the last. Brand makes awareness possible. Awareness makes the pitch effective. The pitch makes revenue sustainable. We design for the whole journey — not just one part of it.
                 </p>
               </div>
             </div>
@@ -499,7 +568,7 @@ export function LandingPage() {
             <div className="reveal">
               <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>The onboarding suite</span>
               <h2 className="display" style={{ fontSize:'clamp(28px,4vw,50px)', fontWeight:700, lineHeight:1.1, color:C.cream }}>
-                Everything your<br />villa needs to earn.
+                Everything your<br />property needs to earn.
               </h2>
             </div>
             <div className="reveal d1" style={{ display:'flex', alignItems:'flex-end' }}>
@@ -703,10 +772,10 @@ export function LandingPage() {
         <div style={{ maxWidth:680, margin:'0 auto', position:'relative', zIndex:1 }}>
           <span className="reveal d1 label" style={{ color:C.sienna, display:'block', marginBottom:24, fontSize:10 }}>Begin the journey</span>
           <h2 className="reveal d2 display" style={{ fontSize:'clamp(40px,7vw,84px)', fontWeight:800, lineHeight:1.0, color:C.cream, marginBottom:24, letterSpacing:'-0.03em' }}>
-            Let's onboard<br /><span style={{ color:C.siennaL }}>your villa.</span>
+            Let's onboard<br /><span style={{ color:C.siennaL }}>your property.</span>
           </h2>
           <p className="reveal d3" style={{ fontSize:'clamp(13px,1.6vw,16px)', color:C.stone, lineHeight:1.9, marginBottom:44, fontWeight:300 }}>
-            You have the property. We have the brand, the systems, and the market knowledge. Together, we turn your villa into a destination that earns — and grows. That is what Nakama means.
+            You have the property. We have the brand, the systems, and the market knowledge. Together, we turn it into a destination that earns — and grows. That is what Nakama means.
           </p>
           <div className="reveal d4" style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
             <button className="btn-primary">Start onboarding →</button>
@@ -733,7 +802,7 @@ export function LandingPage() {
                 </svg>
                 <span style={{ fontFamily:"'Sora',sans-serif", fontSize:14, fontWeight:700, color:C.cream }}>nakama</span>
               </div>
-              <p style={{ fontSize:13, color:C.stone, lineHeight:1.75, fontWeight:300, maxWidth:210 }}>Villa onboarding & branding. We help foreign investors turn their Bali properties into earning, well-branded destinations — and grow alongside them.</p>
+              <p style={{ fontSize:13, color:C.stone, lineHeight:1.75, fontWeight:300, maxWidth:210 }}>Property onboarding & branding. We help investors turn their properties into earning, well-branded destinations — and grow alongside them.</p>
             </div>
             {[
               { head:'Services', links:['Property Websites','WhatsApp Automation','OTA Integration','Brand Strategy'] },
