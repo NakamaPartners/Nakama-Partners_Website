@@ -295,38 +295,45 @@ const PIPELINE: Array<{
    Funnel boundaries (SVG coords):
      upper: y = 40 + 0.1·x    (x=0 → y=40,  x=900 → y=130)
      lower: y = 240 − 0.1·x   (x=0 → y=240, x=900 → y=150)
-   normY: 0 = top boundary, 1 = bottom boundary, 0.5 = centre
-   Particles travel x: −20 → 940 per cycle, then loop.
-   surviveTo: x where the particle fades out (940 = reaches Revenue) */
-interface Particle { normY:number; surviveTo:number; dur:number; phase:number; r:number; sienna:boolean }
+   normY: 0 = top boundary, 1 = bottom, 0.5 = centre
+
+   rescueAt:
+     -2 = direct path, no arc (already near centre)
+     -1 = true exit: fades out at surviveTo (very few — the genuine hard-nos)
+     ≥0 = rescue arc: drifts to edge, then pulled back toward centre at this x
+
+   Story: leads enter wide → drift outward → the RIGHT strategy pulls them
+   back in → almost all convert. Only genuine refusals truly exit.        */
+interface Particle { normY:number; rescueAt:number; surviveTo:number; dur:number; phase:number; r:number; sienna:boolean }
 const PARTICLES: Particle[] = [
-  // ── Survivors (sienna, all reach Revenue) ──
-  { normY:0.46, surviveTo:940, dur:3800, phase:0.00, r:4.0, sienna:true },
-  { normY:0.54, surviveTo:940, dur:4200, phase:0.25, r:3.5, sienna:true },
-  { normY:0.50, surviveTo:940, dur:3500, phase:0.50, r:4.5, sienna:true },
-  { normY:0.42, surviveTo:940, dur:4500, phase:0.75, r:3.5, sienna:true },
-  { normY:0.58, surviveTo:940, dur:4000, phase:0.13, r:3.0, sienna:true },
-  { normY:0.48, surviveTo:940, dur:3700, phase:0.38, r:4.0, sienna:true },
-  { normY:0.52, surviveTo:940, dur:4300, phase:0.63, r:3.5, sienna:true },
-  { normY:0.50, surviveTo:940, dur:3900, phase:0.88, r:3.0, sienna:true },
-  // ── Pitch drop-offs (fade out ~x=580) ──
-  { normY:0.15, surviveTo:610, dur:4000, phase:0.10, r:2.5, sienna:true  },
-  { normY:0.85, surviveTo:590, dur:3800, phase:0.35, r:2.5, sienna:true  },
-  { normY:0.20, surviveTo:630, dur:4200, phase:0.60, r:2.5, sienna:false },
-  { normY:0.80, surviveTo:570, dur:3600, phase:0.85, r:2.5, sienna:false },
-  { normY:0.25, surviveTo:600, dur:4100, phase:0.20, r:2.5, sienna:false },
-  { normY:0.75, surviveTo:620, dur:3900, phase:0.70, r:2.5, sienna:false },
-  { normY:0.18, surviveTo:580, dur:4300, phase:0.45, r:2.5, sienna:false },
-  // ── Awareness drop-offs (fade out ~x=380) ──
-  { normY:0.05, surviveTo:400, dur:3500, phase:0.05, r:2.0, sienna:false },
-  { normY:0.95, surviveTo:370, dur:3700, phase:0.30, r:2.0, sienna:false },
-  { normY:0.08, surviveTo:420, dur:3300, phase:0.55, r:2.0, sienna:false },
-  { normY:0.92, surviveTo:350, dur:3900, phase:0.80, r:2.0, sienna:false },
-  { normY:0.10, surviveTo:410, dur:4000, phase:0.15, r:2.0, sienna:false },
-  { normY:0.90, surviveTo:390, dur:3600, phase:0.65, r:2.0, sienna:false },
-  { normY:0.12, surviveTo:360, dur:3400, phase:0.40, r:2.0, sienna:false },
-  { normY:0.88, surviveTo:400, dur:4200, phase:0.90, r:2.0, sienna:false },
-  { normY:0.07, surviveTo:380, dur:3800, phase:0.25, r:2.0, sienna:false },
+  // ── Direct path survivors (already engaged, flow straight through) ──
+  { normY:0.45, rescueAt:-2, surviveTo:940, dur:3800, phase:0.00, r:4.0, sienna:true  },
+  { normY:0.55, rescueAt:-2, surviveTo:940, dur:4200, phase:0.25, r:3.5, sienna:true  },
+  { normY:0.50, rescueAt:-2, surviveTo:940, dur:3500, phase:0.50, r:4.5, sienna:true  },
+  { normY:0.42, rescueAt:-2, surviveTo:940, dur:4500, phase:0.75, r:3.5, sienna:true  },
+  { normY:0.58, rescueAt:-2, surviveTo:940, dur:4000, phase:0.13, r:3.0, sienna:true  },
+  { normY:0.48, rescueAt:-2, surviveTo:940, dur:3700, phase:0.38, r:4.0, sienna:true  },
+  { normY:0.52, rescueAt:-2, surviveTo:940, dur:4300, phase:0.63, r:3.5, sienna:true  },
+  { normY:0.50, rescueAt:-2, surviveTo:940, dur:3900, phase:0.88, r:3.0, sienna:true  },
+  // ── Rescued at Awareness stage (~x=220-280): drifting out, pulled back by brand ──
+  { normY:0.05, rescueAt:220, surviveTo:940, dur:4000, phase:0.10, r:2.5, sienna:true  },
+  { normY:0.95, rescueAt:200, surviveTo:940, dur:3800, phase:0.35, r:2.5, sienna:true  },
+  { normY:0.08, rescueAt:280, surviveTo:940, dur:4200, phase:0.60, r:2.5, sienna:false },
+  { normY:0.92, rescueAt:250, surviveTo:940, dur:3600, phase:0.85, r:2.5, sienna:false },
+  // ── Rescued at Pitch stage (~x=420-520): pulled back by strategy & automation ──
+  { normY:0.12, rescueAt:440, surviveTo:940, dur:4100, phase:0.20, r:2.5, sienna:true  },
+  { normY:0.88, rescueAt:460, surviveTo:940, dur:3900, phase:0.70, r:2.5, sienna:true  },
+  { normY:0.15, rescueAt:500, surviveTo:940, dur:4300, phase:0.45, r:2.5, sienna:false },
+  { normY:0.85, rescueAt:480, surviveTo:940, dur:3500, phase:0.05, r:2.5, sienna:false },
+  { normY:0.10, rescueAt:420, surviveTo:940, dur:4200, phase:0.30, r:2.5, sienna:false },
+  { normY:0.90, rescueAt:520, surviveTo:940, dur:3700, phase:0.55, r:2.5, sienna:false },
+  { normY:0.18, rescueAt:450, surviveTo:940, dur:4000, phase:0.80, r:2.5, sienna:false },
+  { normY:0.82, rescueAt:470, surviveTo:940, dur:3600, phase:0.15, r:2.5, sienna:false },
+  // ── True exits — the very few genuine hard-nos no strategy can save ──
+  { normY:0.02, rescueAt:-1, surviveTo:320, dur:3500, phase:0.40, r:2.0, sienna:false },
+  { normY:0.98, rescueAt:-1, surviveTo:300, dur:3700, phase:0.65, r:2.0, sienna:false },
+  { normY:0.03, rescueAt:-1, surviveTo:260, dur:4000, phase:0.90, r:2.0, sienna:false },
+  { normY:0.97, rescueAt:-1, surviveTo:280, dur:3800, phase:0.20, r:2.0, sienna:false },
 ];
 
 export function LandingPage() {
@@ -360,14 +367,23 @@ export function LandingPage() {
         const t = phases.current[i];
         // x: −20 → 940 (slightly beyond viewBox so fading happens off-screen)
         const x = t * 960 - 20;
-        // y: follows funnel boundary, clamped to valid SVG range
+        // Clamp x for boundary geometry (SVG is 0-900)
         const xc = Math.max(0, Math.min(x, 900));
+        // Rescue arc: normY interpolates toward centre via smoothstep
+        let normY = p.normY;
+        if (p.rescueAt >= 0 && xc > p.rescueAt) {
+          const prog = Math.min(1, (xc - p.rescueAt) / 300);
+          const eased = prog * prog * (3 - 2 * prog); // smoothstep
+          normY = p.normY + (0.5 - p.normY) * eased;
+        }
         const uy = 40 + xc / 10;
         const ly = 240 - xc / 10;
-        const y  = uy + p.normY * (ly - uy);
-        // opacity: fade in over first 60px, stay full, fade out 80px before surviveTo
+        const y  = uy + normY * (ly - uy);
+        // opacity: fade in over first 60px; true exits (rescueAt=-1) fade out before surviveTo
         const fadeIn  = Math.min(1, (x + 20) / 60);
-        const fadeOut = x > p.surviveTo - 80 ? Math.max(0, (p.surviveTo - x) / 80) : 1;
+        const fadeOut = p.rescueAt === -1 && x > p.surviveTo - 80
+          ? Math.max(0, (p.surviveTo - x) / 80)
+          : 1;
         const opacity = Math.max(0, Math.min(fadeIn, fadeOut));
         el.setAttribute('cx', x.toFixed(1));
         el.setAttribute('cy', y.toFixed(1));
@@ -555,8 +571,8 @@ export function LandingPage() {
           {/* Legend */}
           <div className="reveal d1" style={{ display: 'flex', gap: 20, justifyContent: 'flex-end', marginBottom: 'clamp(36px,5vw,52px)' }}>
             {[
-              { color: C.siennaL,         label: 'Leads within the system' },
-              { color: `${C.stone}35`,    label: 'Lost without the right systems' },
+              { color: C.siennaL,         label: 'Leads captured & converted to revenue' },
+              { color: `${C.stone}55`,    label: 'Hard exits — genuine refusals' },
             ].map(({ color, label }) => (
               <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11, color: C.stone, fontWeight: 300 }}>
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: color, flexShrink: 0, display: 'inline-block' }} />
