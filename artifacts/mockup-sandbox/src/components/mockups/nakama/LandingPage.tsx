@@ -465,7 +465,7 @@ export function LandingPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderTop: `1px solid ${C.rule}40` }}>
             {[
-              { num: '01', phase: 'Discovery', title: 'Site & Market Analysis', desc: 'We understand your property's character, competitive position, and revenue benchmarks before anything else.' },
+              { num: '01', phase: 'Discovery', title: 'Site & Market Analysis', desc: "We understand your property's character, competitive position, and revenue benchmarks before anything else." },
               { num: '02', phase: 'Design', title: 'Brand & Blueprint', desc: 'Identity, messaging, wireframes, automation flows — developed together, reviewed and approved before we build.' },
               { num: '03', phase: 'Build', title: 'Construction', desc: 'Website, WhatsApp system, channel integrations — built, integrated, and tested thoroughly before launch.' },
               { num: '04', phase: 'Launch', title: 'Growth', desc: 'You go live. We remain — monitoring performance, refining systems, growing the asset alongside you long-term.' },
@@ -498,7 +498,7 @@ export function LandingPage() {
             </div>
           </div>
           {[
-            { quote: 'Within three months of working with Nakama, our direct bookings tripled. They understand that a property isn't just a listing — it's an experience that deserves its own story.', name: 'Rina H.', role: 'Villa Owner · Seminyak, Bali' },
+            { quote: "Within three months of working with Nakama, our direct bookings tripled. They understand that a property isn't just a listing — it's an experience that deserves its own story.", name: 'Rina H.', role: 'Villa Owner · Seminyak, Bali' },
             { quote: 'The WhatsApp system they built handles 80% of our guest enquiries automatically. Our team now spends its energy hosting, not answering the same questions on repeat.', name: 'Ahmad Z.', role: 'Property Group · Kuala Lumpur' },
             { quote: 'Professional, deeply attentive, and genuinely invested. They feel less like a vendor and more like a partner who holds a real stake in what we are building together.', name: 'Sita P.', role: 'Boutique Retreat · Ubud, Bali' },
           ].map((t, i) => (
