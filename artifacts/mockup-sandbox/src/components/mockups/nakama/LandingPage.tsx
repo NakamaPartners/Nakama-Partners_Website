@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /*
   NAKAMA — Bold modern landing page
@@ -59,6 +59,8 @@ const CSS = `
   @keyframes pContent { from { opacity:0; transform:translateX(6px); } to { opacity:1; transform:none; } }
   @keyframes pLine    { from { transform:scaleY(0); } to { transform:scaleY(1); } }
   @keyframes pGlow    { 0% { opacity:0; box-shadow:none; } 100% { opacity:1; box-shadow:0 0 28px rgba(196,122,85,0.3); } }
+  @keyframes dotPop   { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+  @keyframes labelIn  { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
 
   /* Initial hidden state */
   .funnel-wrap .pipe-card    { opacity:0; }
@@ -287,9 +289,64 @@ const PIPELINE: Array<{
   },
 ];
 
+/* ── Dot positions for SVG funnel chart ─────────────────────
+   upper boundary: y = 40 + 0.1*x
+   lower boundary: y = 240 - 0.1*x
+   inside = between the two lines; outside = above or below   */
+const DOTS: Array<{x:number; y:number; inside:boolean; stageIdx:number; delay:number}> = [
+  // Stage 1 — Brand (x 15-215): many scattered, roughly half outside
+  {x:40,  y:140, inside:true,  stageIdx:0, delay:0.90},
+  {x:80,  y:120, inside:true,  stageIdx:0, delay:0.95},
+  {x:130, y:160, inside:true,  stageIdx:0, delay:1.00},
+  {x:170, y:145, inside:true,  stageIdx:0, delay:1.05},
+  {x:55,  y:100, inside:true,  stageIdx:0, delay:1.10},
+  {x:30,  y:18,  inside:false, stageIdx:0, delay:0.92},
+  {x:90,  y:22,  inside:false, stageIdx:0, delay:0.97},
+  {x:155, y:20,  inside:false, stageIdx:0, delay:1.02},
+  {x:200, y:16,  inside:false, stageIdx:0, delay:1.07},
+  {x:50,  y:262, inside:false, stageIdx:0, delay:0.94},
+  {x:110, y:265, inside:false, stageIdx:0, delay:0.99},
+  {x:175, y:268, inside:false, stageIdx:0, delay:1.04},
+  {x:210, y:258, inside:false, stageIdx:0, delay:1.09},
+  // Stage 2 — Awareness (x 235-445): moderate, fewer outside
+  {x:260, y:140, inside:true,  stageIdx:1, delay:1.25},
+  {x:310, y:145, inside:true,  stageIdx:1, delay:1.30},
+  {x:360, y:150, inside:true,  stageIdx:1, delay:1.35},
+  {x:420, y:148, inside:true,  stageIdx:1, delay:1.40},
+  {x:240, y:52,  inside:false, stageIdx:1, delay:1.27},
+  {x:330, y:58,  inside:false, stageIdx:1, delay:1.32},
+  {x:400, y:62,  inside:false, stageIdx:1, delay:1.37},
+  {x:270, y:235, inside:false, stageIdx:1, delay:1.29},
+  {x:350, y:228, inside:false, stageIdx:1, delay:1.34},
+  {x:440, y:220, inside:false, stageIdx:1, delay:1.39},
+  // Stage 3 — Pitch (x 460-665): fewer, mostly inside
+  {x:470, y:138, inside:true,  stageIdx:2, delay:1.55},
+  {x:515, y:142, inside:true,  stageIdx:2, delay:1.60},
+  {x:560, y:140, inside:true,  stageIdx:2, delay:1.65},
+  {x:620, y:137, inside:true,  stageIdx:2, delay:1.70},
+  {x:480, y:72,  inside:false, stageIdx:2, delay:1.57},
+  {x:570, y:80,  inside:false, stageIdx:2, delay:1.62},
+  {x:500, y:210, inside:false, stageIdx:2, delay:1.59},
+  {x:640, y:198, inside:false, stageIdx:2, delay:1.67},
+  // Stage 4 — Revenue (x 685-860): dense cluster, all inside, no outside
+  {x:700, y:139, inside:true, stageIdx:3, delay:1.85},
+  {x:714, y:136, inside:true, stageIdx:3, delay:1.90},
+  {x:722, y:142, inside:true, stageIdx:3, delay:1.95},
+  {x:735, y:137, inside:true, stageIdx:3, delay:2.00},
+  {x:748, y:141, inside:true, stageIdx:3, delay:2.05},
+  {x:760, y:135, inside:true, stageIdx:3, delay:2.10},
+  {x:773, y:140, inside:true, stageIdx:3, delay:2.15},
+  {x:784, y:143, inside:true, stageIdx:3, delay:2.20},
+  {x:796, y:137, inside:true, stageIdx:3, delay:2.25},
+  {x:810, y:139, inside:true, stageIdx:3, delay:2.30},
+  {x:820, y:141, inside:true, stageIdx:3, delay:2.35},
+  {x:835, y:136, inside:true, stageIdx:3, delay:2.40},
+];
+
 export function LandingPage() {
-  const obsRef    = useRef<IntersectionObserver | null>(null);
-  const funnelRef = useRef<HTMLDivElement | null>(null);
+  const obsRef      = useRef<IntersectionObserver | null>(null);
+  const funnelRef   = useRef<HTMLDivElement | null>(null);
+  const [funnelActive, setFunnelActive] = useState(false);
 
   useEffect(() => {
     obsRef.current = new IntersectionObserver(
@@ -298,8 +355,17 @@ export function LandingPage() {
       }),
       { threshold: 0.06, rootMargin: '0px 0px -32px 0px' },
     );
-    document.querySelectorAll('.reveal, .rule-r, .funnel-wrap').forEach(el => obsRef.current?.observe(el));
+    document.querySelectorAll('.reveal, .rule-r').forEach(el => obsRef.current?.observe(el));
     return () => obsRef.current?.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const obs2 = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setFunnelActive(true); obs2.disconnect(); } },
+      { threshold: 0.08 },
+    );
+    if (funnelRef.current) obs2.observe(funnelRef.current);
+    return () => obs2.disconnect();
   }, []);
 
   return (
@@ -405,140 +471,166 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── PIPELINE (Quantiva-style left/right) ──────────────── */}
-      <section className="sec-pad" style={{ background:C.bg }}>
-        <div style={{ maxWidth:1200, margin:'0 auto' }}>
-          <div className="pipe-grid">
+      {/* ── FUNNEL (Quantiva scatter funnel) ───────────────────── */}
+      <section className="sec-pad" style={{ background: C.bg }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-            {/* LEFT — narrative context */}
-            <div className="reveal" style={{ position:'sticky', top:100 }}>
-              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>Property onboarding</span>
-              <h2 className="display" style={{ fontSize:'clamp(28px,3.8vw,48px)', fontWeight:700, lineHeight:1.1, color:C.cream, marginBottom:24 }}>
-                From new acquisition to earning destination.
+          {/* Header */}
+          <div className="sec-header" style={{ marginBottom: 'clamp(36px,5vw,52px)' }}>
+            <div className="reveal">
+              <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 16 }}>Property onboarding</span>
+              <h2 className="display" style={{ fontSize: 'clamp(28px,3.8vw,48px)', fontWeight: 700, lineHeight: 1.1, color: C.cream }}>
+                From acquisition to<br />earning destination.
               </h2>
-              <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:32 }}>
-                Most property investors arrive with a great asset and no clear path forward. No brand, no digital presence, no system for managing guests. We built Nakama specifically for this moment.
-              </p>
-              <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:36 }}>
-                We onboard your property end-to-end — brand, website, automation — as one connected system. You focus on the investment. We handle everything that makes it earn.
-              </p>
-              <div style={{ display:'flex', flexDirection:'column', gap:0, borderTop:`1px solid rgba(255,255,255,0.07)` }}>
-                {['Brand identity built for your property','Website engineered for direct bookings','WhatsApp & OTA systems, fully automated','Grow together — long-term, as true companions'].map((item, i) => (
-                  <div key={i} style={{ display:'flex', gap:14, padding:'11px 0', borderBottom:`1px solid rgba(255,255,255,0.05)`, fontSize:13, color:C.stoneL, fontWeight:300 }}>
-                    <span style={{ color:C.sienna, flexShrink:0, fontSize:16, lineHeight:'20px' }}>→</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
             </div>
-
-            {/* RIGHT — animated diagram (Quantiva-style) */}
-            <div className="funnel-wrap" ref={funnelRef}>
-              {PIPELINE.map((stage, i) => (
-                <React.Fragment key={i}>
-
-                  {/* Stage card */}
-                  <div className={`pn${i + 1}`}>
-                    <div
-                      className="pipe-card"
-                      style={{
-                        position: 'relative',
-                        padding: 'clamp(18px,2.5vw,24px) clamp(16px,2.5vw,22px) clamp(18px,2.5vw,24px) clamp(20px,3vw,26px)',
-                        background: stage.highlight ? `rgba(155,93,63,0.07)` : 'rgba(255,255,255,0.025)',
-                        border: '1px solid rgba(255,255,255,0.06)',
-                        borderLeft: 'none',
-                      }}
-                    >
-                      {/* Left border — draws from top */}
-                      <div
-                        className="pipe-border"
-                        style={{
-                          position: 'absolute', left: 0, top: 0,
-                          width: stage.highlight ? 3 : 2,
-                          height: '100%',
-                          background: stage.highlight
-                            ? `linear-gradient(${C.siennaL}, ${C.sienna})`
-                            : `linear-gradient(${C.sienna}90, ${C.sienna}30)`,
-                          transformOrigin: 'top',
-                        }}
-                      />
-
-                      {/* Glow border on Revenue card */}
-                      {stage.highlight && (
-                        <div
-                          className="pipe-glow"
-                          style={{
-                            position: 'absolute', inset: 0,
-                            border: `1px solid ${C.siennaL}40`,
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      {/* Card content */}
-                      <div className="pipe-content">
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
-                          <span className="label" style={{ color: stage.highlight ? C.siennaL : C.sienna, fontSize: 9 }}>
-                            {stage.num} · {stage.label}
-                          </span>
-                          <span className="display" style={{
-                            fontSize: 28, fontWeight: 800, lineHeight: 1,
-                            color: stage.highlight ? `${C.siennaL}35` : `${C.stoneL}18`,
-                            flexShrink: 0, marginLeft: 12,
-                          }}>{stage.num}</span>
-                        </div>
-                        <h3 className="display" style={{
-                          fontSize: 'clamp(16px,2vw,20px)', fontWeight: 700, lineHeight: 1.3,
-                          color: stage.highlight ? C.siennaL : C.cream, marginBottom: 10,
-                        }}>{stage.title}</h3>
-                        <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.85, fontWeight: 300, marginBottom: 14 }}>{stage.body}</p>
-                        {/* Tags */}
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                          {stage.tags.map(tag => (
-                            <span key={tag} style={{
-                              fontSize: 11, color: stage.highlight ? `${C.siennaL}80` : `${C.stone}80`,
-                              fontFamily: "'Jost', sans-serif", fontWeight: 300,
-                              padding: '3px 10px',
-                              border: `1px solid ${stage.highlight ? `${C.sienna}35` : 'rgba(255,255,255,0.07)'}`,
-                            }}>{tag}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Connector line between stages */}
-                  {i < PIPELINE.length - 1 && (
-                    <div
-                      className={`pc${i + 1}`}
-                      style={{
-                        marginLeft: 1, width: 2,
-                        height: 'clamp(24px,3.5vw,36px)',
-                        background: 'rgba(255,255,255,0.05)',
-                        overflow: 'hidden', position: 'relative',
-                      }}
-                    >
-                      <div
-                        className="pipe-fill"
-                        style={{
-                          position: 'absolute', top: 0, left: 0,
-                          width: '100%', height: '100%',
-                          background: `linear-gradient(${C.sienna}, ${C.siennaL}50)`,
-                        }}
-                      />
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-
-              {/* Closing line */}
-              <div style={{ marginTop: 'clamp(20px,3vw,28px)', paddingTop: 'clamp(16px,2.5vw,20px)', borderTop: `1px solid rgba(255,255,255,0.06)` }}>
-                <p style={{ fontSize: 13, color: `${C.stone}65`, lineHeight: 1.85, fontWeight: 300, fontStyle: 'italic' }}>
-                  Each stage compounds the last. Brand makes awareness possible. Awareness makes the pitch effective. The pitch makes revenue sustainable. We design for the whole journey — not just one part of it.
-                </p>
-              </div>
+            <div className="reveal d1" style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
+                Every investor faces the same gap: a great property with no brand, no digital presence, no booking system. We close that gap end-to-end — brand, website, automation — as one connected journey.
+              </p>
             </div>
           </div>
+
+          {/* SVG scatter funnel */}
+          <div
+            ref={funnelRef}
+            style={{
+              background: C.bgSoft,
+              border: `1px solid rgba(255,255,255,0.06)`,
+              padding: 'clamp(16px,2.5vw,28px) clamp(16px,2.5vw,28px) clamp(12px,2vw,20px)',
+              marginBottom: 4,
+              overflow: 'hidden',
+            }}
+          >
+            <svg viewBox="0 0 900 280" width="100%" style={{ display: 'block', overflow: 'visible', height: 'auto' }}>
+
+              {/* Stage labels */}
+              {['Brand', 'Awareness', 'Pitch', 'Revenue'].map((lbl, i) => (
+                <text
+                  key={lbl}
+                  x={i * 225 + 112} y={15}
+                  textAnchor="middle"
+                  fontFamily="'Jost',sans-serif" fontSize={9} letterSpacing={1.8}
+                  fill={i === 3 ? C.siennaL : C.sienna}
+                  style={{
+                    textTransform: 'uppercase',
+                    opacity: 0,
+                    animation: funnelActive ? `labelIn 0.5s ease ${0.2 + i * 0.1}s both` : 'none',
+                  }}
+                >
+                  {lbl.toUpperCase()}
+                </text>
+              ))}
+
+              {/* Vertical stage dividers */}
+              {[225, 450, 675].map((x, i) => (
+                <line key={x} x1={x} y1={22} x2={x} y2={270}
+                  stroke="rgba(255,255,255,0.05)" strokeWidth={1}
+                  style={{
+                    opacity: 0,
+                    animation: funnelActive ? `labelIn 0.4s ease ${0.75 + i * 0.04}s both` : 'none',
+                  }}
+                />
+              ))}
+
+              {/* Funnel upper boundary: (0,40) → (900,130) */}
+              <line x1={0} y1={40} x2={900} y2={130}
+                stroke={`${C.sienna}45`} strokeWidth={1}
+                strokeDasharray={1000}
+                style={{
+                  strokeDashoffset: funnelActive ? 0 : 1000,
+                  transition: funnelActive ? 'stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1) 0.1s' : 'none',
+                }}
+              />
+
+              {/* Funnel lower boundary: (0,240) → (900,150) */}
+              <line x1={0} y1={240} x2={900} y2={150}
+                stroke={`${C.sienna}45`} strokeWidth={1}
+                strokeDasharray={1000}
+                style={{
+                  strokeDashoffset: funnelActive ? 0 : 1000,
+                  transition: funnelActive ? 'stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1) 0.1s' : 'none',
+                }}
+              />
+
+              {/* Revenue cluster glow ellipse */}
+              <ellipse cx={765} cy={139} rx={88} ry={26}
+                fill={`${C.sienna}0D`}
+                style={{
+                  opacity: 0,
+                  animation: funnelActive ? `labelIn 1.2s ease 2.4s both` : 'none',
+                }}
+              />
+
+              {/* Dots */}
+              {DOTS.map((dot, i) => (
+                <circle
+                  key={i}
+                  cx={dot.x} cy={dot.y}
+                  r={dot.inside ? (dot.stageIdx === 3 ? 4.2 : 3.5) : 2.5}
+                  fill={
+                    dot.inside
+                      ? (dot.stageIdx === 3 ? C.siennaL : `${C.sienna}CC`)
+                      : `${C.stone}30`
+                  }
+                  style={{
+                    transformOrigin: `${dot.x}px ${dot.y}px`,
+                    opacity: 0,
+                    animation: funnelActive
+                      ? `dotPop 0.45s cubic-bezier(.22,1,.36,1) ${dot.delay}s both`
+                      : 'none',
+                  }}
+                />
+              ))}
+
+            </svg>
+          </div>
+
+          {/* Legend */}
+          <div className="reveal d1" style={{ display: 'flex', gap: 20, justifyContent: 'flex-end', marginBottom: 'clamp(36px,5vw,52px)' }}>
+            {[
+              { color: C.siennaL,         label: 'Leads within the system' },
+              { color: `${C.stone}35`,    label: 'Lost without the right systems' },
+            ].map(({ color, label }) => (
+              <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11, color: C.stone, fontWeight: 300 }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: color, flexShrink: 0, display: 'inline-block' }} />
+                {label}
+              </span>
+            ))}
+          </div>
+
+          {/* 4-column stage descriptions */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2 }}>
+            {PIPELINE.map((stage, i) => (
+              <div
+                key={i}
+                className={`reveal d${i}`}
+                style={{
+                  padding: 'clamp(20px,2.5vw,28px)',
+                  background: stage.highlight ? `rgba(155,93,63,0.07)` : 'rgba(255,255,255,0.025)',
+                  borderTop: `2px solid ${stage.highlight ? C.sienna : 'rgba(255,255,255,0.07)'}`,
+                }}
+              >
+                <span className="label" style={{ color: stage.highlight ? C.siennaL : C.sienna, fontSize: 9, display: 'block', marginBottom: 10 }}>
+                  {stage.num} · {stage.label}
+                </span>
+                <h3 className="display" style={{
+                  fontSize: 'clamp(15px,1.8vw,18px)', fontWeight: 700, lineHeight: 1.3,
+                  color: stage.highlight ? C.siennaL : C.cream, marginBottom: 10,
+                }}>{stage.title}</h3>
+                <p style={{ fontSize: 12, color: C.stone, lineHeight: 1.85, fontWeight: 300, marginBottom: 12 }}>{stage.body}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {stage.tags.map(tag => (
+                    <span key={tag} style={{
+                      fontSize: 10, color: `${C.stone}70`, fontWeight: 300,
+                      padding: '2px 8px', fontFamily: "'Jost', sans-serif",
+                      border: `1px solid rgba(255,255,255,0.07)`,
+                    }}>{tag}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
