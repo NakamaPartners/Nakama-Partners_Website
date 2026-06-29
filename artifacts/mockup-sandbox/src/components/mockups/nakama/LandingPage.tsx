@@ -191,8 +191,8 @@ const CSS = `
   @media (max-width: 700px) { .sec-header { grid-template-columns: 1fr; gap: 20px; margin-bottom: 40px; } }
 
   /* ── About grid ──────────────────────────────────────────── */
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
-  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; gap: 44px; } .about-img { height: 280px !important; } }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: stretch; }
+  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; gap: 44px; } .about-img { min-height: 320px !important; height: 320px !important; } }
 
   /* ── Stats grid ──────────────────────────────────────────── */
   .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); }
@@ -713,20 +713,53 @@ export function LandingPage() {
       {/* ── ABOUT ─────────────────────────────────────────────── */}
       <section id="about" className="sec-pad" style={{ background:C.bg }}>
         <div className="about-grid" style={{ maxWidth:1100, margin:'0 auto' }}>
-          <div className="reveal about-img" style={{ position:'relative', height:480, overflow:'hidden', background:C.bgSoft, border:'1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ position:'absolute', inset:0, background:`linear-gradient(145deg, rgba(155,93,63,0.35) 0%, transparent 55%)` }} />
-            <svg style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', maxWidth:'100%' }} width="280" height="320" viewBox="0 0 320 360" fill="none">
-              <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(245,237,216,0.22)" strokeWidth="1.2" fill="none"/>
-              <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(245,237,216,0.08)" strokeWidth="0.8" fill="none"/>
-              <line x1="40" y1="216" x2="167" y2="216" stroke="rgba(245,237,216,0.14)" strokeWidth="0.8"/>
-              <path d="M268 352 L268 228 L280 216 L280 156 L268 142 L255 120 L242 94 L230 64 L223 34 L217 8 L211 34 L204 64 L191 94 L178 120 L166 142 L153 156 L153 216 L166 228 L166 352Z" stroke="rgba(245,237,216,0.22)" strokeWidth="1.2" fill="none"/>
-              <path d="M256 352 L256 242 L262 230 L262 168 L256 156 L244 132 L232 104 L223 72 L217 44 L211 72 L202 104 L190 132 L178 156 L172 168 L172 230 L178 242 L178 352" stroke="rgba(245,237,216,0.08)" strokeWidth="0.8" fill="none"/>
-              <line x1="153" y1="216" x2="280" y2="216" stroke="rgba(245,237,216,0.14)" strokeWidth="0.8"/>
-              <line x1="16" y1="352" x2="304" y2="352" stroke="rgba(245,237,216,0.18)" strokeWidth="0.9"/>
-              <circle cx="160" cy="10" r="4.5" stroke="rgba(245,237,216,0.25)" strokeWidth="0.8" fill="none"/>
+          <div className="reveal about-img" style={{ position:'relative', overflow:'hidden', background:`linear-gradient(180deg,${C.bg} 0%,${C.bgSoft} 100%)`, border:'1px solid rgba(255,255,255,0.06)', minHeight:480 }}>
+
+            {/* Warm accent wash */}
+            <div style={{ position:'absolute', inset:0, background:`linear-gradient(145deg,rgba(155,93,63,0.22) 0%,transparent 55%)`, zIndex:1 }} />
+
+            {/* Sky + clouds atmosphere */}
+            <svg style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', zIndex:2 }} viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
+              {/* Stars */}
+              <circle cx="200" cy="36" r="1.3" fill="rgba(245,237,216,0.40)"/>
+              <circle cx="285" cy="52" r="0.9" fill="rgba(245,237,216,0.28)"/>
+              <circle cx="128" cy="44" r="1.0" fill="rgba(245,237,216,0.32)"/>
+              <circle cx="360" cy="76" r="0.8" fill="rgba(245,237,216,0.22)"/>
+              <circle cx="68"  cy="58" r="0.7" fill="rgba(245,237,216,0.20)"/>
+              <circle cx="315" cy="38" r="0.6" fill="rgba(245,237,216,0.18)"/>
+              {/* Cloud cluster — upper left */}
+              <ellipse cx="88"  cy="88"  rx="62" ry="26" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
+              <ellipse cx="140" cy="70"  rx="50" ry="21" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
+              <ellipse cx="178" cy="88"  rx="40" ry="19" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
+              {/* Cloud cluster — upper right */}
+              <ellipse cx="308" cy="114" rx="54" ry="23" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
+              <ellipse cx="354" cy="98"  rx="42" ry="18" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
+              <ellipse cx="386" cy="114" rx="30" ry="14" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
+              {/* Cloud cluster — mid, wispy */}
+              <ellipse cx="52"  cy="220" rx="46" ry="19" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="92"  cy="208" rx="36" ry="15" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="340" cy="210" rx="40" ry="17" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="375" cy="198" rx="30" ry="13" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
+              {/* Cloud cluster — lower, very faint */}
+              <ellipse cx="110" cy="330" rx="38" ry="15" fill="rgba(245,237,216,0.010)" stroke="rgba(245,237,216,0.04)" strokeWidth="0.6"/>
+              <ellipse cx="300" cy="350" rx="44" ry="17" fill="rgba(245,237,216,0.010)" stroke="rgba(245,237,216,0.04)" strokeWidth="0.6"/>
+            </svg>
+
+            {/* Building — taller, bottom-anchored */}
+            <svg style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', zIndex:3 }} width="300" height="88%" viewBox="0 0 320 360" preserveAspectRatio="xMidYMax meet" fill="none">
+              <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(245,237,216,0.26)" strokeWidth="1.2"/>
+              <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(245,237,216,0.10)" strokeWidth="0.8"/>
+              <line x1="40" y1="216" x2="167" y2="216" stroke="rgba(245,237,216,0.16)" strokeWidth="0.8"/>
+              <path d="M268 352 L268 228 L280 216 L280 156 L268 142 L255 120 L242 94 L230 64 L223 34 L217 8 L211 34 L204 64 L191 94 L178 120 L166 142 L153 156 L153 216 L166 228 L166 352Z" stroke="rgba(245,237,216,0.26)" strokeWidth="1.2"/>
+              <path d="M256 352 L256 242 L262 230 L262 168 L256 156 L244 132 L232 104 L223 72 L217 44 L211 72 L202 104 L190 132 L178 156 L172 168 L172 230 L178 242 L178 352" stroke="rgba(245,237,216,0.10)" strokeWidth="0.8"/>
+              <line x1="153" y1="216" x2="280" y2="216" stroke="rgba(245,237,216,0.16)" strokeWidth="0.8"/>
+              <line x1="16" y1="352" x2="304" y2="352" stroke="rgba(245,237,216,0.20)" strokeWidth="0.9"/>
+              <circle cx="160" cy="10" r="4.5" stroke="rgba(245,237,216,0.30)" strokeWidth="0.8"/>
               <text x="160" y="372" textAnchor="middle" fill="rgba(245,237,216,0.18)" fontSize="7.5" fontFamily="Jost,sans-serif" letterSpacing="4">CANDI BENTAR · BALI</text>
             </svg>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'24px 28px', background:'linear-gradient(transparent, rgba(18,13,9,0.9))' }}>
+
+            {/* Ground fade + label */}
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'24px 28px', background:'linear-gradient(transparent,rgba(18,13,9,0.94))', zIndex:4 }}>
               <p className="label" style={{ color:C.sienna, fontSize:9, marginBottom:6 }}>Focused on</p>
               <p style={{ fontFamily:"'Sora',sans-serif", fontWeight:600, fontSize:14, color:C.cream }}>Bali & Southeast Asia</p>
             </div>
