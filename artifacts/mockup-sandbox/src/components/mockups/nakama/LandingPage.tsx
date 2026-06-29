@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 /*
   NAKAMA — Bold modern landing page
@@ -62,21 +62,7 @@ const CSS = `
   @keyframes dotPop   { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
   @keyframes labelIn  { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
 
-  /* ── SVG funnel — scroll-triggered CSS transitions ── */
-  .funnel-wrap .f-line  { stroke-dasharray:1010; stroke-dashoffset:1010; transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1); }
-  .funnel-wrap.on .f-line  { stroke-dashoffset:0; }
-
-  .funnel-wrap .f-label { opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }
-  .funnel-wrap.on .f-label { opacity:1; transform:none; }
-
-  .funnel-wrap .f-div   { opacity:0; transition:opacity 0.4s ease; }
-  .funnel-wrap.on .f-div   { opacity:1; }
-
-  .funnel-wrap .f-dot   { opacity:0; transition:opacity 0.5s ease; }
-  .funnel-wrap.on .f-dot   { opacity:1; }
-
-  .funnel-wrap .f-glow  { opacity:0; transition:opacity 1.2s ease; }
-  .funnel-wrap.on .f-glow  { opacity:1; }
+  /* SVG funnel transitions are driven by React inline styles — no CSS class rules needed here */
 
   /* Initial hidden state */
   .funnel-wrap .pipe-card    { opacity:0; }
@@ -305,64 +291,50 @@ const PIPELINE: Array<{
   },
 ];
 
-/* ── Dot positions for SVG funnel chart ─────────────────────
-   upper boundary: y = 40 + 0.1*x
-   lower boundary: y = 240 - 0.1*x
-   inside = between the two lines; outside = above or below   */
-const DOTS: Array<{x:number; y:number; inside:boolean; stageIdx:number; delay:number}> = [
-  // Stage 1 — Brand (x 15-215): many scattered, roughly half outside
-  {x:40,  y:140, inside:true,  stageIdx:0, delay:0.90},
-  {x:80,  y:120, inside:true,  stageIdx:0, delay:0.95},
-  {x:130, y:160, inside:true,  stageIdx:0, delay:1.00},
-  {x:170, y:145, inside:true,  stageIdx:0, delay:1.05},
-  {x:55,  y:100, inside:true,  stageIdx:0, delay:1.10},
-  {x:30,  y:18,  inside:false, stageIdx:0, delay:0.92},
-  {x:90,  y:22,  inside:false, stageIdx:0, delay:0.97},
-  {x:155, y:20,  inside:false, stageIdx:0, delay:1.02},
-  {x:200, y:16,  inside:false, stageIdx:0, delay:1.07},
-  {x:50,  y:262, inside:false, stageIdx:0, delay:0.94},
-  {x:110, y:265, inside:false, stageIdx:0, delay:0.99},
-  {x:175, y:268, inside:false, stageIdx:0, delay:1.04},
-  {x:210, y:258, inside:false, stageIdx:0, delay:1.09},
-  // Stage 2 — Awareness (x 235-445): moderate, fewer outside
-  {x:260, y:140, inside:true,  stageIdx:1, delay:1.25},
-  {x:310, y:145, inside:true,  stageIdx:1, delay:1.30},
-  {x:360, y:150, inside:true,  stageIdx:1, delay:1.35},
-  {x:420, y:148, inside:true,  stageIdx:1, delay:1.40},
-  {x:240, y:52,  inside:false, stageIdx:1, delay:1.27},
-  {x:330, y:58,  inside:false, stageIdx:1, delay:1.32},
-  {x:400, y:62,  inside:false, stageIdx:1, delay:1.37},
-  {x:270, y:235, inside:false, stageIdx:1, delay:1.29},
-  {x:350, y:228, inside:false, stageIdx:1, delay:1.34},
-  {x:440, y:220, inside:false, stageIdx:1, delay:1.39},
-  // Stage 3 — Pitch (x 460-665): fewer, mostly inside
-  {x:470, y:138, inside:true,  stageIdx:2, delay:1.55},
-  {x:515, y:142, inside:true,  stageIdx:2, delay:1.60},
-  {x:560, y:140, inside:true,  stageIdx:2, delay:1.65},
-  {x:620, y:137, inside:true,  stageIdx:2, delay:1.70},
-  {x:480, y:72,  inside:false, stageIdx:2, delay:1.57},
-  {x:570, y:80,  inside:false, stageIdx:2, delay:1.62},
-  {x:500, y:210, inside:false, stageIdx:2, delay:1.59},
-  {x:640, y:198, inside:false, stageIdx:2, delay:1.67},
-  // Stage 4 — Revenue (x 685-860): dense cluster, all inside, no outside
-  {x:700, y:139, inside:true, stageIdx:3, delay:1.85},
-  {x:714, y:136, inside:true, stageIdx:3, delay:1.90},
-  {x:722, y:142, inside:true, stageIdx:3, delay:1.95},
-  {x:735, y:137, inside:true, stageIdx:3, delay:2.00},
-  {x:748, y:141, inside:true, stageIdx:3, delay:2.05},
-  {x:760, y:135, inside:true, stageIdx:3, delay:2.10},
-  {x:773, y:140, inside:true, stageIdx:3, delay:2.15},
-  {x:784, y:143, inside:true, stageIdx:3, delay:2.20},
-  {x:796, y:137, inside:true, stageIdx:3, delay:2.25},
-  {x:810, y:139, inside:true, stageIdx:3, delay:2.30},
-  {x:820, y:141, inside:true, stageIdx:3, delay:2.35},
-  {x:835, y:136, inside:true, stageIdx:3, delay:2.40},
+/* ── Moving particle system ──────────────────────────────────
+   Funnel boundaries (SVG coords):
+     upper: y = 40 + 0.1·x    (x=0 → y=40,  x=900 → y=130)
+     lower: y = 240 − 0.1·x   (x=0 → y=240, x=900 → y=150)
+   normY: 0 = top boundary, 1 = bottom boundary, 0.5 = centre
+   Particles travel x: −20 → 940 per cycle, then loop.
+   surviveTo: x where the particle fades out (940 = reaches Revenue) */
+interface Particle { normY:number; surviveTo:number; dur:number; phase:number; r:number; sienna:boolean }
+const PARTICLES: Particle[] = [
+  // ── Survivors (sienna, all reach Revenue) ──
+  { normY:0.46, surviveTo:940, dur:3800, phase:0.00, r:4.0, sienna:true },
+  { normY:0.54, surviveTo:940, dur:4200, phase:0.25, r:3.5, sienna:true },
+  { normY:0.50, surviveTo:940, dur:3500, phase:0.50, r:4.5, sienna:true },
+  { normY:0.42, surviveTo:940, dur:4500, phase:0.75, r:3.5, sienna:true },
+  { normY:0.58, surviveTo:940, dur:4000, phase:0.13, r:3.0, sienna:true },
+  { normY:0.48, surviveTo:940, dur:3700, phase:0.38, r:4.0, sienna:true },
+  { normY:0.52, surviveTo:940, dur:4300, phase:0.63, r:3.5, sienna:true },
+  { normY:0.50, surviveTo:940, dur:3900, phase:0.88, r:3.0, sienna:true },
+  // ── Pitch drop-offs (fade out ~x=580) ──
+  { normY:0.15, surviveTo:610, dur:4000, phase:0.10, r:2.5, sienna:true  },
+  { normY:0.85, surviveTo:590, dur:3800, phase:0.35, r:2.5, sienna:true  },
+  { normY:0.20, surviveTo:630, dur:4200, phase:0.60, r:2.5, sienna:false },
+  { normY:0.80, surviveTo:570, dur:3600, phase:0.85, r:2.5, sienna:false },
+  { normY:0.25, surviveTo:600, dur:4100, phase:0.20, r:2.5, sienna:false },
+  { normY:0.75, surviveTo:620, dur:3900, phase:0.70, r:2.5, sienna:false },
+  { normY:0.18, surviveTo:580, dur:4300, phase:0.45, r:2.5, sienna:false },
+  // ── Awareness drop-offs (fade out ~x=380) ──
+  { normY:0.05, surviveTo:400, dur:3500, phase:0.05, r:2.0, sienna:false },
+  { normY:0.95, surviveTo:370, dur:3700, phase:0.30, r:2.0, sienna:false },
+  { normY:0.08, surviveTo:420, dur:3300, phase:0.55, r:2.0, sienna:false },
+  { normY:0.92, surviveTo:350, dur:3900, phase:0.80, r:2.0, sienna:false },
+  { normY:0.10, surviveTo:410, dur:4000, phase:0.15, r:2.0, sienna:false },
+  { normY:0.90, surviveTo:390, dur:3600, phase:0.65, r:2.0, sienna:false },
+  { normY:0.12, surviveTo:360, dur:3400, phase:0.40, r:2.0, sienna:false },
+  { normY:0.88, surviveTo:400, dur:4200, phase:0.90, r:2.0, sienna:false },
+  { normY:0.07, surviveTo:380, dur:3800, phase:0.25, r:2.0, sienna:false },
 ];
 
 export function LandingPage() {
-  const obsRef    = useRef<IntersectionObserver | null>(null);
-  const funnelRef = useRef<HTMLDivElement | null>(null);
+  const obsRef        = useRef<IntersectionObserver | null>(null);
+  const particleRefs  = useRef<(SVGCircleElement | null)[]>([]);
+  const phases        = useRef<number[]>(PARTICLES.map(p => p.phase));
 
+  // .reveal / .rule-r scroll trigger (unchanged)
   useEffect(() => {
     obsRef.current = new IntersectionObserver(
       (entries) => entries.forEach(e => {
@@ -374,21 +346,37 @@ export function LandingPage() {
     return () => obsRef.current?.disconnect();
   }, []);
 
-  // Scroll-listener trigger for the SVG funnel — works reliably inside iframes
+  // Looping particle animation — RAF drives each ball left→right through the funnel
   useEffect(() => {
-    const el = funnelRef.current;
-    if (!el) return;
-    const trigger = () => {
-      if (el.classList.contains('on')) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.88) {
-        el.classList.add('on');
-      }
+    let prev: number | null = null;
+    let raf: number;
+    const tick = (now: number) => {
+      const dt = prev === null ? 0 : Math.min((now - prev) / 1000, 0.05); // cap dt to 50ms
+      prev = now;
+      PARTICLES.forEach((p, i) => {
+        const el = particleRefs.current[i];
+        if (!el) return;
+        phases.current[i] = (phases.current[i] + dt / (p.dur / 1000)) % 1;
+        const t = phases.current[i];
+        // x: −20 → 940 (slightly beyond viewBox so fading happens off-screen)
+        const x = t * 960 - 20;
+        // y: follows funnel boundary, clamped to valid SVG range
+        const xc = Math.max(0, Math.min(x, 900));
+        const uy = 40 + xc / 10;
+        const ly = 240 - xc / 10;
+        const y  = uy + p.normY * (ly - uy);
+        // opacity: fade in over first 60px, stay full, fade out 80px before surviveTo
+        const fadeIn  = Math.min(1, (x + 20) / 60);
+        const fadeOut = x > p.surviveTo - 80 ? Math.max(0, (p.surviveTo - x) / 80) : 1;
+        const opacity = Math.max(0, Math.min(fadeIn, fadeOut));
+        el.setAttribute('cx', x.toFixed(1));
+        el.setAttribute('cy', y.toFixed(1));
+        el.setAttribute('opacity', opacity.toFixed(3));
+      });
+      raf = requestAnimationFrame(tick);
     };
-    const scrollRoot = el.closest('[style*="overflow"]') ?? window;
-    scrollRoot.addEventListener('scroll', trigger as EventListener, { passive: true });
-    trigger(); // fire immediately in case already visible
-    return () => scrollRoot.removeEventListener('scroll', trigger as EventListener);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
@@ -513,10 +501,8 @@ export function LandingPage() {
             </div>
           </div>
 
-          {/* SVG scatter funnel — animated via .funnel-wrap.on class toggle */}
+          {/* SVG particle funnel — balls move left→right, looping via RAF */}
           <div
-            ref={funnelRef}
-            className="funnel-wrap"
             style={{
               background: C.bgSoft,
               border: `1px solid rgba(255,255,255,0.06)`,
@@ -525,62 +511,41 @@ export function LandingPage() {
               overflow: 'hidden',
             }}
           >
-            <svg viewBox="0 0 900 280" width="100%" style={{ display: 'block', height: 'auto' }}>
+            <svg viewBox="0 0 900 280" width="100%" overflow="hidden" style={{ display: 'block', height: 'auto' }}>
 
-              {/* Stage labels */}
+              {/* Stage labels — static */}
               {['Brand', 'Awareness', 'Pitch', 'Revenue'].map((lbl, i) => (
-                <text
-                  key={lbl}
-                  className="f-label"
+                <text key={lbl}
                   x={i * 225 + 112} y={15}
                   textAnchor="middle"
                   fontFamily="'Jost',sans-serif" fontSize={9} letterSpacing={1.8}
                   fill={i === 3 ? C.siennaL : C.sienna}
-                  style={{ transitionDelay: `${0.3 + i * 0.1}s` }}
                 >
                   {lbl.toUpperCase()}
                 </text>
               ))}
 
-              {/* Vertical stage dividers */}
-              {[225, 450, 675].map((x, i) => (
-                <line key={x} className="f-div"
-                  x1={x} y1={22} x2={x} y2={270}
-                  stroke="rgba(255,255,255,0.05)" strokeWidth={1}
-                  style={{ transitionDelay: `${0.8 + i * 0.05}s` }}
-                />
+              {/* Vertical dividers — static */}
+              {[225, 450, 675].map(x => (
+                <line key={x} x1={x} y1={22} x2={x} y2={270}
+                  stroke="rgba(255,255,255,0.05)" strokeWidth={1} />
               ))}
 
-              {/* Funnel upper boundary — draws left to right */}
-              <line className="f-line"
-                x1={0} y1={40} x2={900} y2={130}
-                stroke={`${C.sienna}55`} strokeWidth={1}
-                style={{ transitionDelay: '0.1s' }}
-              />
+              {/* Funnel boundary lines — static */}
+              <line x1={0} y1={40}  x2={900} y2={130} stroke={`${C.sienna}55`} strokeWidth={1} />
+              <line x1={0} y1={240} x2={900} y2={150} stroke={`${C.sienna}55`} strokeWidth={1} />
 
-              {/* Funnel lower boundary */}
-              <line className="f-line"
-                x1={0} y1={240} x2={900} y2={150}
-                stroke={`${C.sienna}55`} strokeWidth={1}
-                style={{ transitionDelay: '0.18s' }}
-              />
+              {/* Revenue glow — static */}
+              <ellipse cx={765} cy={139} rx={88} ry={26} fill={`${C.sienna}14`} />
 
-              {/* Revenue cluster glow ellipse */}
-              <ellipse className="f-glow"
-                cx={765} cy={139} rx={88} ry={26}
-                fill={`${C.sienna}12`}
-                style={{ transitionDelay: '2.6s' }}
-              />
-
-              {/* Dots — staggered by stage */}
-              {DOTS.map((dot, i) => (
+              {/* Moving particles — positions updated every frame via RAF */}
+              {PARTICLES.map((p, i) => (
                 <circle
                   key={i}
-                  className="f-dot"
-                  cx={dot.x} cy={dot.y}
-                  r={dot.inside ? (dot.stageIdx === 3 ? 4.2 : 3.5) : 2.5}
-                  fill={dot.inside ? (dot.stageIdx === 3 ? C.siennaL : `${C.sienna}CC`) : `${C.stone}30`}
-                  style={{ transitionDelay: `${dot.delay}s` }}
+                  ref={(el) => { particleRefs.current[i] = el; }}
+                  cx={-20} cy={140} r={p.r}
+                  fill={p.sienna ? C.siennaL : `${C.stone}88`}
+                  opacity={0}
                 />
               ))}
 
