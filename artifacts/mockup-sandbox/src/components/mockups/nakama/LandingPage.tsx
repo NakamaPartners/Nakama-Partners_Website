@@ -53,41 +53,32 @@ const CSS = `
   }
   .rule-r.on { opacity:1; transform:scaleX(1); }
 
-  /* ── Funnel animation ───────────────────────────────────── */
-  @keyframes fStep { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
-  @keyframes fLine { from { transform:scaleX(0); opacity:0; } to { transform:scaleX(1); opacity:1; } }
-  @keyframes fBar  { from { width:0; } to { width:var(--bar-w); } }
-  @keyframes fCount { from { opacity:0; } to { opacity:1; } }
+  /* ── Pipeline animation (Quantiva-style sequential reveal) ── */
+  @keyframes pNode { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:none; } }
+  @keyframes pLine { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+  @keyframes pGlow { from { box-shadow:none; } to { box-shadow:0 0 18px rgba(196,122,85,0.5); } }
 
-  .funnel-wrap .fs { opacity:0; }
-  .funnel-wrap .fl { transform:scaleX(0); opacity:0; transform-origin:left; }
-  .funnel-wrap .fb { width:0; }
+  .funnel-wrap .pipe-node { opacity:0; }
+  .funnel-wrap .pipe-fill  { transform:scaleY(0); transform-origin:top; }
 
-  .funnel-wrap.on .fs1 { animation: fStep 0.6s cubic-bezier(.22,1,.36,1) 0.0s  both; }
-  .funnel-wrap.on .fs2 { animation: fStep 0.6s cubic-bezier(.22,1,.36,1) 0.35s both; }
-  .funnel-wrap.on .fs3 { animation: fStep 0.6s cubic-bezier(.22,1,.36,1) 0.70s both; }
-  .funnel-wrap.on .fs4 { animation: fStep 0.6s cubic-bezier(.22,1,.36,1) 1.05s both; }
-  .funnel-wrap.on .fs5 { animation: fStep 0.6s cubic-bezier(.22,1,.36,1) 1.40s both; }
+  .funnel-wrap.on .pipe-n1 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 0.0s  both; }
+  .funnel-wrap.on .pipe-n2 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 0.85s both; }
+  .funnel-wrap.on .pipe-n3 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 1.70s both; }
+  .funnel-wrap.on .pipe-n4 { animation: pNode 0.6s cubic-bezier(.22,1,.36,1) 2.55s both; }
 
-  .funnel-wrap.on .fl1 { animation: fLine 0.45s ease 0.22s both; }
-  .funnel-wrap.on .fl2 { animation: fLine 0.45s ease 0.57s both; }
-  .funnel-wrap.on .fl3 { animation: fLine 0.45s ease 0.92s both; }
-  .funnel-wrap.on .fl4 { animation: fLine 0.45s ease 1.27s both; }
+  .funnel-wrap.on .pipe-c1 .pipe-fill { animation: pLine 0.55s ease 0.55s both; }
+  .funnel-wrap.on .pipe-c2 .pipe-fill { animation: pLine 0.55s ease 1.40s both; }
+  .funnel-wrap.on .pipe-c3 .pipe-fill { animation: pLine 0.55s ease 2.25s both; }
+  .funnel-wrap.on .pipe-glow { animation: pGlow 1s ease 2.9s both; }
 
-  .funnel-wrap.on .fb-ota   { animation: fBar 1.2s cubic-bezier(.22,1,.36,1) 1.8s both; --bar-w:38%; }
-  .funnel-wrap.on .fb-nakama{ animation: fBar 1.2s cubic-bezier(.22,1,.36,1) 2.1s both; --bar-w:82%; }
-  .funnel-wrap.on .fc       { animation: fCount 0.5s ease 2.6s both; }
-
-  /* Funnel grid — horizontal desktop, vertical mobile */
-  .funnel-steps {
+  /* Pipeline layout */
+  .pipe-grid {
     display: grid;
-    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
-    align-items: center; gap: 0;
+    grid-template-columns: 2fr 3fr;
+    gap: clamp(40px,6vw,80px);
+    align-items: start;
   }
-  @media (max-width: 800px) {
-    .funnel-steps { grid-template-columns: 1fr; gap: 0; }
-    .funnel-arrow { display: none; }
-  }
+  @media (max-width: 860px) { .pipe-grid { grid-template-columns: 1fr; } }
 
   /* ── Typography ─────────────────────────────────────────── */
   .display { font-family: 'Sora', sans-serif; }
@@ -248,12 +239,28 @@ const CSS = `
   @media (max-width: 600px) { .scroll-hint { display: none !important; } }
 `;
 
-const FUNNEL_STEPS = [
-  { num: '01', label: 'Brand', title: 'Identity & Story', body: 'Your property receives a distinctive identity — name, visual system, tone of voice — that sets it apart from every listing on every platform.' },
-  { num: '02', label: 'Platform', title: 'Website Built to Convert', body: 'A direct-booking website engineered to capture intent and convert browsers to guests — reducing reliance on OTAs and their fees.' },
-  { num: '03', label: 'Automate', title: 'WhatsApp & OTA 24/7', body: 'An intelligent system responds to guest enquiries instantly, qualifies leads, and keeps your calendar full around the clock.' },
-  { num: '04', label: 'Convert', title: 'Guests Acquired', body: 'Qualified, high-intent guests are guided through the booking process directly — with no intermediary taking a cut.' },
-  { num: '05', label: 'Revenue', title: 'Sustainable Growth', body: 'Higher nightly rates, lower acquisition costs, and a loyal guest base that returns — compounding value over time.' },
+const PIPELINE = [
+  {
+    num: '01', label: 'Brand', cls: 'pipe-n1',
+    title: 'Build your identity',
+    body: 'Your property name, visual language, tone of voice, and story. The foundation that makes everything downstream recognisable and memorable.',
+  },
+  {
+    num: '02', label: 'Awareness', cls: 'pipe-n2',
+    title: 'Reach the right guests',
+    body: 'A website and digital presence built to be found — on search, on OTAs, and through direct channels. Visible where your guests are looking.',
+  },
+  {
+    num: '03', label: 'Pitch', cls: 'pipe-n3',
+    title: 'Convert the interest',
+    body: 'WhatsApp automation, fast response, and frictionless booking flows that turn curiosity into commitment — without a slow back-and-forth.',
+  },
+  {
+    num: '04', label: 'Revenue', cls: 'pipe-n4',
+    title: 'Grow the value',
+    body: 'More direct bookings, fewer platform fees, and a brand guests seek out and return to. Revenue that compounds as your reputation does.',
+    highlight: true,
+  },
 ];
 
 export function LandingPage() {
@@ -361,91 +368,93 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── FUNNEL ANIMATION ──────────────────────────────────── */}
-      <section className="sec-pad" style={{ background:C.bg, overflow:'hidden' }}>
+      {/* ── PIPELINE (Quantiva-style left/right) ──────────────── */}
+      <section className="sec-pad" style={{ background:C.bg }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
-          <div className="reveal" style={{ marginBottom:'clamp(48px,6vw,72px)' }}>
-            <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>The growth engine</span>
-            <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'space-between', alignItems:'flex-end', gap:20 }}>
-              <h2 className="display" style={{ fontSize:'clamp(28px,4vw,52px)', fontWeight:700, lineHeight:1.1, color:C.cream }}>
-                From brand to bookings.<br /><span style={{ color:C.siennaL }}>Every step engineered.</span>
+          <div className="pipe-grid">
+
+            {/* LEFT — narrative context */}
+            <div className="reveal" style={{ position:'sticky', top:100 }}>
+              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>The growth framework</span>
+              <h2 className="display" style={{ fontSize:'clamp(28px,3.8vw,48px)', fontWeight:700, lineHeight:1.1, color:C.cream, marginBottom:24 }}>
+                How great branding earns for your property.
               </h2>
-              <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.85, fontWeight:300, maxWidth:380 }}>
-                Each stage in the journey from brand identity to direct revenue is intentional. Nothing is left to chance.
+              <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:32 }}>
+                Every booking starts with a discovery. The way your property presents itself — its name, story, visual identity, and responsiveness — determines whether a guest chooses you or keeps scrolling.
               </p>
+              <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:36 }}>
+                We build and operate every layer of that journey. Not separately — as one connected system that compounds over time.
+              </p>
+              <div style={{ display:'flex', flexDirection:'column', gap:0, borderTop:`1px solid rgba(255,255,255,0.07)` }}>
+                {['Brand identity & property narrative','Website engineered for direct bookings','WhatsApp & OTA automation','Long-term revenue optimisation'].map((item, i) => (
+                  <div key={i} style={{ display:'flex', gap:14, padding:'11px 0', borderBottom:`1px solid rgba(255,255,255,0.05)`, fontSize:13, color:C.stoneL, fontWeight:300 }}>
+                    <span style={{ color:C.sienna, flexShrink:0, fontSize:16, lineHeight:'20px' }}>→</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Animated funnel steps */}
-          <div className="funnel-wrap" ref={funnelRef}>
-
-            {/* Step row */}
-            <div className="funnel-steps" style={{ marginBottom:'clamp(40px,6vw,64px)' }}>
-              {FUNNEL_STEPS.map((step, i) => (
+            {/* RIGHT — animated pipeline visual */}
+            <div className="funnel-wrap" ref={funnelRef} style={{ paddingTop:4 }}>
+              {PIPELINE.map((stage, i) => (
                 <React.Fragment key={i}>
-                  {/* Step card */}
-                  <div className={`fs fs${i + 1}`} style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    border: `1px solid rgba(255,255,255,0.08)`,
-                    padding: 'clamp(20px,3vw,28px)',
-                    display: 'flex', flexDirection: 'column', gap: 10,
-                    position: 'relative',
-                  }}>
-                    {/* Sienna top border accent */}
-                    <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background: i === 4 ? C.sienna : `${C.sienna}50` }} />
-                    <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:4 }}>
-                      <span className="display" style={{ fontSize:22, fontWeight:800, color: i === 4 ? C.siennaL : `${C.stoneL}60`, lineHeight:1 }}>{step.num}</span>
-                      <span className="label" style={{ fontSize:9, color: i === 4 ? C.siennaL : C.sienna }}>{step.label}</span>
+                  {/* Stage node */}
+                  <div className={`pipe-node ${stage.cls}`} style={{ display:'flex', gap:'clamp(18px,3vw,28px)', alignItems:'flex-start' }}>
+                    {/* Left: dot indicator */}
+                    <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center', paddingTop:3 }}>
+                      <div
+                        className={stage.highlight ? 'pipe-glow' : ''}
+                        style={{
+                          width: 14, height: 14, borderRadius: '50%',
+                          background: stage.highlight ? C.siennaL : C.bg,
+                          border: `1.5px solid ${stage.highlight ? C.siennaL : C.sienna}`,
+                          zIndex: 1, position:'relative',
+                        }}
+                      />
                     </div>
-                    <div className="display" style={{ fontSize:'clamp(14px,1.8vw,17px)', fontWeight:700, color: i === 4 ? C.siennaL : C.cream, lineHeight:1.25 }}>{step.title}</div>
-                    <p style={{ fontSize:12, color:C.stone, lineHeight:1.8, fontWeight:300 }}>{step.body}</p>
-                    {/* Mobile connector (vertical) */}
-                    {i < 4 && (
-                      <div style={{ display:'none' }} className="funnel-arrow" aria-hidden>
-                        <div style={{ width:1, height:28, background:`linear-gradient(${C.sienna}60, transparent)`, margin:'8px auto 0' }} />
+                    {/* Right: content */}
+                    <div style={{ paddingBottom: i < PIPELINE.length - 1 ? 'clamp(10px,2vw,16px)' : 0 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+                        <span className="label" style={{ color: stage.highlight ? C.siennaL : C.sienna, fontSize:9 }}>
+                          {stage.num} · {stage.label}
+                        </span>
                       </div>
-                    )}
+                      <h3 className="display" style={{
+                        fontSize:'clamp(17px,2.2vw,22px)', fontWeight:700, lineHeight:1.25,
+                        color: stage.highlight ? C.siennaL : C.cream, marginBottom:10,
+                      }}>{stage.title}</h3>
+                      <p style={{ fontSize:14, color:C.stone, lineHeight:1.85, fontWeight:300 }}>{stage.body}</p>
+                    </div>
                   </div>
 
-                  {/* Horizontal arrow connector */}
-                  {i < 4 && (
-                    <div className={`funnel-arrow fl fl${i + 1}`} style={{ display:'flex', alignItems:'center', justifyContent:'center', transformOrigin:'left' }}>
-                      <svg width="24" height="16" viewBox="0 0 24 16" fill="none">
-                        <line x1="0" y1="8" x2="16" y2="8" stroke={C.sienna} strokeWidth="1.5" strokeOpacity="0.6"/>
-                        <path d="M12 3L20 8L12 13" stroke={C.sienna} strokeWidth="1.5" strokeOpacity="0.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                  {/* Connector between stages */}
+                  {i < PIPELINE.length - 1 && (
+                    <div
+                      className={`pipe-c${i + 1}`}
+                      style={{
+                        marginLeft:6, width:1, height:'clamp(44px,6vw,64px)',
+                        background:'rgba(255,255,255,0.06)', overflow:'hidden', position:'relative',
+                      }}
+                    >
+                      <div
+                        className="pipe-fill"
+                        style={{
+                          position:'absolute', top:0, left:0, width:'100%', height:'100%',
+                          background:`linear-gradient(${C.sienna}, ${C.siennaL}60)`,
+                        }}
+                      />
                     </div>
                   )}
                 </React.Fragment>
               ))}
-            </div>
 
-            {/* Comparison bars */}
-            <div style={{ borderTop:`1px solid rgba(255,255,255,0.07)`, paddingTop:'clamp(32px,5vw,48px)' }}>
-              <p className="label" style={{ color:C.stone, fontSize:9, marginBottom:28 }}>Revenue impact — branded vs. unbranded Bali property</p>
-              <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
-                {/* Without branding */}
-                <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
-                    <span style={{ fontSize:12, color:C.stone, fontWeight:300 }}>Without dedicated branding</span>
-                    <span className="fc" style={{ fontSize:12, color:C.stone }}>~35–45% direct bookings · High OTA dependency</span>
-                  </div>
-                  <div style={{ height:6, background:'rgba(255,255,255,0.06)', borderRadius:0, overflow:'hidden', position:'relative' }}>
-                    <div className="fb fb-ota" style={{ height:'100%', background:`${C.stone}50`, position:'absolute', left:0, top:0 }} />
-                  </div>
-                </div>
-                {/* With Nakama */}
-                <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
-                    <span style={{ fontSize:12, color:C.cream, fontWeight:400 }}>With Nakama branding & systems</span>
-                    <span className="fc" style={{ fontSize:12, color:C.siennaL, fontWeight:500 }}>~75–85% direct bookings · 3× revenue growth</span>
-                  </div>
-                  <div style={{ height:6, background:'rgba(255,255,255,0.06)', borderRadius:0, overflow:'hidden', position:'relative' }}>
-                    <div className="fb fb-nakama" style={{ height:'100%', background:`linear-gradient(90deg, ${C.sienna}, ${C.siennaL})`, position:'absolute', left:0, top:0 }} />
-                  </div>
-                </div>
+              {/* Closing note */}
+              <div className="pipe-node pipe-n4" style={{ marginTop:'clamp(28px,4vw,40px)', paddingTop:'clamp(20px,3vw,28px)', borderTop:`1px solid rgba(255,255,255,0.07)` }}>
+                <p style={{ fontSize:13, color:`${C.stone}80`, lineHeight:1.8, fontWeight:300, fontStyle:'italic' }}>
+                  Each stage is connected. Brand makes awareness possible. Awareness makes pitch effective. Pitch makes revenue sustainable. We design for the whole journey, not just one part of it.
+                </p>
               </div>
-              <p style={{ fontSize:11, color:`${C.stone}60`, marginTop:14, fontWeight:300 }}>Based on observed performance across Nakama client portfolio. Results vary by property type and market.</p>
             </div>
           </div>
         </div>
@@ -538,7 +547,7 @@ export function LandingPage() {
         <div className="about-grid" style={{ maxWidth:1100, margin:'0 auto' }}>
           <div className="reveal about-img" style={{ position:'relative', height:480, overflow:'hidden', background:C.bgSoft, border:'1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ position:'absolute', inset:0, background:`linear-gradient(145deg, rgba(155,93,63,0.35) 0%, transparent 55%)` }} />
-            <svg style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)' }} width="320" height="360" viewBox="0 0 320 360" fill="none">
+            <svg style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', maxWidth:'100%' }} width="280" height="320" viewBox="0 0 320 360" fill="none">
               <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(245,237,216,0.22)" strokeWidth="1.2" fill="none"/>
               <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(245,237,216,0.08)" strokeWidth="0.8" fill="none"/>
               <line x1="40" y1="216" x2="167" y2="216" stroke="rgba(245,237,216,0.14)" strokeWidth="0.8"/>
@@ -583,9 +592,14 @@ export function LandingPage() {
       {/* ── STATS ─────────────────────────────────────────────── */}
       <section className="sec-pad-sm" style={{ background:C.bgSoft, borderTop:`1px solid rgba(255,255,255,0.05)`, borderBottom:`1px solid rgba(255,255,255,0.05)` }}>
         <div className="stats-grid" style={{ maxWidth:1100, margin:'0 auto' }}>
-          {[['3×','More direct bookings','vs. OTA-only properties'],['40%','Higher nightly rates','for Nakama-branded properties'],['85%','Enquiries handled','via automation'],['100%','Bespoke','no templates, ever']].map(([num,label,sub],i) => (
-            <div key={String(num)} className={`reveal d${i+1} stat-cell`} style={{ textAlign:'center', padding:'clamp(20px,4vw,40px) 16px', borderRight: i<3?`1px solid rgba(255,255,255,0.06)`:'none' }}>
-              <div className="display" style={{ fontSize:'clamp(38px,6vw,58px)', fontWeight:800, color:C.siennaL, lineHeight:1 }}>{num}</div>
+          {[
+            ['Bespoke','Every property designed from the ground up','No templates. No shortcuts.'],
+            ['Integrated','Brand, website, and automation as one system','Not three separate vendors'],
+            ['Bilingual','English and Bahasa Indonesia','Across every guest touchpoint'],
+            ['Long-term','We stay and grow with your property','Not a one-off project'],
+          ].map(([head, label, sub], i) => (
+            <div key={head} className={`reveal d${i+1} stat-cell`} style={{ textAlign:'center', padding:'clamp(20px,4vw,40px) 16px', borderRight: i<3?`1px solid rgba(255,255,255,0.06)`:'none' }}>
+              <div className="display" style={{ fontSize:'clamp(17px,2.2vw,22px)', fontWeight:700, color:C.siennaL, lineHeight:1.2 }}>{head}</div>
               <div className="label" style={{ color:C.stoneL, marginTop:14, fontSize:10 }}>{label}</div>
               <div style={{ fontSize:12, color:`${C.stone}70`, marginTop:6, fontWeight:300 }}>{sub}</div>
             </div>
@@ -637,24 +651,32 @@ export function LandingPage() {
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <div className="sec-header">
             <div className="reveal">
-              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>Client voices</span>
+              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>What we believe</span>
               <h2 className="display" style={{ fontSize:'clamp(28px,4vw,48px)', fontWeight:700, lineHeight:1.1, color:C.cream }}>
-                What our<br />clients say.
+                Our founding<br />convictions.
               </h2>
             </div>
           </div>
           {[
-            { quote:"Within three months of working with Nakama, our direct bookings tripled. They understand that a property isn't just a listing — it's an experience that deserves its own story.", name:'Rina H.', role:'Villa Owner · Seminyak, Bali' },
-            { quote:'The WhatsApp system they built handles 80% of our guest enquiries automatically. Our team now spends its energy hosting, not answering the same questions on repeat.', name:'Ahmad Z.', role:'Property Group · Kuala Lumpur' },
-            { quote:'Professional, deeply attentive, and genuinely invested. They feel less like a vendor and more like a partner who holds a real stake in what we are building together.', name:'Sita P.', role:'Boutique Retreat · Ubud, Bali' },
+            {
+              quote: "A property without a clear identity is just another listing. With one — a real name, a story, a visual language — it becomes a destination. Guests seek it out. They return. They recommend it.",
+              attr: 'On brand building',
+            },
+            {
+              quote: "Technology should work as hard as you do. When your WhatsApp responds within seconds and your calendar never double-books, your energy goes where it should: into hosting.",
+              attr: 'On automation',
+            },
+            {
+              quote: "We don't consider a project finished when it launches. We consider it started. Your property grows, the market shifts, guests evolve — and we stay alongside to adjust and improve.",
+              attr: 'On partnership',
+            },
           ].map((t, i) => (
-            <div key={i} className={`reveal d${i%3} testi`}>
-              <p className="display" style={{ fontSize:'clamp(16px,2.2vw,24px)', fontWeight:400, color:`${C.cream}90`, lineHeight:1.7, marginBottom:24, maxWidth:820 }}>"{t.quote}"</p>
+            <div key={i} className={`reveal d${i % 3} testi`}>
+              <p className="display" style={{ fontSize:'clamp(16px,2.2vw,22px)', fontWeight:400, color:`${C.cream}85`, lineHeight:1.75, marginBottom:24, maxWidth:820 }}>"{t.quote}"</p>
               <div style={{ display:'flex', alignItems:'center', gap:16 }}>
                 <div style={{ width:1, height:28, background:C.sienna }} />
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:C.cream, fontFamily:"'Sora',sans-serif" }}>{t.name}</div>
-                  <div style={{ fontSize:12, color:C.stone, marginTop:2, fontWeight:300 }}>{t.role}</div>
+                  <div style={{ fontSize:12, fontWeight:400, color:C.stone, fontFamily:"'Jost',sans-serif", letterSpacing:'0.06em' }}>— Nakama · {t.attr}</div>
                 </div>
               </div>
             </div>
