@@ -324,7 +324,7 @@ export function LandingPage() {
         }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100 }}>
           <p className="h-pre label" style={{ color: C.sienna, marginBottom: 'clamp(20px,3vw,36px)' }}>
-            Property Branding Studio · Bali & Southeast Asia
+            Villa Onboarding & Branding · Bali & Southeast Asia
           </p>
           <h1 style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, lineHeight:0.95, letterSpacing:'-0.03em' }}>
             <div style={{ overflow:'hidden', marginBottom:'0.06em' }}>
@@ -340,7 +340,7 @@ export function LandingPage() {
           <div className="hero-lower">
             <div className="h-sub">
               <p style={{ fontSize:'clamp(14px,1.8vw,17px)', color:C.stone, lineHeight:1.85, fontWeight:300, maxWidth:500 }}>
-                We're not just an agency. <strong style={{ color:C.cream, fontWeight:500 }}>Nakama means companions.</strong> We grow alongside your property — building the brand, digital presence, and guest systems that turn a listing into a destination.
+                <strong style={{ color:C.cream, fontWeight:500 }}>Nakama means companions.</strong> You've invested in a Bali villa — now let's make it earn. We onboard your property from day one: brand, digital presence, and guest systems built to grow alongside you.
               </p>
             </div>
             <div className="h-cta">
@@ -359,12 +359,25 @@ export function LandingPage() {
 
       {/* ── PHILOSOPHY ────────────────────────────────────────── */}
       <section className="sec-pad-sm" style={{ background:C.bgSoft, borderTop:`1px solid rgba(255,255,255,0.05)` }}>
-        <div style={{ maxWidth:960, margin:'0 auto', textAlign:'center' }}>
-          <p className="reveal display" style={{ fontSize:'clamp(18px,2.8vw,32px)', fontWeight:400, lineHeight:1.65, color:`${C.cream}90` }}>
-            Great branding is not decoration — it is <span style={{ color:C.cream, fontWeight:600 }}>infrastructure.</span>{' '}
-            It determines the rates guests are willing to pay, the platforms they book through, and whether they return.{' '}
-            <span style={{ color:C.siennaL }}>We make branding work as hard as you do.</span>
+        <div style={{ maxWidth:960, margin:'0 auto' }}>
+          <p className="reveal display" style={{ fontSize:'clamp(18px,2.8vw,32px)', fontWeight:400, lineHeight:1.65, color:`${C.cream}90`, textAlign:'center', marginBottom:'clamp(40px,5vw,64px)' }}>
+            Most foreign villa investors face the same moment: the property is ready, the keys are in hand —{' '}
+            <span style={{ color:C.cream, fontWeight:600 }}>and there's no plan for what comes next.</span>{' '}
+            No brand. No website. No system. <span style={{ color:C.siennaL }}>That's exactly where we begin.</span>
           </p>
+          {/* Three investor scenarios */}
+          <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:2 }}>
+            {[
+              { tag:'First-time investor', line:'You own the villa. You need it to earn — and you\'re not sure where to start.' },
+              { tag:'No marketing strategy', line:'You have a property but no brand, no website, and enquiries going unanswered.' },
+              { tag:'Ready to grow', line:'You want more direct bookings, fewer OTA fees, and a property that works for you.' },
+            ].map((s, i) => (
+              <div key={i} style={{ padding:'clamp(20px,3vw,28px)', background:'rgba(255,255,255,0.03)', borderTop:`2px solid ${C.sienna}40` }}>
+                <div className="label" style={{ color:C.sienna, fontSize:9, marginBottom:10 }}>{s.tag}</div>
+                <p style={{ fontSize:14, color:C.stone, lineHeight:1.8, fontWeight:300 }}>{s.line}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -375,18 +388,18 @@ export function LandingPage() {
 
             {/* LEFT — narrative context */}
             <div className="reveal" style={{ position:'sticky', top:100 }}>
-              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>The growth framework</span>
+              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:20 }}>Villa onboarding</span>
               <h2 className="display" style={{ fontSize:'clamp(28px,3.8vw,48px)', fontWeight:700, lineHeight:1.1, color:C.cream, marginBottom:24 }}>
-                How great branding earns for your property.
+                From new acquisition to earning destination.
               </h2>
               <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:32 }}>
-                Every booking starts with a discovery. The way your property presents itself — its name, story, visual identity, and responsiveness — determines whether a guest chooses you or keeps scrolling.
+                Most villa investors arrive with a great property and no clear path forward. No brand, no digital presence, no system for managing guests. We built Nakama specifically for this moment.
               </p>
               <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:36 }}>
-                We build and operate every layer of that journey. Not separately — as one connected system that compounds over time.
+                We onboard your villa end-to-end — brand, website, automation — as one connected system. You focus on the investment. We handle everything that makes it earn.
               </p>
               <div style={{ display:'flex', flexDirection:'column', gap:0, borderTop:`1px solid rgba(255,255,255,0.07)` }}>
-                {['Brand identity & property narrative','Website engineered for direct bookings','WhatsApp & OTA automation','Long-term revenue optimisation'].map((item, i) => (
+                {['Brand identity built for your property','Website engineered for direct bookings','WhatsApp & OTA systems, fully automated','Grow together — long-term, as true companions'].map((item, i) => (
                   <div key={i} style={{ display:'flex', gap:14, padding:'11px 0', borderBottom:`1px solid rgba(255,255,255,0.05)`, fontSize:13, color:C.stoneL, fontWeight:300 }}>
                     <span style={{ color:C.sienna, flexShrink:0, fontSize:16, lineHeight:'20px' }}>→</span>
                     {item}
@@ -484,14 +497,14 @@ export function LandingPage() {
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <div className="sec-header">
             <div className="reveal">
-              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>What we do</span>
+              <span className="label" style={{ color:C.sienna, display:'block', marginBottom:16 }}>The onboarding suite</span>
               <h2 className="display" style={{ fontSize:'clamp(28px,4vw,50px)', fontWeight:700, lineHeight:1.1, color:C.cream }}>
-                Three tools.<br />One outcome.
+                Everything your<br />villa needs to earn.
               </h2>
             </div>
             <div className="reveal d1" style={{ display:'flex', alignItems:'flex-end' }}>
               <p style={{ fontSize:'clamp(13px,1.6vw,15px)', color:C.stone, lineHeight:1.9, fontWeight:300 }}>
-                Each service is engineered to compound the others. A great website captures intent. Automation converts it instantly. Smart distribution keeps occupancy high. Together, they make your property self-sustaining.
+                Three services, built to work as one. Your brand gives guests a reason to choose you. Your website gives them a direct path to book. Your automation ensures no lead goes cold — day or night, while you focus on anything else.
               </p>
             </div>
           </div>
@@ -688,19 +701,19 @@ export function LandingPage() {
       <section className="sec-pad" style={{ background:C.bg, textAlign:'center', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, background:`radial-gradient(ellipse 55% 70% at 50% 100%, rgba(155,93,63,0.2) 0%, transparent 65%)`, pointerEvents:'none' }} />
         <div style={{ maxWidth:680, margin:'0 auto', position:'relative', zIndex:1 }}>
-          <span className="reveal d1 label" style={{ color:C.sienna, display:'block', marginBottom:24, fontSize:10 }}>Ready to grow</span>
+          <span className="reveal d1 label" style={{ color:C.sienna, display:'block', marginBottom:24, fontSize:10 }}>Begin the journey</span>
           <h2 className="reveal d2 display" style={{ fontSize:'clamp(40px,7vw,84px)', fontWeight:800, lineHeight:1.0, color:C.cream, marginBottom:24, letterSpacing:'-0.03em' }}>
-            Let's grow<br /><span style={{ color:C.siennaL }}>together.</span>
+            Let's onboard<br /><span style={{ color:C.siennaL }}>your villa.</span>
           </h2>
           <p className="reveal d3" style={{ fontSize:'clamp(13px,1.6vw,16px)', color:C.stone, lineHeight:1.9, marginBottom:44, fontWeight:300 }}>
-            Your property has a story worth telling — and a brand that earns. We will help you build both, and grow them alongside you as true partners.
+            You have the property. We have the brand, the systems, and the market knowledge. Together, we turn your villa into a destination that earns — and grows. That is what Nakama means.
           </p>
           <div className="reveal d4" style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
-            <button className="btn-primary">Grow with Nakama →</button>
-            <button className="btn-outline-cream">View our work</button>
+            <button className="btn-primary">Start onboarding →</button>
+            <button className="btn-outline-cream">See how it works</button>
           </div>
           <div className="reveal d4 trust-bar">
-            {['Response within 24h','No lock-in contracts','Bilingual team','Market specialists'].map((item, i, arr) => (
+            {['Response within 24h','No lock-in contracts','Bilingual support','Bali market specialists'].map((item, i, arr) => (
               <span key={item} className="trust-item" style={{ borderRight: i<arr.length-1?'1px solid rgba(255,255,255,0.06)':'none' }}>{item}</span>
             ))}
           </div>
@@ -720,7 +733,7 @@ export function LandingPage() {
                 </svg>
                 <span style={{ fontFamily:"'Sora',sans-serif", fontSize:14, fontWeight:700, color:C.cream }}>nakama</span>
               </div>
-              <p style={{ fontSize:13, color:C.stone, lineHeight:1.75, fontWeight:300, maxWidth:210 }}>Property branding studio. Growing client properties through brand, digital presence, and intelligent systems.</p>
+              <p style={{ fontSize:13, color:C.stone, lineHeight:1.75, fontWeight:300, maxWidth:210 }}>Villa onboarding & branding. We help foreign investors turn their Bali properties into earning, well-branded destinations — and grow alongside them.</p>
             </div>
             {[
               { head:'Services', links:['Property Websites','WhatsApp Automation','OTA Integration','Brand Strategy'] },
