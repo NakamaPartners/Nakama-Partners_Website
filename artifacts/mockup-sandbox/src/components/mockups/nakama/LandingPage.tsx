@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /*
   NAKAMA — Bold modern landing page
@@ -249,6 +249,14 @@ const CSS = `
   /* ── Atm glow ────────────────────────────────────────────── */
   @keyframes atm { 0%,100% { opacity:0.8; } 50% { opacity:1; } }
 
+  /* ── Onboarding interactive ───────────────────────────────── */
+  @keyframes obUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes obIn  { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes obInR { from { opacity:0; transform:translateX(10px);  } to { opacity:1; transform:translateX(0); } }
+  .ob-pill { padding:7px 18px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; border:1px solid; cursor:pointer; transition:all 0.22s ease; background:transparent; }
+  .ob-pill:hover { opacity:0.85; }
+  .ob-dot  { border:none; cursor:pointer; transition:all 0.3s ease; }
+
   /* ── Trust bar ───────────────────────────────────────────── */
   .trust-bar { display: flex; flex-wrap: wrap; gap: 0; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 56px; padding-top: 44px; justify-content: center; }
   .trust-item { font-family:'Jost',sans-serif; font-size:12px; color:rgba(139,125,114,0.7); font-weight:300; padding:6px 24px; letter-spacing:0.04em; }
@@ -288,6 +296,35 @@ const PIPELINE: Array<{
     body: 'More direct bookings, fewer platform fees, and a brand guests seek out and return to. Revenue that compounds as your reputation does.',
     tags: ['Direct Bookings', 'Lower Fees', 'Returning Guests'],
     highlight: true,
+  },
+];
+
+/* ── Onboarding stages data ──────────────────────────────────  */
+const ONBOARD = [
+  {
+    label: 'Discovery',
+    title: 'We start by listening.',
+    desc: 'A focused intake session maps your property — type, location, target guest, revenue goals. No forms. Just a sharp conversation that gives us everything we need.',
+  },
+  {
+    label: 'Brand Build',
+    title: 'Your identity is crafted.',
+    desc: 'Property name, colour palette, typography, and tone of voice — built from scratch around your property\'s personality and market position. No templates.',
+  },
+  {
+    label: 'Website',
+    title: 'Your digital home goes live.',
+    desc: 'A custom property website — fast, mobile-first, with direct booking integration. Guests arrive on a page that feels like the property itself.',
+  },
+  {
+    label: 'Automation',
+    title: 'WhatsApp handles inquiries 24/7.',
+    desc: 'An intelligent bot answers availability questions, sends rate cards, and routes serious guests to you — so no lead goes cold overnight.',
+  },
+  {
+    label: 'Revenue',
+    title: 'OTAs sync. Bookings begin.',
+    desc: 'Your property is distributed across the right platforms, calendar synced, and pricing strategy set. Revenue starts moving from day one.',
   },
 ];
 
@@ -345,6 +382,7 @@ const PARTICLES: Particle[] = [
 ];
 
 export function LandingPage() {
+  const [onstage, setOnstage] = useState(0);
   const obsRef        = useRef<IntersectionObserver | null>(null);
   const particleRefs  = useRef<(SVGCircleElement | null)[]>([]);
   const phases        = useRef<number[]>(PARTICLES.map(p => p.phase));
@@ -359,6 +397,12 @@ export function LandingPage() {
     );
     document.querySelectorAll('.reveal, .rule-r').forEach(el => obsRef.current?.observe(el));
     return () => obsRef.current?.disconnect();
+  }, []);
+
+  // Onboarding stage auto-advance
+  useEffect(() => {
+    const id = setInterval(() => setOnstage(s => (s + 1) % 5), 4500);
+    return () => clearInterval(id);
   }, []);
 
   // Looping particle animation — RAF drives each ball left→right through the funnel
@@ -707,6 +751,266 @@ export function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── ONBOARDING INTERACTIVE ────────────────────────────── */}
+      <section className="sec-pad" style={{ background:C.bgMid, borderTop:`1px solid rgba(255,255,255,0.05)` }}>
+        <div style={{ maxWidth:1100, margin:'0 auto' }}>
+
+          {/* Header row */}
+          <div className="reveal" style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:48 }}>
+            <span className="label" style={{ color:C.sienna }}>The process</span>
+            <h2 className="display" style={{ fontSize:'clamp(26px,3.2vw,38px)', fontWeight:800, color:C.cream, lineHeight:1.15, margin:0 }}>
+              From bare property<br/>to active revenue.
+            </h2>
+          </div>
+
+          {/* Stage pills */}
+          <div style={{ display:'flex', gap:4, marginBottom:44, flexWrap:'wrap' }}>
+            {ONBOARD.map((s, i) => (
+              <button key={i} className="ob-pill"
+                onClick={() => setOnstage(i)}
+                style={{
+                  color:     onstage === i ? C.cream  : C.stone,
+                  borderColor: onstage === i ? C.sienna : 'rgba(255,255,255,0.10)',
+                  background:  onstage === i ? C.sienna : 'transparent',
+                }}
+              >
+                {String(i + 1).padStart(2, '0')}&nbsp;&nbsp;{s.label.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          {/* Main grid */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1.15fr', gap:56, alignItems:'start' }}>
+
+            {/* Left: text */}
+            <div key={`txt-${onstage}`} style={{ animation:'obUp 0.4s ease both' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:22 }}>
+                <div style={{ width:32, height:1, background:C.sienna }}/>
+                <span style={{ fontSize:9, letterSpacing:2.5, color:C.sienna, fontFamily:"'Jost',sans-serif" }}>
+                  STEP {onstage + 1} OF 5
+                </span>
+              </div>
+              <h3 style={{ fontFamily:"'Sora',sans-serif", fontSize:'clamp(22px,2.5vw,30px)', fontWeight:800, color:C.cream, lineHeight:1.2, marginBottom:18 }}>
+                {ONBOARD[onstage].title}
+              </h3>
+              <p style={{ fontSize:14, color:C.stone, lineHeight:1.95, fontWeight:300, marginBottom:40 }}>
+                {ONBOARD[onstage].desc}
+              </p>
+              {/* Progress dots */}
+              <div style={{ display:'flex', gap:7, alignItems:'center' }}>
+                {ONBOARD.map((_, i) => (
+                  <button key={i} className="ob-dot"
+                    onClick={() => setOnstage(i)}
+                    style={{
+                      width:  i === onstage ? 28 : 7,
+                      height: 7,
+                      background: i === onstage ? C.sienna : 'rgba(139,125,114,0.30)',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Right: visual card */}
+            <div style={{ border:`1px solid rgba(255,255,255,0.07)`, background:C.bgSoft, overflow:'hidden', position:'relative' }}>
+              {/* Progress bar */}
+              <div style={{ height:2, background:'rgba(255,255,255,0.05)', position:'relative', flexShrink:0 }}>
+                <div style={{
+                  position:'absolute', left:0, top:0, height:'100%',
+                  width:`${((onstage + 1) / 5) * 100}%`,
+                  background: C.sienna,
+                  transition:'width 0.65s cubic-bezier(.4,0,.2,1)',
+                }}/>
+              </div>
+
+              {/* Visual panels — keyed to restart animations on stage change */}
+              <div key={`vis-${onstage}`} style={{ padding:'32px 36px' }}>
+
+                {/* ── Stage 0: Discovery ─────────────── */}
+                {onstage === 0 && (
+                  <div>
+                    <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:24 }}>PROPERTY INTAKE</div>
+                    {[
+                      ['Property name',  'Villa Sekar'],
+                      ['Category',       'Villa — 4 bedrooms'],
+                      ['Location',       'Ubud, Bali'],
+                      ['Target guest',   'International leisure'],
+                      ['Revenue goal',   'Direct bookings + OTA'],
+                    ].map(([label, val], i) => (
+                      <div key={i} style={{
+                        display:'flex', justifyContent:'space-between', alignItems:'center',
+                        padding:'13px 0',
+                        borderBottom:'1px solid rgba(255,255,255,0.05)',
+                        animation:`obUp 0.32s ease ${i * 0.11}s both`,
+                      }}>
+                        <span style={{ fontSize:10, color:C.stone, fontFamily:"'Jost',sans-serif" }}>{label}</span>
+                        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                          <span style={{ fontSize:12, color:C.cream, fontWeight:400 }}>{val}</span>
+                          <svg width="16" height="16" viewBox="0 0 16 16" style={{ animation:`obUp 0.25s ease ${i * 0.11 + 0.18}s both`, opacity:0 }}>
+                            <circle cx="8" cy="8" r="7" stroke={C.sienna} strokeWidth="0.9" fill="none"/>
+                            <polyline points="5,8 7.2,10.2 11.5,5.8" stroke={C.siennaL} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* ── Stage 1: Brand ─────────────────── */}
+                {onstage === 1 && (
+                  <div>
+                    <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:24 }}>BRAND IDENTITY</div>
+                    {/* Palette */}
+                    <div style={{ display:'flex', gap:6, marginBottom:32 }}>
+                      {[C.sienna, C.siennaL, C.cream, C.stone, C.bgSoft].map((col, i) => (
+                        <div key={i} style={{
+                          flex:1, height:40, background:col,
+                          border:'1px solid rgba(255,255,255,0.07)',
+                          animation:`obUp 0.3s ease ${i * 0.08}s both`,
+                        }}>
+                          <div style={{ fontSize:7, color:'rgba(255,255,255,0.35)', padding:'4px 6px', fontFamily:"'Jost',sans-serif", letterSpacing:0.5 }}>{col}</div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Wordmark */}
+                    <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:24, marginBottom:22, animation:'obUp 0.4s ease 0.42s both' }}>
+                      <div style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, fontSize:32, letterSpacing:7, color:C.cream, marginBottom:6 }}>SEKAR</div>
+                      <div style={{ fontSize:9, letterSpacing:5, color:C.stone, fontFamily:"'Jost',sans-serif" }}>UBUD&nbsp;&nbsp;·&nbsp;&nbsp;BALI</div>
+                    </div>
+                    {/* Type tags */}
+                    <div style={{ display:'flex', gap:8, animation:'obUp 0.4s ease 0.62s both' }}>
+                      {[['SORA 800', true], ['JOST 300', false]].map(([t, active]) => (
+                        <div key={String(t)} style={{
+                          padding:'6px 14px',
+                          border:`1px solid ${active ? C.sienna : 'rgba(255,255,255,0.10)'}`,
+                          fontSize:9, letterSpacing:1.5,
+                          color: active ? C.siennaL : C.stone,
+                          fontFamily:"'Jost',sans-serif",
+                        }}>{String(t)}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Stage 2: Website ───────────────── */}
+                {onstage === 2 && (
+                  <div style={{ animation:'obUp 0.35s ease both' }}>
+                    <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:18 }}>WEBSITE BUILD</div>
+                    <div style={{ border:'1px solid rgba(255,255,255,0.10)', overflow:'hidden' }}>
+                      {/* Browser chrome */}
+                      <div style={{ background:'rgba(255,255,255,0.04)', padding:'8px 14px', display:'flex', alignItems:'center', gap:6, borderBottom:'1px solid rgba(255,255,255,0.07)' }}>
+                        {['rgba(255,255,255,0.14)','rgba(255,255,255,0.14)','rgba(255,255,255,0.14)'].map((bg, i) => (
+                          <div key={i} style={{ width:8, height:8, borderRadius:'50%', background:bg }}/>
+                        ))}
+                        <div style={{ flex:1, marginLeft:10, background:'rgba(255,255,255,0.06)', borderRadius:2, padding:'3px 10px', fontSize:8, color:`${C.stone}60`, fontFamily:"'Jost',sans-serif" }}>
+                          villasekar.com
+                        </div>
+                      </div>
+                      {/* Mini site */}
+                      <div style={{ padding:'22px 20px', background:'#0D0A07' }}>
+                        <div style={{ fontSize:8, color:`${C.stone}55`, letterSpacing:2.5, marginBottom:8, fontFamily:"'Jost',sans-serif", animation:'obUp 0.3s ease 0.1s both' }}>VILLA SEKAR · UBUD</div>
+                        <div style={{ fontFamily:"'Sora',sans-serif", fontSize:20, fontWeight:800, color:C.cream, lineHeight:1.15, marginBottom:14, animation:'obUp 0.3s ease 0.2s both' }}>
+                          Where calm<br/>meets craft.
+                        </div>
+                        <div style={{ animation:'obUp 0.3s ease 0.32s both' }}>
+                          <div style={{ display:'inline-block', background:C.sienna, color:C.cream, padding:'8px 18px', fontSize:9, letterSpacing:2, fontFamily:"'Jost',sans-serif" }}>
+                            BOOK YOUR STAY
+                          </div>
+                        </div>
+                        <div style={{ display:'flex', gap:20, marginTop:18, borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:14, animation:'obUp 0.3s ease 0.44s both' }}>
+                          {[['4','Bedrooms'],['2','Pools'],['12','Reviews']].map(([n, l]) => (
+                            <div key={l}>
+                              <div style={{ fontFamily:"'Sora',sans-serif", fontSize:16, fontWeight:700, color:C.siennaL }}>{n}</div>
+                              <div style={{ fontSize:7, color:`${C.stone}60`, letterSpacing:1.5, fontFamily:"'Jost',sans-serif" }}>{l.toUpperCase()}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Stage 3: Automation ────────────── */}
+                {onstage === 3 && (
+                  <div>
+                    <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:18 }}>WHATSAPP AUTOMATION</div>
+                    <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                      {/* Guest */}
+                      <div style={{ alignSelf:'flex-end', maxWidth:'78%', background:`rgba(155,93,63,0.18)`, border:`1px solid rgba(155,93,63,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 0.05s both' }}>
+                        <div style={{ fontSize:11, color:C.cream, lineHeight:1.5 }}>Hi, is Villa Sekar available 14–18 Dec?</div>
+                        <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, textAlign:'right', fontFamily:"'Jost',sans-serif" }}>09:14</div>
+                      </div>
+                      {/* Bot */}
+                      <div style={{ alignSelf:'flex-start', maxWidth:'82%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', padding:'9px 13px', animation:'obIn 0.3s ease 0.55s both' }}>
+                        <div style={{ fontSize:8, color:C.sienna, marginBottom:5, letterSpacing:1.5, fontFamily:"'Jost',sans-serif" }}>NAKAMA BOT</div>
+                        <div style={{ fontSize:11, color:C.cream, lineHeight:1.5 }}>Yes, those dates are open. Rate is $280/night. Shall I send the booking link?</div>
+                        <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, fontFamily:"'Jost',sans-serif" }}>09:14</div>
+                      </div>
+                      {/* Guest */}
+                      <div style={{ alignSelf:'flex-end', maxWidth:'40%', background:`rgba(155,93,63,0.18)`, border:`1px solid rgba(155,93,63,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 1.05s both' }}>
+                        <div style={{ fontSize:11, color:C.cream }}>Yes please</div>
+                        <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, textAlign:'right', fontFamily:"'Jost',sans-serif" }}>09:15</div>
+                      </div>
+                      {/* Bot final */}
+                      <div style={{ alignSelf:'flex-start', maxWidth:'88%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', padding:'9px 13px', animation:'obIn 0.3s ease 1.45s both' }}>
+                        <div style={{ fontSize:8, color:C.sienna, marginBottom:5, letterSpacing:1.5, fontFamily:"'Jost',sans-serif" }}>NAKAMA BOT</div>
+                        <div style={{ fontSize:11, color:C.cream, lineHeight:1.5, marginBottom:8 }}>Booking link sent. Your deposit holds the dates.</div>
+                        <div style={{ display:'inline-block', padding:'5px 12px', border:`1px solid ${C.sienna}`, fontSize:9, color:C.siennaL, letterSpacing:1.5, fontFamily:"'Jost',sans-serif" }}>SECURE YOUR STAY</div>
+                        <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:5, fontFamily:"'Jost',sans-serif" }}>09:15</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Stage 4: Live ──────────────────── */}
+                {onstage === 4 && (
+                  <div>
+                    <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:24 }}>DISTRIBUTION & REVENUE</div>
+                    {/* Platform badges */}
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:28 }}>
+                      {['Airbnb','Booking.com','Agoda','Vrbo','Direct'].map((p, i) => (
+                        <div key={p} style={{
+                          padding:'7px 16px',
+                          border:`1px solid ${p === 'Direct' ? C.sienna : 'rgba(255,255,255,0.10)'}`,
+                          fontSize:10,
+                          color: p === 'Direct' ? C.siennaL : C.stone,
+                          fontFamily:"'Jost',sans-serif",
+                          animation:`obUp 0.3s ease ${i * 0.09}s both`,
+                        }}>{p}</div>
+                      ))}
+                    </div>
+                    {/* Booking confirmed */}
+                    <div style={{ border:`1px solid rgba(155,93,63,0.35)`, background:'rgba(155,93,63,0.07)', padding:'16px 20px', marginBottom:20, animation:'obUp 0.4s ease 0.48s both' }}>
+                      <div style={{ fontSize:9, color:C.sienna, letterSpacing:2, marginBottom:8, fontFamily:"'Jost',sans-serif" }}>BOOKING CONFIRMED</div>
+                      <div style={{ fontSize:14, color:C.cream, fontWeight:500, marginBottom:3 }}>14–18 December · 4 nights</div>
+                      <div style={{ fontSize:12, color:C.stone }}>2 guests · $1,120 total</div>
+                    </div>
+                    {/* Mini calendar */}
+                    <div style={{ display:'flex', gap:4, flexWrap:'wrap', animation:'obUp 0.4s ease 0.68s both' }}>
+                      {Array.from({ length: 14 }, (_, i) => {
+                        const booked = [13,14,15,16,17].includes(i + 1);
+                        return (
+                          <div key={i} style={{
+                            width:28, height:28,
+                            border:'1px solid rgba(255,255,255,0.06)',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                            fontSize:8, fontFamily:"'Jost',sans-serif",
+                            color:    booked ? C.siennaL : `${C.stone}50`,
+                            background: booked ? 'rgba(155,93,63,0.16)' : 'transparent',
+                          }}>{i + 1}</div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+              </div>{/* end visual panel */}
+            </div>{/* end visual card */}
+
+          </div>{/* end main grid */}
         </div>
       </section>
 
