@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 
 /*
-  NAKAMA — Aman-inspired editorial landing page
-  Rules: no emojis · no pills · no gradient fills · no tech UI
+  NAKAMA — Editorial luxury landing page
+  Target: Australian villa buyers/owners in Bali
+  Rules: no emojis · no pills · no gradient fills · no tech UI · no Japanese visual markers
+  Philosophy: companions / growing together (English-expressed only)
   Playfulness = motion only (CSS keyframes, scroll reveals, hover)
-  Fonts: Cormorant Garamond (display) + Jost (body/UI)
+  Fonts: Playfair Display (headlines) + Jost (body/UI)
   Accent: warm sienna #9B5D3F only
 */
 
@@ -23,7 +25,7 @@ const C = {
 const CSS = `
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── Hero entrance (pure CSS, no JS state) ─────────────── */
+  /* ── Hero entrance ──────────────────────────────────────── */
   @keyframes hFadeUp {
     from { opacity: 0; transform: translateY(38px); }
     to   { opacity: 1; transform: none; }
@@ -34,16 +36,16 @@ const CSS = `
   }
   .h-eye  { animation: hFadeIn  0.9s ease 0.15s both; }
   .h-l0   { animation: hFadeUp  1.2s cubic-bezier(.22,1,.36,1) 0.3s  both; }
-  .h-l1   { animation: hFadeUp  1.2s cubic-bezier(.22,1,.36,1) 0.48s both; }
-  .h-l2   { animation: hFadeUp  1.2s cubic-bezier(.22,1,.36,1) 0.66s both; }
-  .h-foot { animation: hFadeIn  1s   ease 1.05s both; }
-  .h-scrl { animation: hFadeIn  1s   ease 1.45s both; }
+  .h-l1   { animation: hFadeUp  1.2s cubic-bezier(.22,1,.36,1) 0.52s both; }
+  .h-l2   { animation: hFadeUp  1.2s cubic-bezier(.22,1,.36,1) 0.74s both; }
+  .h-foot { animation: hFadeIn  1s   ease 1.10s both; }
+  .h-scrl { animation: hFadeIn  1s   ease 1.50s both; }
   .h-nav  { animation: hFadeIn  0.9s ease 0.5s  both; }
 
   /* ── Scroll reveals ─────────────────────────────────────── */
   .reveal {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(24px);
     transition:
       opacity  1.1s cubic-bezier(.22,1,.36,1),
       transform 1.1s cubic-bezier(.22,1,.36,1);
@@ -62,8 +64,8 @@ const CSS = `
   .rule-r.on { opacity: 1; transform: scaleX(1); }
 
   /* ── Typography ─────────────────────────────────────────── */
-  .serif { font-family: 'Cormorant Garamond', serif; }
-  .sans  { font-family: 'Jost', sans-serif; }
+  .display { font-family: 'Playfair Display', serif; }
+  .sans    { font-family: 'Jost', sans-serif; }
   .label {
     font-family: 'Jost', sans-serif;
     font-size: 11px; font-weight: 400;
@@ -90,7 +92,6 @@ const CSS = `
   .nav-link.lt::after { background: white; }
   .nav-link.lt:hover { color: white; }
 
-  /* Nav mobile: hide side links */
   .nav-links-left, .nav-links-right { display: flex; gap: 36px; align-items: center; }
   @media (max-width: 680px) {
     .nav-links-left { display: none; }
@@ -142,7 +143,7 @@ const CSS = `
   }
   .btn-ghost-light:hover { border-color: rgba(245,237,216,0.55); color: ${C.cream}; }
 
-  /* ── Section padding (responsive) ───────────────────────── */
+  /* ── Section padding ─────────────────────────────────────── */
   .sec-pad { padding: clamp(72px,10vw,120px) clamp(22px,5vw,52px); }
   .sec-pad-sm { padding: clamp(48px,7vw,80px) clamp(22px,5vw,52px); }
 
@@ -154,8 +155,8 @@ const CSS = `
   }
   .svc-row:last-child { border-bottom: 1px solid ${C.rule}40; }
   .svc-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(22px,3vw,28px); font-weight: 400; color: ${C.dark};
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px,2.6vw,26px); font-weight: 700; color: ${C.dark};
     line-height: 1.2; transition: color 0.3s ease;
   }
   .svc-row:hover .svc-title { color: ${C.sienna}; }
@@ -179,7 +180,7 @@ const CSS = `
     .text-link { display: none; }
   }
 
-  /* ── Two-col section header ──────────────────────────────── */
+  /* ── Section header layout ───────────────────────────────── */
   .sec-header {
     display: grid; grid-template-columns: 1fr 2fr; gap: 72px; margin-bottom: 72px;
   }
@@ -193,7 +194,7 @@ const CSS = `
   }
   @media (max-width: 860px) {
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
-    .about-img { height: 320px !important; }
+    .about-img { height: 300px !important; }
   }
 
   /* ── Stats grid ──────────────────────────────────────────── */
@@ -216,9 +217,7 @@ const CSS = `
     .process-grid { grid-template-columns: repeat(2,1fr); }
     .proc-cell:nth-child(odd) { padding-left: 0 !important; }
     .proc-cell:nth-child(even) { border-right: none !important; }
-    .proc-cell:nth-child(3), .proc-cell:nth-child(4) {
-      border-top: 1px solid ${C.rule}30;
-    }
+    .proc-cell:nth-child(3), .proc-cell:nth-child(4) { border-top: 1px solid ${C.rule}30; }
   }
   @media (max-width: 480px) {
     .process-grid { grid-template-columns: 1fr; }
@@ -243,8 +242,8 @@ const CSS = `
   /* ── Hero footer row ─────────────────────────────────────── */
   .hero-foot {
     display: flex; align-items: flex-end; justify-content: space-between;
-    margin-top: 56px; padding-top: 32px; border-top: 1px solid rgba(245,237,216,0.1);
-    gap: 24px;
+    margin-top: 56px; padding-top: 32px;
+    border-top: 1px solid rgba(245,237,216,0.1); gap: 24px;
   }
   .hero-btns { display: flex; gap: 12px; flex-shrink: 0; }
   @media (max-width: 680px) {
@@ -253,10 +252,8 @@ const CSS = `
     .hero-btns button { flex: 1; justify-content: center; }
   }
 
-  /* ── CTA button row ──────────────────────────────────────── */
+  /* ── CTA / Trust strip ───────────────────────────────────── */
   .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-
-  /* ── CTA trust strip ─────────────────────────────────────── */
   .trust-strip {
     display: flex; gap: 0; justify-content: center; flex-wrap: wrap;
     margin-top: 64px; padding-top: 48px;
@@ -265,6 +262,7 @@ const CSS = `
   .trust-strip span {
     font-size: 11px; color: rgba(184,173,166,0.65); font-weight: 300;
     letter-spacing: 0.06em; padding: 8px 22px;
+    font-family: 'Jost', sans-serif;
   }
 
   /* ── Testimonials ────────────────────────────────────────── */
@@ -274,25 +272,23 @@ const CSS = `
   }
   .testi:hover { padding-left: 20px; }
   .testi:last-child { border-bottom: 1px solid ${C.rule}40; }
-  @media (max-width: 600px) {
-    .testi:hover { padding-left: 0; }
-  }
+  @media (max-width: 600px) { .testi:hover { padding-left: 0; } }
 
   /* ── Pull quote ──────────────────────────────────────────── */
   .pull-quote {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(22px, 3.4vw, 46px);
-    font-weight: 300; font-style: italic; line-height: 1.6;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 3.2vw, 42px);
+    font-weight: 400; line-height: 1.65;
   }
 
   /* ── Marquee ─────────────────────────────────────────────── */
   @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   .mtrack { display: flex; width: max-content; animation: marquee 42s linear infinite; }
 
-  /* ── Atmospheric bg ──────────────────────────────────────── */
+  /* ── Atmospheric bg pulse ────────────────────────────────── */
   @keyframes atm { 0%,100% { opacity:0.85; } 50% { opacity:1; } }
 
-  /* ── Footer link hover ───────────────────────────────────── */
+  /* ── Footer links ────────────────────────────────────────── */
   .foot-link {
     font-family: 'Jost', sans-serif;
     font-size: 13px; color: ${C.stone}; cursor: pointer; font-weight: 300;
@@ -300,7 +296,6 @@ const CSS = `
   }
   .foot-link:hover { color: ${C.stoneL}; }
 
-  /* ── Scroll hint ─────────────────────────────────────────── */
   @media (max-width: 600px) { .scroll-hint { display: none !important; } }
 `;
 
@@ -320,7 +315,7 @@ export function LandingPage() {
 
   return (
     <div style={{ fontFamily: "'Jost', sans-serif", background: C.linen, color: C.dark, overflowX: 'hidden' }}>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       {/* ── NAV ───────────────────────────────────────────────── */}
@@ -334,11 +329,11 @@ export function LandingPage() {
         <div className="nav-links-left">
           {['Services', 'Process', 'About'].map(l => <span key={l} className="nav-link lt">{l}</span>)}
         </div>
-        <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, fontWeight: 400, letterSpacing: '0.36em', textTransform: 'uppercase', color: C.cream }}>
-          NAKAMA
+        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 15, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: C.cream }}>
+          Nakama
         </div>
         <div className="nav-links-right" style={{ justifyContent: 'flex-end' }}>
-          <span className="nav-link lt nav-stories">Stories</span>
+          <span className="nav-link lt nav-stories">Work</span>
           <button className="btn-cream"><span>Begin here</span></button>
         </div>
       </nav>
@@ -349,7 +344,7 @@ export function LandingPage() {
         justifyContent: 'flex-end', padding: '0 clamp(22px,5vw,52px) clamp(60px,10vw,88px)',
         position: 'relative', background: C.deeper, overflow: 'hidden',
       }}>
-        {/* Atmospheric gradient orbs */}
+        {/* Atmospheric gradient */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           background: `
@@ -359,39 +354,33 @@ export function LandingPage() {
           `,
           animation: 'atm 8s ease-in-out infinite',
         }} />
-        {/* Batik texture */}
+        {/* Subtle texture */}
         <div style={{
-          position: 'absolute', inset: 0, opacity: 0.05, pointerEvents: 'none',
+          position: 'absolute', inset: 0, opacity: 0.04, pointerEvents: 'none',
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2L38 20 20 38 2 20Z' stroke='%23C4A882' stroke-width='0.5' fill='none'/%3E%3C/svg%3E")`,
           backgroundSize: '40px 40px',
         }} />
-        {/* Decorative kanji — very faint */}
-        <div style={{
-          position: 'absolute', top: '50%', right: '-2%', transform: 'translateY(-50%)',
-          fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(220px,35vw,480px)', fontWeight: 300,
-          color: C.cream, opacity: 0.025, userSelect: 'none', pointerEvents: 'none', lineHeight: 1,
-        }}>仲</div>
 
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100 }}>
           <p className="h-eye label" style={{ color: C.stoneL, marginBottom: 'clamp(28px,5vw,44px)' }}>
-            Property Branding Studio · Southeast Asia
+            Property Branding Studio · Bali & Southeast Asia
           </p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, lineHeight: 1.05, letterSpacing: '-0.01em', marginBottom: 0 }}>
-            {[
-              { text: 'Your property,',   style: { color: `${C.cream}70`, fontSize: 'clamp(40px,7.5vw,100px)' as const }, cls: 'h-l0' },
-              { text: 'deserves a story', style: { color: C.cream, fontSize: 'clamp(40px,7.5vw,100px)' as const, fontStyle: 'italic' as const }, cls: 'h-l1' },
-              { text: 'worth telling.',   style: { color: `${C.cream}70`, fontSize: 'clamp(40px,7.5vw,100px)' as const }, cls: 'h-l2' },
-            ].map((line, i) => (
-              <div key={i} style={{ overflow: 'hidden', marginBottom: i < 2 ? 2 : 0 }}>
-                <span className={line.cls} style={{ display: 'block', ...line.style }}>{line.text}</span>
-              </div>
-            ))}
+          <h1 style={{ fontFamily: "'Playfair Display', serif", lineHeight: 1.08, letterSpacing: '-0.01em', marginBottom: 0 }}>
+            <div style={{ overflow: 'hidden', marginBottom: 4 }}>
+              <span className="h-l0" style={{ display: 'block', fontSize: 'clamp(38px,7.5vw,100px)', fontWeight: 400, color: `${C.cream}60` }}>Your property,</span>
+            </div>
+            <div style={{ overflow: 'hidden', marginBottom: 4 }}>
+              <span className="h-l1" style={{ display: 'block', fontSize: 'clamp(38px,7.5vw,100px)', fontWeight: 700, color: C.cream }}>deserves a story</span>
+            </div>
+            <div style={{ overflow: 'hidden' }}>
+              <span className="h-l2" style={{ display: 'block', fontSize: 'clamp(38px,7.5vw,100px)', fontWeight: 400, color: `${C.cream}60` }}>worth telling.</span>
+            </div>
           </h1>
 
           <div className="h-foot hero-foot">
-            <p style={{ fontSize: 'clamp(13px,1.8vw,15px)', color: C.stone, lineHeight: 1.85, maxWidth: 420, fontWeight: 300 }}>
-              We are Nakama — companions who build the brand, digital systems, and guest experience that transform a property into a destination guests seek out, and return to.
+            <p style={{ fontSize: 'clamp(13px,1.8vw,15px)', color: C.stone, lineHeight: 1.9, maxWidth: 420, fontWeight: 300 }}>
+              We are Nakama — two companions who build the brand, digital systems, and guest experience that transform a Bali property into a destination guests seek out and return to.
             </p>
             <div className="hero-btns">
               <button className="btn-cream"><span>Grow with us</span><span>↓</span></button>
@@ -403,7 +392,7 @@ export function LandingPage() {
         {/* Scroll hint */}
         <div className="h-scrl scroll-hint" style={{
           position: 'absolute', bottom: 36, right: 52,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: 0.45,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: 0.4,
         }}>
           <span className="label" style={{ color: C.stoneL, fontSize: 9, writingMode: 'vertical-rl' }}>Scroll</span>
           <div style={{ width: 1, height: 44, background: `linear-gradient(${C.stoneL}, transparent)` }} />
@@ -414,8 +403,8 @@ export function LandingPage() {
       <section className="sec-pad" style={{ background: C.linen }}>
         <div style={{ maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>
           <hr className="rule-r" style={{ height: 1, background: C.rule, border: 'none', marginBottom: 'clamp(36px,5vw,64px)' }} />
-          <p className="reveal serif" style={{ fontSize: 'clamp(20px,3.2vw,38px)', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.7, color: C.dark }}>
-            仲間 (Nakama) — companions who face the journey together. We are not an agency with account managers and junior teams. We are two people who hold a personal stake in every property we work with.
+          <p className="reveal display" style={{ fontSize: 'clamp(19px,3vw,36px)', fontWeight: 400, lineHeight: 1.75, color: C.dark }}>
+            Nakama means companions — people who grow the journey together. We are not an agency with account managers and junior teams. We are two people who hold a personal stake in every property we work with.
           </p>
           <hr className="rule-r d2" style={{ height: 1, background: C.rule, border: 'none', marginTop: 'clamp(36px,5vw,64px)', transformOrigin: 'right' }} />
         </div>
@@ -429,10 +418,11 @@ export function LandingPage() {
               {['Property Website Design', '·', 'WhatsApp Automation', '·', 'OTA Integration', '·', 'Brand Identity', '·', 'Guest Experience', '·', 'Revenue Growth', '·'].map((item, i) => (
                 <span key={`${ri}-${i}`} style={{
                   padding: '0 28px', whiteSpace: 'nowrap',
-                  fontFamily: item === '·' ? 'Georgia, serif' : "'Jost', sans-serif",
-                  fontSize: item === '·' ? 16 : 11, letterSpacing: item !== '·' ? '0.18em' : 0,
+                  fontFamily: item === '·' ? "'Playfair Display', serif" : "'Jost', sans-serif",
+                  fontSize: item === '·' ? 18 : 11,
+                  letterSpacing: item !== '·' ? '0.18em' : 0,
                   textTransform: item !== '·' ? 'uppercase' as const : 'none' as const,
-                  color: item === '·' ? C.sienna : C.stone, fontWeight: 300,
+                  color: item === '·' ? C.sienna : C.stone, fontWeight: 400,
                 }}>{item}</span>
               ))}
             </React.Fragment>
@@ -446,7 +436,7 @@ export function LandingPage() {
           <div className="sec-header">
             <div className="reveal">
               <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 18 }}>What we offer</span>
-              <h2 className="serif" style={{ fontSize: 'clamp(30px,3.8vw,48px)', fontWeight: 300, lineHeight: 1.15, color: C.dark }}>
+              <h2 className="display" style={{ fontSize: 'clamp(28px,3.6vw,46px)', fontWeight: 700, lineHeight: 1.15, color: C.dark }}>
                 Three disciplines.<br />One partnership.
               </h2>
             </div>
@@ -463,7 +453,7 @@ export function LandingPage() {
             { num: '03', title: 'OTA Channel Integration', desc: 'Your property connected and synchronised across Airbnb, Booking.com, Agoda, and VRBO — no double bookings, maximum calendar occupancy.', detail: 'Multi-channel sync · Dynamic pricing · Centralised inbox · Revenue reporting' },
           ].map((s, i) => (
             <div key={i} className={`reveal d${i + 1} svc-row`}>
-              <span className="svc-num serif" style={{ fontSize: 28, fontWeight: 300, color: `${C.stoneL}70`, lineHeight: 1, marginTop: 4 }}>{s.num}</span>
+              <span className="svc-num display" style={{ fontSize: 26, fontWeight: 400, color: `${C.stoneL}70`, lineHeight: 1, marginTop: 4 }}>{s.num}</span>
               <div>
                 <div className="svc-title">{s.title}</div>
                 <div className="svc-body">
@@ -489,7 +479,7 @@ export function LandingPage() {
           <blockquote className="reveal d1 pull-quote" style={{ color: C.cream }}>
             "A property is just a building until it holds a story worth sharing — and a brand that makes the right guests feel it was built for them."
           </blockquote>
-          <p className="reveal d2 label" style={{ color: C.stoneL, marginTop: 32, fontSize: 10 }}>Nakama Studio · 仲間</p>
+          <p className="reveal d2 label" style={{ color: C.stoneL, marginTop: 32, fontSize: 10 }}>Nakama Studio</p>
           <hr className="rule-r d3" style={{ height: 1, background: C.rule, border: 'none', opacity: 0.4, marginTop: 'clamp(32px,5vw,56px)', transformOrigin: 'right' }} />
         </div>
       </section>
@@ -498,10 +488,11 @@ export function LandingPage() {
       <section id="about" className="sec-pad" style={{ background: C.linen }}>
         <div className="about-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-          {/* Atmospheric panel */}
+          {/* Atmospheric visual panel */}
           <div className="reveal about-img" style={{ position: 'relative', height: 500, overflow: 'hidden' }}>
             <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(155deg, ${C.sienna} 0%, #5C2E1A 48%, ${C.dark} 100%)` }} />
             <div style={{ position: 'absolute', inset: 0, opacity: 0.06, backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2L38 20 20 38 2 20Z' stroke='%23C4A882' stroke-width='0.5' fill='none'/%3E%3C/svg%3E")`, backgroundSize: '40px 40px' }} />
+            {/* Candi Bentar — Balinese split gate */}
             <svg style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }} width="320" height="360" viewBox="0 0 320 360" fill="none">
               <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(245,237,216,0.28)" strokeWidth="1.2" fill="none"/>
               <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(245,237,216,0.10)" strokeWidth="0.7" fill="none"/>
@@ -521,14 +512,14 @@ export function LandingPage() {
           {/* Text */}
           <div className="reveal d1">
             <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 18 }}>About Nakama</span>
-            <h2 className="serif" style={{ fontSize: 'clamp(30px,3.8vw,48px)', fontWeight: 300, lineHeight: 1.15, color: C.dark, marginBottom: 28 }}>
-              Two companions.<br /><em>One philosophy.</em>
+            <h2 className="display" style={{ fontSize: 'clamp(28px,3.6vw,46px)', fontWeight: 700, lineHeight: 1.15, color: C.dark, marginBottom: 28 }}>
+              Two companions.<br />One philosophy.
             </h2>
             <p style={{ fontSize: 'clamp(13px,1.8vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 16, fontWeight: 300 }}>
               We are not an agency with account managers and junior teams. We are two people who handle every property personally — strategy, brand, design, and technology — all of it. When you work with Nakama, you have our direct attention, always.
             </p>
             <p style={{ fontSize: 'clamp(13px,1.8vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 36, fontWeight: 300 }}>
-              We work across Southeast Asia and understand this market because we live in it — the guests, the culture, the platforms, the nuance.
+              Based in Southeast Asia, we understand the Bali market because we live in it — the guests, the culture, the platforms, and the nuance that separates an average listing from a sought-after destination.
             </p>
             <div>
               {['Direct access — always us, never an intermediary', 'Bilingual — English and Bahasa Indonesia', 'Long-term partners, not project-based vendors', 'Strategy, design, and technology — all in-house'].map((item, i) => (
@@ -545,9 +536,9 @@ export function LandingPage() {
       {/* ── STATS STRIP ───────────────────────────────────────── */}
       <section className="sec-pad-sm" style={{ background: C.dark }}>
         <div className="stats-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
-          {[['3×', 'More direct bookings', 'vs. unbranded listings'], ['40%', 'Higher daily rates', 'for branded properties'], ['85%', 'Enquiries handled', 'via automation'], ['100%', 'Bespoke', 'no templates, ever']].map(([num, label, sub], i) => (
+          {[['3×', 'More direct bookings', 'vs. OTA-only listings'], ['40%', 'Higher nightly rates', 'for branded properties'], ['85%', 'Enquiries handled', 'via automation'], ['100%', 'Bespoke', 'no templates, ever']].map(([num, label, sub], i) => (
             <div key={String(num)} className={`reveal d${i + 1} stat-cell`} style={{ textAlign: 'center', padding: 'clamp(20px,4vw,36px) 16px', borderRight: i < 3 ? `1px solid rgba(245,237,216,0.06)` : 'none' }}>
-              <div className="serif" style={{ fontSize: 'clamp(40px,6vw,54px)', fontWeight: 300, color: C.cream, lineHeight: 1 }}>{num}</div>
+              <div className="display" style={{ fontSize: 'clamp(38px,6vw,54px)', fontWeight: 700, color: C.cream, lineHeight: 1 }}>{num}</div>
               <div className="label" style={{ color: C.stoneL, marginTop: 12, fontSize: 10 }}>{label}</div>
               <div style={{ fontSize: 12, color: `${C.stone}80`, marginTop: 6, fontWeight: 300, fontFamily: "'Jost', sans-serif" }}>{sub}</div>
             </div>
@@ -561,8 +552,8 @@ export function LandingPage() {
           <div className="sec-header">
             <div className="reveal">
               <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 18 }}>Methodology</span>
-              <h2 className="serif" style={{ fontSize: 'clamp(30px,3.8vw,48px)', fontWeight: 300, lineHeight: 1.15, color: C.dark }}>
-                A clear path.<br /><em>No surprises.</em>
+              <h2 className="display" style={{ fontSize: 'clamp(28px,3.6vw,46px)', fontWeight: 700, lineHeight: 1.15, color: C.dark }}>
+                A clear path.<br />No surprises.
               </h2>
             </div>
             <div className="reveal d1" style={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -575,7 +566,7 @@ export function LandingPage() {
               { num: '01', phase: 'Discovery', title: 'Site & Market Analysis', desc: "We understand your property's character, competitive position, and revenue benchmarks before anything else." },
               { num: '02', phase: 'Design', title: 'Brand & Blueprint', desc: 'Identity, messaging, wireframes, automation flows — developed together, reviewed and approved before we build.' },
               { num: '03', phase: 'Build', title: 'Construction', desc: 'Website, WhatsApp system, channel integrations — built, integrated, and tested thoroughly before launch.' },
-              { num: '04', phase: 'Launch', title: 'Growth', desc: 'You go live. We remain — monitoring performance, refining systems, growing the asset alongside you long-term.' },
+              { num: '04', phase: 'Launch', title: 'Growth', desc: 'You go live. We remain — monitoring performance, refining systems, growing alongside you long-term.' },
             ].map((step, i) => (
               <div key={i} className={`reveal d${i + 1} proc-cell`} style={{
                 padding: 'clamp(28px,4vw,48px) 0',
@@ -584,10 +575,10 @@ export function LandingPage() {
                 borderRight: i < 3 ? `1px solid ${C.rule}30` : 'none',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                  <span className="serif" style={{ fontSize: 30, fontWeight: 300, color: `${C.stoneL}55`, lineHeight: 1 }}>{step.num}</span>
+                  <span className="display" style={{ fontSize: 28, fontWeight: 400, color: `${C.stoneL}55`, lineHeight: 1 }}>{step.num}</span>
                   <span className="label" style={{ color: C.sienna, fontSize: 9 }}>{step.phase}</span>
                 </div>
-                <div className="serif" style={{ fontSize: 'clamp(18px,2.2vw,22px)', fontWeight: 400, color: C.dark, lineHeight: 1.3, marginBottom: 12 }}>{step.title}</div>
+                <div className="display" style={{ fontSize: 'clamp(17px,2vw,21px)', fontWeight: 700, color: C.dark, lineHeight: 1.3, marginBottom: 12 }}>{step.title}</div>
                 <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>{step.desc}</p>
               </div>
             ))}
@@ -601,8 +592,8 @@ export function LandingPage() {
           <div className="sec-header">
             <div className="reveal">
               <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 18 }}>Client voices</span>
-              <h2 className="serif" style={{ fontSize: 'clamp(30px,3.8vw,48px)', fontWeight: 300, lineHeight: 1.15, color: C.dark }}>
-                What our<br /><em>nakama say.</em>
+              <h2 className="display" style={{ fontSize: 'clamp(28px,3.6vw,46px)', fontWeight: 700, lineHeight: 1.15, color: C.dark }}>
+                What our<br />clients say.
               </h2>
             </div>
           </div>
@@ -612,7 +603,7 @@ export function LandingPage() {
             { quote: 'Professional, deeply attentive, and genuinely invested. They feel less like a vendor and more like a partner who holds a real stake in what we are building together.', name: 'Sita P.', role: 'Boutique Retreat · Ubud, Bali' },
           ].map((t, i) => (
             <div key={i} className={`reveal d${i % 3} testi`}>
-              <p className="serif" style={{ fontSize: 'clamp(17px,2.4vw,26px)', fontWeight: 300, fontStyle: 'italic', color: C.dark, lineHeight: 1.7, marginBottom: 26, maxWidth: 820 }}>"{t.quote}"</p>
+              <p className="display" style={{ fontSize: 'clamp(16px,2.2vw,24px)', fontWeight: 400, color: C.dark, lineHeight: 1.75, marginBottom: 26, maxWidth: 820 }}>"{t.quote}"</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
                 <div style={{ width: 1, height: 32, background: C.sienna }} />
                 <div>
@@ -632,8 +623,8 @@ export function LandingPage() {
         <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <hr className="rule-r" style={{ height: 1, background: C.rule, border: 'none', opacity: 0.4, marginBottom: 'clamp(32px,5vw,56px)' }} />
           <span className="reveal d1 label" style={{ color: C.stoneL, display: 'block', marginBottom: 24, fontSize: 10 }}>Begin the journey</span>
-          <h2 className="reveal d2 serif" style={{ fontSize: 'clamp(40px,6.5vw,80px)', fontWeight: 300, lineHeight: 1.08, color: C.cream, marginBottom: 28 }}>
-            Let's grow<br /><em>together.</em>
+          <h2 className="reveal d2 display" style={{ fontSize: 'clamp(38px,6.5vw,78px)', fontWeight: 700, lineHeight: 1.1, color: C.cream, marginBottom: 28 }}>
+            Let's grow<br />together.
           </h2>
           <p className="reveal d3" style={{ fontSize: 'clamp(13px,1.8vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 44, fontWeight: 300 }}>
             Your property has a story worth telling. We will help you find it, build around it, and make it earn — as true partners from the very first conversation.
@@ -643,7 +634,7 @@ export function LandingPage() {
             <button className="btn-ghost-light">View our work</button>
           </div>
           <div className="reveal d4 trust-strip">
-            {['Response within 24h', 'No lock-in contracts', 'Bilingual team', 'SE Asia–based'].map((item) => (
+            {['Response within 24h', 'No lock-in contracts', 'Bilingual team', 'Bali-based'].map((item) => (
               <span key={item}>{item}</span>
             ))}
           </div>
@@ -655,8 +646,8 @@ export function LandingPage() {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div className="footer-grid">
             <div className="footer-brand">
-              <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, fontWeight: 400, letterSpacing: '0.36em', textTransform: 'uppercase', color: C.cream, marginBottom: 14 }}>NAKAMA</div>
-              <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.75, fontWeight: 300, maxWidth: 220 }}>Property branding studio, Southeast Asia. Growing alongside our clients since 2024.</p>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.cream, marginBottom: 14 }}>Nakama</div>
+              <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.75, fontWeight: 300, maxWidth: 220 }}>Property branding studio, Bali & Southeast Asia. Growing alongside our clients since 2024.</p>
             </div>
             {[
               { head: 'Services', links: ['Property Websites', 'WhatsApp Automation', 'OTA Integration', 'Brand Strategy'] },
@@ -670,7 +661,7 @@ export function LandingPage() {
             ))}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <p className="serif" style={{ fontSize: 13, color: `${C.stone}80`, fontStyle: 'italic' }}>© {new Date().getFullYear()} Nakama Studio · 仲間 · Crafted with intention.</p>
+            <p className="display" style={{ fontSize: 13, color: `${C.stone}80` }}>© {new Date().getFullYear()} Nakama Studio · Crafted with intention.</p>
             <p className="label" style={{ fontSize: 10, color: `${C.stone}55` }}>Privacy · Terms</p>
           </div>
         </div>
