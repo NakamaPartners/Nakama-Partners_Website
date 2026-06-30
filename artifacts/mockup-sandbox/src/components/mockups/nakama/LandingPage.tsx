@@ -402,6 +402,45 @@ const PARTICLES: Array<{
   { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
 ];
 
+/* OTA brand logos rendered as SVG for the network scene */
+function OtaLogo({ label, cx, cy }: { label: string; cx: number; cy: number }) {
+  if (label === 'Airbnb') {
+    // Bélo: rounded teardrop with circle hole — Airbnb coral
+    const p = `M${cx} ${cy-11} C${cx-3} ${cy-11} ${cx-8} ${cy-7} ${cx-8} ${cy-2} C${cx-8} ${cy+3} ${cx-3} ${cy+11} ${cx} ${cy+11} C${cx+3} ${cy+11} ${cx+8} ${cy+3} ${cx+8} ${cy-2} C${cx+8} ${cy-7} ${cx+3} ${cy-11} ${cx} ${cy-11} Z`;
+    return (
+      <>
+        <path d={p} fill="#FF5A5F"/>
+        <circle cx={cx} cy={cy-2} r="4" fill="white"/>
+      </>
+    );
+  }
+  if (label === 'Booking.com') {
+    // Bold "B." — Booking.com navy
+    return (
+      <text x={cx-3} y={cy+7} fontFamily="Arial Black,sans-serif" fontSize="18" fontWeight="900" fill="#003B95">B.</text>
+    );
+  }
+  if (label === 'Agoda') {
+    // Red badge with "A" — Agoda red
+    return (
+      <>
+        <circle cx={cx} cy={cy} r="13" fill="#E9123A"/>
+        <text x={cx} y={cy+5} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="800" fill="white">A</text>
+      </>
+    );
+  }
+  if (label === 'Traveloka') {
+    // Blue badge with "T" — Traveloka blue
+    return (
+      <>
+        <circle cx={cx} cy={cy} r="13" fill="#018EEA"/>
+        <text x={cx} y={cy+5} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="800" fill="white">T</text>
+      </>
+    );
+  }
+  return null;
+}
+
 /* ── Service Visual: animated illustration panel ── */
 function ServiceVisual({ active }: { active: number }) {
   const scene = active < 0 ? 0 : Math.min(active, 2);
@@ -465,14 +504,11 @@ function ServiceVisual({ active }: { active: number }) {
           <polygon points={`${propX},${propY-18} ${propX+15},${propY-4} ${propX-15},${propY-4}`} fill={C.sienna} opacity="0.85"/>
           <rect x={propX-8} y={propY-4} width="16" height="14" rx="1.5" fill={C.sienna} opacity="0.85"/>
 
-          {/* OTA platform circles */}
+          {/* OTA platform circles with brand logos */}
           {platforms.map((p, i) => (
             <g key={i}>
               <circle cx={p.x} cy={p.y} r="27" fill="white" stroke={`rgba(42,96,68,0.18)`} strokeWidth="1.5"/>
-              <text x={p.x} y={p.y + 4} textAnchor="middle"
-                fontFamily="'Jost',sans-serif"
-                fontSize={p.label === 'Booking.com' ? 7.5 : 9.5}
-                fontWeight="500" fill={C.cream}>{p.label}</text>
+              <OtaLogo label={p.label} cx={p.x} cy={p.y}/>
             </g>
           ))}
 
