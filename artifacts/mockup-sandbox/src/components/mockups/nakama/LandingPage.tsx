@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import nakamaLogo from '@/assets/nakama-logo.png';
-import propertyHero from '@/assets/property-hero.png';
+import propertyHero   from '@/assets/property-hero.png';
+import propertyAbout2 from '@/assets/property-about2.png';
 
 /*
   NAKAMA — Bold modern landing page
@@ -397,50 +398,20 @@ const SERVICES_ACC = [
   {
     num: '01',
     title: 'Get found everywhere guests book',
-    sub:   'OTA setup across all 4 platforms',
-    desc:  'Most owners list on one platform and stop there. We set up all four major platforms, fully optimized, from day one. Each brings a completely different audience.',
-    features: [
-      { head: 'Airbnb',               body: 'Western and global travelers' },
-      { head: 'Booking.com',          body: 'European and Asian travelers' },
-      { head: 'Agoda',                body: 'Southeast Asian travelers' },
-      { head: 'Traveloka TERA',       body: 'Indonesian domestic travelers' },
-      { head: 'Professional listing copy', body: "Written for each platform's algorithm" },
-      { head: 'Photo sequencing',     body: 'Optimized order to maximize click-through rate' },
-      { head: 'iCal sync',            body: 'Between all platforms. No double bookings, ever.' },
-      { head: 'Launch promotions',    body: 'New listing boosts on Airbnb, Booking.com, and TERA' },
-    ],
-    cols: 4,
-    result: 'Your property is visible, bookable, and optimized across every platform guests use.',
+    desc:  'Most owners list on one platform and stop there. We set your property up on all four — Airbnb, Booking.com, Agoda, and Traveloka — written, photographed, and optimized for each one. Every platform reaches a different kind of guest. You need to be on all of them.',
+    result: 'Your property is visible and bookable across every platform guests use.',
   },
   {
     num: '02',
     title: 'Look like a property worth booking',
-    sub:   'Brand and image, website, identity, and presence',
-    desc:  '84,000+ listings in Bali. Guests decide in 2.5 seconds. We build the brand, the website, and the visual presence that makes guests trust you before they book.',
-    features: [
-      { head: 'Direct booking website',       body: 'Gallery, amenities, contact, WhatsApp button, SEO basics, mobile optimized' },
-      { head: 'Instagram setup',              body: 'Bio, highlights, Linktree, 3 launch posts. Your social presence from day one.' },
-      { head: 'Google Business Profile',      body: 'Your property on Google Maps with photos, contact, and hours' },
-      { head: 'Photo brief and coordination', body: 'Shot list provided so your photographer captures exactly what OTAs need' },
-    ],
-    cols: 4,
-    result: 'Your property has a professional identity. A website, a social presence, and photos that earn the booking.',
+    desc:  "There are over 84,000 listings in Bali alone. Guests make a decision in seconds. We build your brand, your direct booking website, and your visual presence — everything that makes a stranger trust your property before they've ever been there.",
+    result: 'Your property has an identity that earns the booking.',
   },
   {
     num: '03',
     title: "Run itself while you're not there",
-    sub:   'Operations, calendars, guest communication, and reporting',
-    desc:  "Answering guests at 2am, preventing double-books, sending check-in details, chasing reviews. We set up the systems that handle all of it automatically.",
-    features: [
-      { head: 'Availability management',   body: 'iCal sync or channel manager keeps all platforms in sync. No double bookings. Manual blocks handled instantly.' },
-      { head: 'Digital guestbook',         body: 'WiFi, check-in instructions, house rules, local tips. All in one branded link guests get before they arrive.' },
-      { head: 'Email automation',          body: 'Booking confirmation, pre-arrival guide, and post-stay review request, sent automatically every time.' },
-      { head: 'WhatsApp automation',       body: 'Guests get instant answers to FAQs, check-in info, and upsell prompts, without you picking up the phone.' },
-      { head: 'Monthly performance report',body: 'Occupancy, revenue, review scores, booking sources. One clean report every month.' },
-      { head: 'Review management',         body: 'Every review monitored and responded to within 24 hours, keeping your score high and your ranking up.' },
-    ],
-    cols: 3,
-    result: "Your property runs professionally whether you're in Bali or 8,000km away. Guests are taken care of. You're kept informed.",
+    desc:  "Most owners don't realise how much time gets spent on the daily back-and-forth. Guest questions at midnight. Calendars getting out of sync. Check-in details that need to go out. We build the systems that handle all of it, automatically, so you don't have to be available 24 hours a day to run a professional property.",
+    result: "Your property runs professionally whether you're in Bali or anywhere else in the world.",
   },
 ];
 
@@ -626,70 +597,6 @@ export function LandingPage() {
             </div>
           </div>
         </div>
-        {/* Dashboard widget */}
-        <div style={{
-          position: 'absolute', right: 'clamp(24px, 5vw, 72px)', top: '18%',
-          zIndex: 10, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end',
-          pointerEvents: 'none',
-        }}>
-          {/* Main card */}
-          <div style={{
-            background: 'rgba(10,18,12,0.88)', backdropFilter: 'blur(24px) saturate(160%)',
-            border: '1px solid rgba(255,255,255,0.09)', padding: '24px 26px', width: 260,
-            boxShadow: '0 32px 80px rgba(0,0,0,0.55)',
-            animation: 'obUp 0.7s ease 0.3s both',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.siennaL, boxShadow: `0 0 6px ${C.siennaL}` }}/>
-              <span style={{ fontSize: 9, color: C.stone, fontFamily: "'Jost',sans-serif", letterSpacing: 2, textTransform: 'uppercase' }}>Live · Property Dashboard</span>
-            </div>
-            <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: C.cream, lineHeight: 1.15, marginBottom: 4 }}>
-              Kelapa Property
-            </div>
-            <div style={{ fontSize: 11, color: C.stone, fontFamily: "'Jost',sans-serif", marginBottom: 22, fontWeight: 300 }}>
-              Seminyak, Bali · 4 rooms
-            </div>
-            <div style={{ display: 'flex', gap: 28 }}>
-              <div>
-                <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 20, fontWeight: 800, color: C.siennaL, lineHeight: 1 }}>+127%</div>
-                <div style={{ fontSize: 10, color: C.stone, fontFamily: "'Jost',sans-serif", marginTop: 3, fontWeight: 300 }}>Revenue</div>
-              </div>
-              <div>
-                <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 20, fontWeight: 800, color: C.cream, lineHeight: 1 }}>94%</div>
-                <div style={{ fontSize: 10, color: C.stone, fontFamily: "'Jost',sans-serif", marginTop: 3, fontWeight: 300 }}>Occupancy</div>
-              </div>
-            </div>
-          </div>
-
-          {/* WhatsApp notification */}
-          <div style={{
-            background: 'rgba(13,23,16,0.94)', backdropFilter: 'blur(20px)',
-            border: `1px solid rgba(42,96,68,0.28)`, padding: '10px 14px',
-            display: 'flex', gap: 10, alignItems: 'center', width: 210, alignSelf: 'flex-start', marginLeft: 8,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
-          }}>
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ flexShrink: 0 }}>
-              <circle cx="14" cy="14" r="13.5" fill="rgba(42,96,68,0.22)" stroke="rgba(42,96,68,0.4)" strokeWidth="0.8"/>
-              <path d="M14 8a6 6 0 0 1 5.196 9.002L20 20l-3.13-.849A6 6 0 1 1 14 8z" stroke={C.siennaL} strokeWidth="1.1" strokeLinejoin="round" fill="none"/>
-            </svg>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: C.cream, fontFamily: "'Jost',sans-serif" }}>WhatsApp Bot</div>
-              <div style={{ fontSize: 10, color: C.stone, fontWeight: 300 }}>Replied in 2 seconds</div>
-            </div>
-          </div>
-
-          {/* Booking notification */}
-          <div style={{
-            background: 'rgba(42,96,68,0.18)', backdropFilter: 'blur(20px)',
-            border: `1px solid rgba(42,96,68,0.38)`, padding: '13px 16px', width: 192,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
-          }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: C.cream, fontFamily: "'Sora',sans-serif", marginBottom: 5 }}>New booking!</div>
-            <div style={{ fontSize: 10, color: C.stoneL, fontWeight: 300 }}>Via direct website</div>
-            <div style={{ fontSize: 10, color: C.stone, fontWeight: 300 }}>3 nights · 2 guests</div>
-          </div>
-        </div>
-
         <div className="scroll-hint" style={{ position: 'absolute', bottom: 36, right: 56, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: 0.35 }}>
           <span className="label" style={{ color: C.stoneL, fontSize: 9, writingMode: 'vertical-rl' }}>Scroll</span>
           <div style={{ width: 1, height: 40, background: `linear-gradient(${C.stoneL}, transparent)` }} />
@@ -718,9 +625,9 @@ export function LandingPage() {
 
           <div className="pain-grid">
             {PAIN_CARDS.map((card, i) => (
+              <div key={i} className={`reveal d${i + 1}`}>
               <div
-                key={i}
-                className={`pain-card reveal d${i + 1}${painOpen === i ? ' open' : ''}`}
+                className={`pain-card${painOpen === i ? ' open' : ''}`}
                 onClick={() => setPainOpen(painOpen === i ? null : i)}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -767,6 +674,7 @@ export function LandingPage() {
                   </div>
                 </div>
               </div>
+              </div>
             ))}
           </div>
         </div>
@@ -801,7 +709,6 @@ export function LandingPage() {
                   <span className="svc-acc-num">{svc.num}</span>
                   <div style={{ flex: 1 }}>
                     <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
-                    <div className="svc-acc-sub">{svc.sub}</div>
                   </div>
                   <svg
                     width="16" height="16" viewBox="0 0 16 16"
@@ -811,29 +718,16 @@ export function LandingPage() {
                   </svg>
                 </div>
 
-                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 1200 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                  <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.85, fontWeight: 300, marginBottom: 24, maxWidth: 820 }}>
-                    {svc.desc}
-                  </p>
-
-                  <div className={svc.cols === 3 ? 'svc-feat-grid-3' : 'svc-feat-grid'}>
-                    {svc.features.map((f, fi) => (
-                      <div key={fi} className="svc-feat-card">
-                        <div className="svc-feat-head">{f.head}</div>
-                        <div className="svc-feat-body">{f.body}</div>
-                      </div>
-                    ))}
+                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 600 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
+                  <div style={{ padding: '28px 0 36px', borderTop: '1px solid rgba(255,255,255,0.06)', maxWidth: 680 }}>
+                    <p style={{ fontSize: 16, color: C.stone, lineHeight: 2, fontWeight: 300, marginBottom: 28 }}>
+                      {svc.desc}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 28, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                      <span style={{ fontSize: 13, color: C.siennaL, fontWeight: 400, letterSpacing: 0.3, lineHeight: 1.6 }}>{svc.result}</span>
+                    </div>
                   </div>
-
-                  <div className="svc-result-bar" style={{ marginBottom: 8 }}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" style={{ flexShrink: 0 }}>
-                      <circle cx="8" cy="8" r="7" stroke={C.siennaL} strokeWidth="1" fill="none"/>
-                      <polyline points="4.5,8 7,10.5 11.5,5.5" stroke={C.siennaL} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span style={{ fontSize: 13, color: C.siennaL, fontWeight: 400, lineHeight: 1.6 }}>{svc.result}</span>
-                  </div>
-
-                  <div style={{ height: 32 }} />
                 </div>
               </div>
             ))}
@@ -1216,7 +1110,7 @@ export function LandingPage() {
         <div className="about-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div className="reveal about-img" style={{ position: 'relative', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
             <img
-              src={propertyHero}
+              src={propertyAbout2}
               alt="A Bali property at dusk"
               style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
             />
