@@ -141,10 +141,10 @@ const CSS = `
   @media (max-width:700px) { .sec-header { grid-template-columns:1fr; } }
 
   /* About grid */
-  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,80px); align-items:start; }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,80px); align-items:stretch; }
   @media (max-width:760px) { .about-grid { grid-template-columns:1fr; } }
-  .about-img { aspect-ratio:4/5; }
-  @media (max-width:760px) { .about-img { aspect-ratio:16/9; } }
+  .about-img { min-height:400px; }
+  @media (max-width:760px) { .about-img { min-height:260px; } }
 
   /* Stats grid */
   .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); }
@@ -273,8 +273,8 @@ const ONBOARD = [
 const SERVICES_ACC = [
   {
     num: '01',
-    title: 'Four platforms. Most owners use one.',
-    desc: 'Most owners set up Airbnb and stop there. We get your property live on all four — Airbnb, Booking.com, Agoda, and Traveloka — fully written, photographed, and optimized for each. Every platform reaches a different kind of guest. You need to be on all of them.',
+    title: 'Multiple OTAs. Most owners use just one.',
+    desc: 'Most owners set up Airbnb and stop there. We get your property live across all the major booking platforms — Airbnb, Booking.com, Agoda, and Traveloka — fully written, photographed, and optimised for each. Every platform reaches a different kind of guest. You need to be visible on all of them.',
     result: 'Your property is visible and bookable everywhere guests are looking.',
   },
   {
@@ -428,7 +428,7 @@ export function LandingPage() {
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12 }}>Chat with us</button>
-          <button className="btn-primary" style={{ padding: '9px 20px', fontSize: 12 }}>Grow with us</button>
+          <button className="btn-primary" style={{ padding: '9px 20px', fontSize: 12 }}>Grow with Nakama</button>
         </div>
       </nav>
 
@@ -713,15 +713,28 @@ export function LandingPage() {
                   </svg>
                 </div>
 
-                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 400 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                  <div style={{ padding: '4px 0 36px clamp(28px,3.5vw,48px)', maxWidth: 640 }}>
-                    <p style={{ fontSize: 16, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 28 }}>
+                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 640 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
+                  <div style={{ padding: '4px 0 36px clamp(28px,3.5vw,48px)' }}>
+                    <p style={{ fontSize: 16, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 28, maxWidth: 640 }}>
                       {svc.desc}
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, maxWidth: 640, marginBottom: i === 0 ? 28 : 0 }}>
                       <div style={{ width: 28, height: 1, background: C.sienna, flexShrink: 0 }}/>
                       <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
                     </div>
+                    {i === 0 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, maxWidth: 640 }}>
+                        {['Airbnb', 'Booking.com', 'Agoda', 'Traveloka'].map((platform) => (
+                          <div key={platform} style={{ padding: '14px 12px', border: `1px solid rgba(42,96,68,0.18)`, background: `rgba(42,96,68,0.04)` }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                              <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.siennaL, flexShrink: 0 }} />
+                              <span style={{ fontSize: 8, color: C.siennaL, fontFamily: "'Jost',sans-serif", letterSpacing: 1.5 }}>LIVE</span>
+                            </div>
+                            <div style={{ fontSize: 11, color: C.cream, fontWeight: 500, fontFamily: "'Jost',sans-serif", lineHeight: 1.3 }}>{platform}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -788,7 +801,7 @@ export function LandingPage() {
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
-            <div style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', minHeight: 380 }}>
               {/* Progress bar */}
               <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', position: 'relative', flexShrink: 0 }}>
                 <div style={{
@@ -1048,6 +1061,7 @@ export function LandingPage() {
                 background: s.highlight ? C.bgSoft : 'transparent',
                 border: s.highlight ? `1px solid rgba(42,96,68,0.22)` : `1px solid rgba(0,0,0,0.07)`,
                 padding: 'clamp(20px,3vw,28px)',
+                display: 'flex', flexDirection: 'column',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <span className="display" style={{ fontSize: 18, fontWeight: 700, color: s.highlight ? C.siennaL : C.sienna }}>{s.num}</span>
@@ -1055,7 +1069,7 @@ export function LandingPage() {
                 </div>
                 <div className="display" style={{ fontSize: 'clamp(15px,1.8vw,18px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 10 }}>{s.title}</div>
                 <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.8, fontWeight: 300, marginBottom: 16 }}>{s.body}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 'auto', paddingTop: 16 }}>
                   {s.tags.map(t => (
                     <span key={t} style={{
                       fontSize: 9, letterSpacing: 1.2, color: C.stone, fontFamily: "'Jost',sans-serif",
@@ -1199,38 +1213,26 @@ export function LandingPage() {
       {/* CONVICTIONS */}
       <section id="stories" className="sec-pad" style={{ background: C.bgMid }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div className="sec-header">
+          <div className="sec-header" style={{ marginBottom: 'clamp(36px,5vw,56px)' }}>
             <div className="reveal">
               <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 16 }}>What we believe</span>
-              <h2 className="display" style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 700, lineHeight: 1.1, color: C.cream }}>
+              <h2 className="display" style={{ fontSize: 'clamp(24px,3.2vw,38px)', fontWeight: 700, lineHeight: 1.1, color: C.cream }}>
                 Our founding<br />convictions.
               </h2>
             </div>
           </div>
-          {[
-            {
-              quote: "A property without a clear identity is just another listing. With one — a real name, a story, a visual language — it becomes a destination. Guests seek it out. They return. They recommend it.",
-              attr:  'On brand building',
-            },
-            {
-              quote: "Technology should work as hard as you do. When your WhatsApp responds within seconds and your calendar never double-books, your energy goes where it should: into the property itself.",
-              attr:  'On automation',
-            },
-            {
-              quote: "We don't consider a project finished when it launches. We consider it started. Your property grows, the market shifts, guests evolve — and we stay alongside to adjust and improve.",
-              attr:  'On partnership',
-            },
-          ].map((t, i) => (
-            <div key={i} className={`reveal d${i % 3} testi`}>
-              <p className="display" style={{ fontSize: 'clamp(16px,2.2vw,22px)', fontWeight: 400, color: C.cream, opacity: 0.82, lineHeight: 1.75, marginBottom: 24, maxWidth: 820 }}>"{t.quote}"</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ width: 1, height: 28, background: C.sienna }} />
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 400, color: C.stone, fontFamily: "'Jost',sans-serif", letterSpacing: '0.06em' }}>Nakama · {t.attr}</div>
-                </div>
-              </div>
+          <div className="reveal d1" style={{ maxWidth: 760, borderTop: `1px solid rgba(0,0,0,0.08)`, paddingTop: 44 }}>
+            <p style={{ fontSize: 'clamp(14px,1.7vw,16px)', color: C.stone, lineHeight: 2.0, fontWeight: 300 }}>
+              Nakama was built on a simple conviction: most property investors in Bali are sitting on more potential than they realise — not because of the property itself, but because of everything that surrounds it. A clear identity. A digital presence guests can find and trust. Systems that work whether you are available or not. These are not extras. They are the difference between a listing and a destination.
+            </p>
+            <p style={{ fontSize: 'clamp(14px,1.7vw,16px)', color: C.stone, lineHeight: 2.0, fontWeight: 300, marginTop: 20 }}>
+              We built Nakama to close that gap — to give property owners the same quality of branding and day-to-day infrastructure that the best boutique hotels take for granted, without the large agency overhead or the complexity. And we don't walk away at launch. We consider a property started, not finished, the day it goes live. The market shifts, guests evolve, and new opportunities open up. We stay alongside to adjust, improve, and compound — because the strongest properties and the best-run brands are never done growing.
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 36 }}>
+              <div style={{ width: 1, height: 28, background: C.sienna }} />
+              <span style={{ fontSize: 11, color: C.stone, fontFamily: "'Jost',sans-serif", letterSpacing: '0.06em' }}>Nakama Partners · Our founding philosophy</span>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
