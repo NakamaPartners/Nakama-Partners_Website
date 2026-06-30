@@ -420,7 +420,7 @@ export function LandingPage() {
           <img
             src={nakamaLogo}
             alt="Nakama Partners"
-            style={{ height: 52, width: 'auto', display: 'block' }}
+            style={{ height: 68, width: 'auto', display: 'block' }}
           />
         </div>
         <div className="nav-links-center">
@@ -1265,7 +1265,7 @@ export function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: C.bgSoft, borderTop: `1px solid rgba(0,0,0,0.08)`, padding: 'clamp(44px,7vw,64px) clamp(22px,5vw,56px) 32px' }}>
+      <footer style={{ background: C.bg, borderTop: `1px solid rgba(0,0,0,0.08)`, padding: 'clamp(44px,7vw,64px) clamp(22px,5vw,56px) 32px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div className="footer-grid">
             <div className="footer-brand">
