@@ -132,16 +132,13 @@ const CSS = `
   .sec-pad    { padding: clamp(64px,10vw,120px) clamp(22px,5vw,64px); }
   .sec-pad-sm { padding: clamp(40px,6vw,72px)  clamp(22px,5vw,64px); }
 
-  /* Accordion services — enhanced */
-  .svc-acc-row { border-bottom:1px solid rgba(0,0,0,0.07); border-left:3px solid transparent; cursor:pointer; transition:border-color 0.28s ease, background 0.22s ease; }
-  .svc-acc-row:hover { background:rgba(42,96,68,0.025); }
-  .svc-acc-row.open-row { border-left-color:${C.sienna}; background:rgba(42,96,68,0.04); }
-  .svc-acc-header { display:flex; align-items:center; gap:20px; padding:28px 0 28px 18px; user-select:none; }
-  .svc-acc-header:hover .svc-acc-title { color:${C.stone}; opacity:1; }
-  .svc-acc-num { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; letter-spacing:2px; min-width:28px; transition:color 0.22s ease; }
-  .svc-acc-num.active { color:${C.sienna}; }
-  .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stoneL}; opacity:0.65; transition:color 0.22s ease, opacity 0.22s ease; flex:1; }
-  .svc-acc-title.active { color:${C.cream}; opacity:1; }
+  /* Accordion services */
+  .svc-acc-row { border-bottom:1px solid rgba(0,0,0,0.08); cursor:pointer; }
+  .svc-acc-header { display:flex; align-items:center; gap:20px; padding:28px 0; user-select:none; }
+  .svc-acc-header:hover .svc-acc-title { color:${C.cream}; }
+  .svc-acc-num { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; letter-spacing:2px; min-width:28px; }
+  .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
+  .svc-acc-title.active { color:${C.cream}; }
 
   /* Service visual scenes */
   @keyframes svcDash      { to { stroke-dashoffset: -24; } }
@@ -451,7 +448,8 @@ function ServiceVisual({ active }: { active: number }) {
     position: 'absolute', inset: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     opacity: scene === idx ? 1 : 0,
-    transition: 'opacity 0.55s ease',
+    transform: scene === idx ? 'translateY(0)' : 'translateY(10px)',
+    transition: 'opacity 0.6s cubic-bezier(.22,1,.36,1), transform 0.6s cubic-bezier(.22,1,.36,1)',
     pointerEvents: scene === idx ? 'auto' : 'none',
   });
 
@@ -465,7 +463,7 @@ function ServiceVisual({ active }: { active: number }) {
   ];
 
   return (
-    <div style={{ position:'sticky', top:120, borderRadius:6, overflow:'hidden', background:C.bgSoft, height:420 }}>
+    <div style={{ position:'sticky', top:120, borderRadius:4, overflow:'hidden', background:'#0D1A12', height:420 }}>
 
       {/* ── Scene 0: OTA platform network ── */}
       <div style={pane(0)}>
@@ -478,7 +476,7 @@ function ServiceVisual({ active }: { active: number }) {
           {/* Flowing dashed connection lines */}
           {platforms.map((p, i) => (
             <line key={i} x1={p.x} y1={p.y} x2={propX} y2={propY}
-              stroke={C.sienna} strokeWidth="1.3" strokeDasharray="5 7" opacity="0.28"
+              stroke={C.siennaL} strokeWidth="1.2" strokeDasharray="5 7" opacity="0.45"
               style={{ animation: `svcDash ${1.3 + i * 0.22}s linear infinite` }}
             />
           ))}
@@ -534,7 +532,7 @@ function ServiceVisual({ active }: { active: number }) {
           {/* Caption */}
           <text x={propX} y={280} textAnchor="middle"
             fontFamily="'Jost',sans-serif" fontSize="9" letterSpacing="2.5"
-            fill={C.sienna} opacity="0.55">LIVE ON 4 PLATFORMS</text>
+            fill="#9BBFA4" opacity="0.7">LIVE ON 4 PLATFORMS</text>
         </svg>
       </div>
 
@@ -543,33 +541,33 @@ function ServiceVisual({ active }: { active: number }) {
         <div style={{ display:'flex', alignItems:'center', gap:16, padding:'0 28px', width:'100%' }}>
 
           {/* Before */}
-          <div style={{ flex:1, background:'white', border:`1px solid rgba(0,0,0,0.1)`, borderRadius:6, overflow:'hidden', opacity:0.72 }}>
-            <div style={{ height:88, background:'#CACACA', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ flex:1, background:'#1A2820', border:`1px solid rgba(255,255,255,0.07)`, borderRadius:6, overflow:'hidden', opacity:0.8 }}>
+            <div style={{ height:88, background:'#2A3530', display:'flex', alignItems:'center', justifyContent:'center' }}>
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect x="3" y="8" width="30" height="22" rx="2" fill="#B0B0B0"/>
-                <circle cx="12" cy="17" r="5" fill="#909090"/>
-                <polygon points="6,30 15,20 23,28 28,22 33,30" fill="#A0A0A0"/>
+                <rect x="3" y="8" width="30" height="22" rx="2" fill="#3D4E45"/>
+                <circle cx="12" cy="17" r="5" fill="#2E3D35"/>
+                <polygon points="6,30 15,20 23,28 28,22 33,30" fill="#354840"/>
               </svg>
             </div>
             <div style={{ padding:'10px 13px 13px' }}>
-              <div style={{ fontSize:10, fontFamily:"'Jost',sans-serif", fontWeight:500, color:'#888', marginBottom:5, letterSpacing:0.5 }}>PROPERTY 12</div>
+              <div style={{ fontSize:10, fontFamily:"'Jost',sans-serif", fontWeight:500, color:'rgba(255,255,255,0.28)', marginBottom:5, letterSpacing:0.5 }}>PROPERTY 12</div>
               <div style={{ display:'flex', gap:2, marginBottom:5 }}>
-                {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:11, color: s<=3 ? '#F59E0B' : '#D5D5D5' }}>★</span>)}
+                {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:11, color: s<=3 ? '#F59E0B' : '#2E3D35' }}>★</span>)}
               </div>
-              <div style={{ fontSize:9, color:'#AAAAAA', fontFamily:"'Jost',sans-serif" }}>1 platform only</div>
+              <div style={{ fontSize:9, color:'rgba(255,255,255,0.2)', fontFamily:"'Jost',sans-serif" }}>1 platform only</div>
             </div>
           </div>
 
           {/* Arrow */}
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, flexShrink:0 }}>
             <svg width="34" height="22" viewBox="0 0 34 22">
-              <path d="M1 11 L26 11 M20 4 L28 11 L20 18" stroke={C.sienna} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M1 11 L26 11 M20 4 L28 11 L20 18" stroke={C.siennaL} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span style={{ fontSize:7.5, fontFamily:"'Jost',sans-serif", color:C.sienna, letterSpacing:2 }}>BRAND</span>
+            <span style={{ fontSize:7.5, fontFamily:"'Jost',sans-serif", color:C.siennaL, letterSpacing:2 }}>BRAND</span>
           </div>
 
           {/* After */}
-          <div style={{ flex:1, background:'white', border:`1px solid rgba(42,96,68,0.3)`, borderRadius:6, overflow:'hidden', boxShadow:`0 6px 28px rgba(42,96,68,0.14)` }}>
+          <div style={{ flex:1, background:'#0F2418', border:`1px solid rgba(61,138,98,0.4)`, borderRadius:6, overflow:'hidden', boxShadow:`0 0 40px rgba(42,96,68,0.35)` }}>
             <div style={{ height:88, background:C.sienna, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
               <div style={{ position:'absolute', top:0, width:'55%', height:'100%', background:'rgba(255,255,255,0.07)', transform:'skewX(-18deg)', animation:'svcShine 4s ease 0.8s infinite' }}/>
               <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
@@ -592,7 +590,7 @@ function ServiceVisual({ active }: { active: number }) {
 
       {/* ── Scene 2: WhatsApp Automation ── */}
       <div style={pane(2)}>
-        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 6px 32px rgba(0,0,0,0.12)` }}>
+        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)` }}>
 
           {/* Header */}
           <div style={{ background:C.sienna, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}>
@@ -1021,11 +1019,11 @@ export function LandingPage() {
               {SERVICES_ACC.map((svc, i) => (
                 <div
                   key={i}
-                  className={`svc-acc-row${svcOpen === i ? ' open-row' : ''}`}
+                  className="svc-acc-row"
                   onClick={() => setSvcOpen(i)}
                 >
                   <div className="svc-acc-header">
-                    <span className={`svc-acc-num${svcOpen === i ? ' active' : ''}`}>{svc.num}</span>
+                    <span className="svc-acc-num">{svc.num}</span>
                     <div style={{ flex: 1 }}>
                       <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
                     </div>
@@ -1038,17 +1036,13 @@ export function LandingPage() {
                   </div>
 
                   <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 480 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                    <div style={{ padding: '0 0 32px 18px' }}>
+                    <div style={{ padding: '4px 0 32px clamp(24px,3vw,40px)' }}>
                       <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 24 }}>
                         {svc.desc}
                       </p>
-                      <div style={{
-                        display: 'inline-flex', alignItems: 'center',
-                        padding: '12px 18px',
-                        background: `rgba(42,96,68,0.07)`,
-                        borderLeft: `3px solid ${C.sienna}`,
-                      }}>
-                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 600, lineHeight: 1.5 }}>{svc.result}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                        <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
                       </div>
                     </div>
                   </div>
