@@ -228,12 +228,26 @@ const CSS = `
     /* Hero: tighten bottom padding */
     .hero-lower { grid-template-columns: 1fr !important; gap: 28px !important; }
 
-    /* Services: single column, hide visual */
+    /* Services: single column, show visual inline below accordion */
     .svc-grid       { grid-template-columns: 1fr !important; }
-    .svc-visual-col { display: none !important; }
+    .svc-visual-col { display: block !important; margin-top: 8px !important; }
+    .svc-visual-col > div {
+      position: relative !important;
+      top: auto !important;
+      height: 360px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+
+    /* Pain cards: single column */
+    .pain-cards { grid-template-columns: 1fr !important; }
 
     /* Pain rows: stack vertically */
     .pain-row { flex-direction: column !important; gap: 14px !important; }
+
+    /* Pipeline grid: 2-col on mobile */
+    .pipeline-grid { grid-template-columns: 1fr 1fr !important; }
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
@@ -252,9 +266,6 @@ const CSS = `
     /* ob pills: wrap tighter */
     .ob-pill { padding: 7px 13px !important; font-size: 8px !important; }
 
-    /* Pipeline: 1-col */
-    .pipeline-scroll { overflow-x: auto !important; }
-
     /* Trust bar */
     .trust-item { padding: 5px 12px !important; font-size: 11px !important; }
 
@@ -264,13 +275,14 @@ const CSS = `
 
     /* About grid */
     .about-grid { grid-template-columns: 1fr !important; }
-    .about-img  { min-height: 220px !important; }
+    .about-img  { min-height: 300px !important; }
   }
 
   @media (max-width: 480px) {
-    .stats-grid   { grid-template-columns: 1fr 1fr !important; }
-    .process-grid { grid-template-columns: 1fr 1fr !important; }
-    .footer-grid  { grid-template-columns: 1fr !important; }
+    .stats-grid    { grid-template-columns: 1fr 1fr !important; }
+    .process-grid  { grid-template-columns: 1fr 1fr !important; }
+    .pipeline-grid { grid-template-columns: 1fr !important; }
+    .footer-grid   { grid-template-columns: 1fr !important; }
     .svc-acc-title { font-size: 17px !important; }
   }
 `;
@@ -805,7 +817,7 @@ export function LandingPage() {
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(12px,2vw,20px)' }}>
+          <div className="pain-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(12px,2vw,20px)' }}>
 
             {/* Card 1 — invisible on platforms */}
             <div className="reveal d1" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
@@ -1353,7 +1365,7 @@ export function LandingPage() {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 2 }}>
+          <div className="pipeline-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 2 }}>
             {PIPELINE.map((s, i) => (
               <div key={i} className={`reveal d${i + 1}`} style={{
                 background: s.highlight ? C.bgSoft : 'transparent',
@@ -1423,13 +1435,13 @@ export function LandingPage() {
           </div>
           <div className="reveal d1">
             <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 16 }}>About Nakama</span>
-            <h2 className="display" style={{ fontSize: 'clamp(28px,3.8vw,44px)', fontWeight: 700, lineHeight: 1.1, color: C.cream, marginBottom: 24 }}>
+            <h2 className="display" style={{ fontSize: 'clamp(28px,3.8vw,44px)', fontWeight: 700, lineHeight: 1.1, color: C.cream, marginBottom: 28 }}>
               One vision.<br />Endless growth.
             </h2>
-            <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 16, fontWeight: 300 }}>
+            <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 24, fontWeight: 300 }}>
               Nakama was built on a single belief: that great branding is the most valuable investment a property owner can make. Not a logo. A full brand system that earns at every stage of the guest journey.
             </p>
-            <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 36, fontWeight: 300 }}>
+            <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, marginBottom: 32, fontWeight: 300 }}>
               We focus on the Bali and Southeast Asian market because it is one of the most competitive short-stay markets in the world, and the one where strong branding makes the biggest difference.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -1439,13 +1451,13 @@ export function LandingPage() {
                 'Long-term partnership, not a one-off project',
                 'Strategy, design, and technology, fully integrated',
               ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: 16, padding: '14px 0', borderBottom: `1px solid rgba(0,0,0,0.08)`, fontSize: 14, color: C.stone, fontWeight: 300, lineHeight: 1.6 }}>
+                <div key={i} style={{ display: 'flex', gap: 16, padding: '16px 0', borderBottom: `1px solid rgba(0,0,0,0.08)`, fontSize: 14, color: C.stone, fontWeight: 300, lineHeight: 1.6 }}>
                   <div style={{ width: 5, height: 5, borderRadius: '50%', background: C.sienna, flexShrink: 0, marginTop: 8 }}/>
                   <span>{item}</span>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 36 }}>
+            <div style={{ marginTop: 32 }}>
               <button className="btn-primary">Talk to us directly</button>
             </div>
           </div>
