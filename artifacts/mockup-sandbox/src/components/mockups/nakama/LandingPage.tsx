@@ -502,27 +502,114 @@ export function LandingPage() {
             </h2>
           </div>
 
-          <div>
-            {PAIN_POINTS.map((p, i) => (
-              <div key={i} className={`pain-row reveal d${Math.min(i + 1, 4)}`}>
-                <span style={{
-                  fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif",
-                  letterSpacing: 2, paddingTop: 5, flexShrink: 0, minWidth: 28,
-                }}>{p.num}</span>
-                <div>
-                  <p style={{
-                    fontSize: 'clamp(18px,2.2vw,24px)', fontWeight: 600,
-                    color: C.cream, lineHeight: 1.4, marginBottom: 10,
-                    fontFamily: "'Sora',sans-serif",
-                  }}>
-                    {p.headline}
-                  </p>
-                  <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.8, fontWeight: 300, maxWidth: 680 }}>
-                    {p.detail}
-                  </p>
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(12px,2vw,20px)' }}>
+
+            {/* Card 1 — invisible on most platforms */}
+            <div className="reveal d1" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <rect x="1"  y="1"  width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
+                  <rect x="20" y="1"  width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
+                  <rect x="1"  y="20" width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
+                  <rect x="20" y="20" width="15" height="15" rx="2" stroke={C.stoneL} strokeWidth="1.5" strokeDasharray="3 2"/>
+                  <line x1="27.5" y1="24" x2="27.5" y2="31" stroke={C.stoneL} strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="24" y1="27.5" x2="31" y2="27.5" stroke={C.stoneL} strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>01</span>
               </div>
-            ))}
+              <div>
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  You're only on one platform. Guests on three others will never find you.
+                </p>
+                <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
+                  Airbnb is the start, not the finish. Traveloka, Agoda, and Booking.com each reach guests who will never open Airbnb. Most owners never set them up.
+                </p>
+              </div>
+              <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, flexShrink: 0 }}/>
+                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>42% of regional bookings happen on Traveloka alone</span>
+              </div>
+            </div>
+
+            {/* Card 2 — looks like everyone else */}
+            <div className="reveal d2" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <rect x="1" y="6" width="34" height="24" rx="2" stroke={C.sienna} strokeWidth="1.5"/>
+                  <circle cx="18" cy="18" r="5.5" stroke={C.sienna} strokeWidth="1.5"/>
+                  <circle cx="29" cy="10" r="1.5" fill={C.sienna}/>
+                  <line x1="8" y1="28" x2="28" y2="28" stroke={C.stoneL} strokeWidth="1" strokeLinecap="round" strokeDasharray="3 2"/>
+                </svg>
+                <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>02</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  Phone photos and a blank description. Guests scroll past in two seconds.
+                </p>
+                <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
+                  In a market of 84,000 listings, guests decide on a first impression. Without a real brand, professional photography, and a story, there's nothing to make them stop.
+                </p>
+              </div>
+              <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, flexShrink: 0 }}/>
+                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>Professional photos bring 28% more bookings on average</span>
+              </div>
+            </div>
+
+            {/* Card 3 — slow reply */}
+            <div className="reveal d3" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <path d="M32 4H4a2 2 0 00-2 2v18a2 2 0 002 2h20l8 6V6a2 2 0 00-2-2z" stroke={C.sienna} strokeWidth="1.5" strokeLinejoin="round"/>
+                  <circle cx="23" cy="4" r="7" fill={C.bgMid} stroke={C.sienna} strokeWidth="1.5"/>
+                  <line x1="23" y1="1.5" x2="23" y2="4" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="23" y1="4" x2="25.5" y2="6" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="10" y1="14" x2="20" y2="14" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="10" y1="19" x2="16" y2="19" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                </svg>
+                <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>03</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  A guest messaged at midnight. You replied at 9am. They already booked.
+                </p>
+                <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
+                  Guests send the same inquiry to multiple properties at once. The one that replies first — professionally, instantly — gets the booking. Slow replies don't just frustrate. They lose the reservation entirely.
+                </p>
+              </div>
+              <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, flexShrink: 0 }}/>
+                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>48% of bookings go to whoever replies first</span>
+              </div>
+            </div>
+
+            {/* Card 4 — flat pricing */}
+            <div className="reveal d4" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <polyline points="3,28 10,20 16,24 24,12 33,8" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  <line x1="3" y1="33" x2="33" y2="33" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="3" y1="8"  x2="3"  y2="33" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <circle cx="10" cy="20" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
+                  <circle cx="24" cy="12" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
+                  <line x1="3" y1="20" x2="33" y2="20" stroke={C.stoneL} strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2.5"/>
+                </svg>
+                <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>04</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  You set one price and left it. The market moved every week without you.
+                </p>
+                <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
+                  Bali's rates shift with seasons, local events, and what competitors do. A static price leaves money on peak nights and loses guests on slow ones. Dynamic pricing adjusts so you don't have to.
+                </p>
+              </div>
+              <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, flexShrink: 0 }}/>
+                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>Dynamic pricing adds up to 30% revenue without extra bookings</span>
+              </div>
+            </div>
+
           </div>
 
         </div>
