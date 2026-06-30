@@ -445,7 +445,7 @@ export function LandingPage() {
             style={{
               position: 'absolute', inset: 0, width: '100%', height: '100%',
               objectFit: 'cover', objectPosition: 'center 40%',
-              opacity: 0.07,
+              opacity: 0.14,
             }}
           />
           <div style={{
