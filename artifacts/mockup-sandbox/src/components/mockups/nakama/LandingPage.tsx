@@ -1298,7 +1298,7 @@ export function LandingPage() {
             {[
               { head: 'Services', links: ['Property Websites', 'WhatsApp Automation', 'OTA Integration', 'Brand Strategy'] },
               { head: 'Company', links: ['About', 'Process', 'Our Work', 'Contact'] },
-              { head: 'Connect', links: ['hello@nakama.studio', 'WhatsApp us', 'LinkedIn', 'Instagram'] },
+              { head: 'Connect', links: ['contact@nakama.partners', 'WhatsApp us', 'LinkedIn', '@nakamapartners.id'] },
             ].map(col => (
               <div key={col.head}>
                 <div className="label" style={{ color: C.sienna, marginBottom: 16, fontSize: 9 }}>{col.head}</div>
