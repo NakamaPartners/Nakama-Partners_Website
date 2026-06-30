@@ -185,7 +185,14 @@ const CSS = `
 
   /* Marquee */
   @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-  .marquee-track { display:flex; width:max-content; animation:marquee 22s linear infinite; }
+  .marquee-track { display:flex; width:max-content; animation:marquee 32s linear infinite; }
+
+  /* Numbers grid */
+  .nums-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,0.05); }
+  @media (max-width:640px) { .nums-grid { grid-template-columns:repeat(2,1fr); } }
+
+  /* Feat card dark override */
+  .feat-card-dark { padding:clamp(28px,4vw,44px); background:${C.siennaD}; border:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:14px; }
 
   /* Atm glow */
   @keyframes atm { 0%,100% { opacity:1; } 50% { opacity:0.75; } }
@@ -803,6 +810,24 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* MARQUEE — dark scrolling band */}
+      <div style={{ background: C.cream, overflow: 'hidden' }}>
+        <div className="marquee-track" style={{ padding: '15px 0' }}>
+          {[0, 1].flatMap(r =>
+            ['OTA SETUP', 'BRAND DESIGN', 'WHATSAPP AUTOMATION', 'REVENUE GROWTH', 'BALI', 'SOUTHEAST ASIA', 'DIRECT BOOKINGS', 'PROPERTY WEBSITES'].map(item => (
+              <span key={`${r}-${item}`} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 28, paddingRight: 36,
+                fontFamily: "'Jost',sans-serif", fontSize: 10, letterSpacing: 3.5,
+                color: 'rgba(242,245,243,0.32)', whiteSpace: 'nowrap',
+              }}>
+                {item}
+                <span style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, display: 'inline-block', flexShrink: 0 }}/>
+              </span>
+            ))
+          )}
+        </div>
+      </div>
+
       {/* PROBLEM — editorial, no interaction */}
       <section id="pain" className="sec-pad" style={{ background: C.bgMid }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -1390,25 +1415,25 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* WHY NAKAMA */}
-      <section className="sec-pad" style={{ background: C.bgSoft }}>
+      {/* WHY NAKAMA — dark section */}
+      <section className="sec-pad" style={{ background: C.cream }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div className="reveal" style={{ marginBottom: 48 }}>
-            <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 16 }}>Why us</span>
-            <h2 className="display" style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 700, lineHeight: 1.1, color: C.cream }}>
+          <div className="reveal" style={{ marginBottom: 56 }}>
+            <span className="label" style={{ color: C.siennaL, display: 'block', marginBottom: 16 }}>Why us</span>
+            <h2 className="display" style={{ fontSize: 'clamp(28px,4vw,52px)', fontWeight: 800, lineHeight: 1.0, color: '#F2F5F3', letterSpacing: '-0.02em' }}>
               We grow with you.
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 2 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 1, background: 'rgba(255,255,255,0.04)' }}>
             {[
               { num: '01', head: 'Your property, our full focus.', body: 'Every property we take on receives our complete and undivided attention. No brief handed to a junior. No property lost in a large client list. We are invested in your outcomes.' },
               { num: '02', head: 'Deep market knowledge.', body: 'We have a thorough understanding of the Bali and Southeast Asian hospitality market — the guests, the platforms, the seasonality, and the competitive landscape that shapes results.' },
               { num: '03', head: 'Partners, not vendors.', body: "We don't deliver and disappear. Nakama stays — monitoring performance, refining systems, and evolving your brand as the market changes and your property grows." },
             ].map((card, i) => (
-              <div key={i} className={`reveal d${i + 1} feat-card`}>
-                <span className="label" style={{ color: C.sienna, fontSize: 10 }}>{card.num}</span>
-                <h3 className="display" style={{ fontSize: 'clamp(17px,2.2vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.25 }}>{card.head}</h3>
-                <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>{card.body}</p>
+              <div key={i} className={`reveal d${i + 1} feat-card-dark`}>
+                <span className="label" style={{ color: C.siennaL, fontSize: 10 }}>{card.num}</span>
+                <h3 className="display" style={{ fontSize: 'clamp(17px,2.2vw,21px)', fontWeight: 700, color: '#F2F5F3', lineHeight: 1.25 }}>{card.head}</h3>
+                <p style={{ fontSize: 14, color: 'rgba(242,245,243,0.48)', lineHeight: 1.85, fontWeight: 300 }}>{card.body}</p>
               </div>
             ))}
           </div>
@@ -1461,19 +1486,23 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="sec-pad-sm" style={{ background: C.bgSoft, borderTop: `1px solid rgba(0,0,0,0.07)`, borderBottom: `1px solid rgba(0,0,0,0.07)` }}>
-        <div className="stats-grid" style={{ maxWidth: 1100, margin: '0 auto', gap: 1, background: 'rgba(0,0,0,0.09)' }}>
+      {/* NUMBERS — dark contrast block */}
+      <section style={{ background: C.cream }}>
+        <div className="nums-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
           {[
-            ['Bespoke',    'Every property designed from the ground up', 'No templates. No shortcuts.'],
-            ['Integrated', 'Brand, website, and automation as one system', 'Not three separate vendors'],
-            ['Bilingual',  'English and Bahasa Indonesia', 'Across every guest touchpoint'],
-            ['Long-term',  'We stay and grow with your property', 'Not a one-off project'],
-          ].map(([head, label, sub], i) => (
-            <div key={head} className={`reveal d${i + 1}`} style={{ textAlign: 'center', padding: 'clamp(20px,4vw,40px) 16px', background: C.bgSoft }}>
-              <div className="display" style={{ fontSize: 'clamp(17px,2.2vw,22px)', fontWeight: 700, color: C.siennaL, lineHeight: 1.2 }}>{head}</div>
-              <div className="label" style={{ color: C.stone, marginTop: 14, fontSize: 10 }}>{label}</div>
-              <div style={{ fontSize: 12, color: C.stoneL, marginTop: 6, fontWeight: 300 }}>{sub}</div>
+            { num: '4',    unit: 'platforms',    sub: 'Airbnb, Booking.com, Agoda, Traveloka — plus your own direct booking site.' },
+            { num: '3',    unit: 'week launch',  sub: 'Average time from first call to a live brand, website, and listings.' },
+            { num: '100%', unit: 'bilingual',    sub: 'Every guest touchpoint in English and Bahasa Indonesia.' },
+            { num: '\u221e', unit: 'partnership', sub: 'We stay and grow with you. No delivery and disappear.' },
+          ].map(({ num, unit, sub }, i) => (
+            <div key={unit} className={`reveal d${i + 1}`} style={{
+              background: C.siennaD,
+              padding: 'clamp(40px,6vw,72px) clamp(20px,3.5vw,44px)',
+              display: 'flex', flexDirection: 'column',
+            }}>
+              <div className="display" style={{ fontSize: 'clamp(56px,7.5vw,96px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 10 }}>{num}</div>
+              <div className="label" style={{ color: C.siennaL, fontSize: 9, marginBottom: 'auto' }}>{unit}</div>
+              <p style={{ fontSize: 12, color: 'rgba(242,245,243,0.38)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 18, marginTop: 28 }}>{sub}</p>
             </div>
           ))}
         </div>
