@@ -1,0 +1,46 @@
+You are writing the problem statement section for a Bali villa 
+onboarding company's website called Nakama. Target audience: 
+foreign villa owners (Australian, European) who just finished 
+building or buying a villa in Bali and are not getting bookings.
+
+Write 4 pain point cards. Each card needs:
+- A card number (01, 02, 03, 04)
+- A short punchy headline (max 10 words) — write it like a 
+  situation the owner is living right now, not a feature description
+- A 2–3 sentence body — sell the pain, speak directly to them, 
+  no corporate language
+- One hard stat as a bullet point at the bottom
+
+Tone: direct, human, slightly uncomfortable — make them feel seen. 
+No em dashes. No bullet lists in the body. Write like you're 
+describing their exact situation back to them.
+
+The 4 pain points:
+
+01 — OTA CONNECTIONS / NOT GETTING BOOKINGS
+The owner listed on Airbnb and got nothing. They don't realize 
+they're invisible on the platforms where most bookings actually 
+happen. Frame it as: you're listed, but nobody is finding you.
+Stat: 42% of regional bookings happen on Traveloka alone
+
+02 — VILLA EXPOSURE / NO VISIBILITY OR BRANDING
+The villa has no website, no Instagram presence, no Google 
+listing. Guests who find them on one OTA can't verify them 
+anywhere else and lose trust. Frame it as: your villa exists 
+but it's not visible anywhere guests look to confirm a booking.
+Stat: Professional photos bring 28% more bookings on average
+
+03 — OPERATIONAL HEADACHE / NOBODY HANDLES GUESTS PROPERLY
+The owner has to be on standby 24/7. Guests message at midnight. 
+There's no check-in guide, no automated responses, no system. 
+Every booking creates manual work and stress. Frame it as: 
+you're running a hotel with no staff and no systems.
+Stat: 48% of bookings go to whoever replies first
+
+04 — LOW PROFIT / NOBODY OPTIMIZES PRICING OR ALLOTMENT
+The owner set a flat rate and never touched it. They're 
+undercharging on peak nights and empty on slow ones. No dynamic 
+pricing, no seasonal strategy, no calendar management. Frame it 
+as: your villa is earning a fraction of what it should.
+Stat: Dynamic pricing adds up to 30% more revenue without 
+extra bookings

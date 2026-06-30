@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import nakamaLogo    from '@/assets/nakama-logo-new.png';
 import propertyHero  from '@/assets/property-hero.png';
 import propertyAbout from '@/assets/property-about2.png';
+import ctaBg         from '@/assets/cta-bg.png';
 
 /*
   NAKAMA PARTNERS — Light theme landing page
@@ -504,7 +505,7 @@ export function LandingPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(12px,2vw,20px)' }}>
 
-            {/* Card 1 — invisible on most platforms */}
+            {/* Card 1 — invisible on platforms */}
             <div className="reveal d1" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -518,11 +519,11 @@ export function LandingPage() {
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>01</span>
               </div>
               <div>
-                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
-                  You're only on one platform. Guests on three others will never find you.
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,20px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  You're listed on Airbnb. Nobody is finding you.
                 </p>
                 <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
-                  Airbnb is the start, not the finish. Traveloka, Agoda, and Booking.com each reach guests who will never open Airbnb. Most owners never set them up.
+                  You did the right thing. You set up a listing, took some photos, and hit publish. The problem is that Airbnb is where you started, not where most guests are looking. Traveloka, Agoda, and Booking.com each reach completely different audiences. Right now, you don't exist on any of them.
                 </p>
               </div>
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -531,23 +532,27 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Card 2 — looks like everyone else */}
+            {/* Card 2 — no visibility, no brand */}
             <div className="reveal d2" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <rect x="1" y="6" width="34" height="24" rx="2" stroke={C.sienna} strokeWidth="1.5"/>
-                  <circle cx="18" cy="18" r="5.5" stroke={C.sienna} strokeWidth="1.5"/>
-                  <circle cx="29" cy="10" r="1.5" fill={C.sienna}/>
-                  <line x1="8" y1="28" x2="28" y2="28" stroke={C.stoneL} strokeWidth="1" strokeLinecap="round" strokeDasharray="3 2"/>
+                  <circle cx="18" cy="14" r="10" stroke={C.sienna} strokeWidth="1.5"/>
+                  <circle cx="18" cy="14" r="4" stroke={C.sienna} strokeWidth="1.5"/>
+                  <line x1="18" y1="1" x2="18" y2="4"   stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="18" y1="24" x2="18" y2="27" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="5"  y1="14" x2="8"  y2="14" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="28" y1="14" x2="31" y2="14" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="3" y1="29" x2="33" y2="29" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 2"/>
+                  <line x1="3" y1="33" x2="33" y2="33" stroke={`${C.stoneL}55`} strokeWidth="1" strokeLinecap="round"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>02</span>
               </div>
               <div>
-                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
-                  Phone photos and a blank description. Guests scroll past in two seconds.
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,20px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  Your property exists. Guests can't find it anywhere.
                 </p>
                 <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
-                  In a market of 84,000 listings, guests decide on a first impression. Without a real brand, professional photography, and a story, there's nothing to make them stop.
+                  When a guest likes your OTA listing, they open a new tab and search your property name to confirm it's real. There's no website. No Instagram. No Google presence. That single moment of doubt costs you the booking. Trust doesn't come from one listing.
                 </p>
               </div>
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -556,25 +561,25 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Card 3 — slow reply */}
+            {/* Card 3 — no systems, no staff */}
             <div className="reveal d3" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
                   <path d="M32 4H4a2 2 0 00-2 2v18a2 2 0 002 2h20l8 6V6a2 2 0 00-2-2z" stroke={C.sienna} strokeWidth="1.5" strokeLinejoin="round"/>
-                  <circle cx="23" cy="4" r="7" fill={C.bgMid} stroke={C.sienna} strokeWidth="1.5"/>
-                  <line x1="23" y1="1.5" x2="23" y2="4" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="23" y1="4" x2="25.5" y2="6" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="10" y1="14" x2="20" y2="14" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <line x1="10" y1="19" x2="16" y2="19" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <circle cx="26" cy="5" r="6" fill={C.bgMid} stroke={C.sienna} strokeWidth="1.5"/>
+                  <line x1="26" y1="2.5" x2="26" y2="5"   stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="26" y1="5"   x2="28.2" y2="7" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
+                  <line x1="9" y1="13" x2="19" y2="13" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="9" y1="18" x2="15" y2="18" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>03</span>
               </div>
               <div>
-                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
-                  A guest messaged at midnight. You replied at 9am. They already booked.
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,20px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  You're running a hotel. With no staff and no systems.
                 </p>
                 <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
-                  Guests send the same inquiry to multiple properties at once. The one that replies first — professionally, instantly — gets the booking. Slow replies don't just frustrate. They lose the reservation entirely.
+                  A guest messages at midnight asking about check-in. Another wants to know the address. A third is asking if they can bring a pet. All of it lands on your phone, manually, every single time. There is no guide, no automation, no one handling it but you.
                 </p>
               </div>
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -583,30 +588,30 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Card 4 — flat pricing */}
+            {/* Card 4 — earning a fraction */}
             <div className="reveal d4" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <polyline points="3,28 10,20 16,24 24,12 33,8" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  <line x1="3" y1="33" x2="33" y2="33" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <line x1="3" y1="8"  x2="3"  y2="33" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <circle cx="10" cy="20" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
-                  <circle cx="24" cy="12" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
-                  <line x1="3" y1="20" x2="33" y2="20" stroke={C.stoneL} strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2.5"/>
+                  <polyline points="3,30 10,22 17,26 25,14 33,10" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  <line x1="3"  y1="34" x2="33" y2="34" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="3"  y1="10" x2="3"  y2="34" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                  <circle cx="10" cy="22" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
+                  <circle cx="25" cy="14" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
+                  <line x1="3" y1="22" x2="33" y2="22" stroke={C.stoneL} strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2.5"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>04</span>
               </div>
               <div>
-                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,21px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
-                  You set one price and left it. The market moved every week without you.
+                <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(16px,1.8vw,20px)', fontWeight: 700, color: C.cream, lineHeight: 1.35, marginBottom: 12 }}>
+                  Your property earns a fraction of what it should.
                 </p>
                 <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.85, fontWeight: 300 }}>
-                  Bali's rates shift with seasons, local events, and what competitors do. A static price leaves money on peak nights and loses guests on slow ones. Dynamic pricing adjusts so you don't have to.
+                  You set a rate when you launched and left it. But Bali's market moves constantly. On peak nights you're undercharging. On slow nights you're sitting empty. There is no dynamic strategy, no seasonal logic, no one watching the calendar. The math is quietly working against you.
                 </p>
               </div>
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, flexShrink: 0 }}/>
-                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>Dynamic pricing adds up to 30% revenue without extra bookings</span>
+                <span style={{ fontSize: 12, color: C.sienna, fontFamily: "'Jost',sans-serif", fontWeight: 500 }}>Dynamic pricing adds up to 30% more revenue without extra bookings</span>
               </div>
             </div>
 
@@ -1175,8 +1180,13 @@ export function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="sec-pad" style={{ background: C.bg, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse 55% 70% at 50% 100%, rgba(42,96,68,0.10) 0%, transparent 65%)`, pointerEvents: 'none' }} />
+      <section className="sec-pad" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <img
+          src={ctaBg}
+          alt=""
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', pointerEvents: 'none' }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(242,240,235,0.72)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <span className="reveal d1 label" style={{ color: C.sienna, display: 'block', marginBottom: 24, fontSize: 10 }}>Begin the journey</span>
           <h2 className="reveal d2 display" style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 800, lineHeight: 1.0, color: C.cream, marginBottom: 24, letterSpacing: '-0.03em' }}>
