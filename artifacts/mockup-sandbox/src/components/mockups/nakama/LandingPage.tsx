@@ -508,13 +508,24 @@ export function LandingPage() {
             {/* Card 1 — invisible on platforms */}
             <div className="reveal d1" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <rect x="1"  y="1"  width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
-                  <rect x="20" y="1"  width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
-                  <rect x="1"  y="20" width="15" height="15" rx="2" stroke={C.sienna}  strokeWidth="1.5"/>
-                  <rect x="20" y="20" width="15" height="15" rx="2" stroke={C.stoneL} strokeWidth="1.5" strokeDasharray="3 2"/>
-                  <line x1="27.5" y1="24" x2="27.5" y2="31" stroke={C.stoneL} strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="24" y1="27.5" x2="31" y2="27.5" stroke={C.stoneL} strokeWidth="1.5" strokeLinecap="round"/>
+                {/* Icon 01: Ghost listing in magnifying glass — "searching but you don't appear" */}
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  {/* YOUR listing pin — hollow, dashed, ghosted */}
+                  <path d="M13 2C9.1 2 6 5.1 6 9c0 5.5 7 13 7 13s7-7.5 7-13c0-3.9-3.1-7-7-7z"
+                    stroke={C.stoneL} strokeWidth="1.5" strokeDasharray="2.5 2" fill="none"/>
+                  <circle cx="13" cy="9" r="2.2" stroke={C.stoneL} strokeWidth="1.1" strokeDasharray="2 1.5" fill="none"/>
+                  {/* Competitor pin — small, solid */}
+                  <circle cx="30" cy="6" r="2.5" fill={`${C.sienna}22`} stroke={C.sienna} strokeWidth="1.2"/>
+                  <line x1="30" y1="8.5" x2="30" y2="12" stroke={C.sienna} strokeWidth="1.2" strokeLinecap="round"/>
+                  {/* Competitor pin 2 */}
+                  <circle cx="36" cy="14" r="2" fill={`${C.sienna}22`} stroke={C.sienna} strokeWidth="1.1"/>
+                  <line x1="36" y1="16" x2="36" y2="19" stroke={C.sienna} strokeWidth="1.1" strokeLinecap="round"/>
+                  {/* Magnifying glass — searching but finding nothing */}
+                  <circle cx="22" cy="27" r="10" stroke={C.sienna} strokeWidth="1.5"/>
+                  <line x1="29.2" y1="34.2" x2="38" y2="43" stroke={C.sienna} strokeWidth="1.5" strokeLinecap="round"/>
+                  {/* X inside lens = not found */}
+                  <line x1="18" y1="23" x2="26" y2="31" stroke={C.stoneL} strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="26" y1="23" x2="18" y2="31" stroke={C.stoneL} strokeWidth="1.3" strokeLinecap="round"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>01</span>
               </div>
@@ -535,15 +546,27 @@ export function LandingPage() {
             {/* Card 2 — no visibility, no brand */}
             <div className="reveal d2" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <circle cx="18" cy="14" r="10" stroke={C.sienna} strokeWidth="1.5"/>
-                  <circle cx="18" cy="14" r="4" stroke={C.sienna} strokeWidth="1.5"/>
-                  <line x1="18" y1="1" x2="18" y2="4"   stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="18" y1="24" x2="18" y2="27" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="5"  y1="14" x2="8"  y2="14" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="28" y1="14" x2="31" y2="14" stroke={C.stoneL} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="3" y1="29" x2="33" y2="29" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 2"/>
-                  <line x1="3" y1="33" x2="33" y2="33" stroke={`${C.stoneL}55`} strokeWidth="1" strokeLinecap="round"/>
+                {/* Icon 02: OTA listing → broken arrow → empty website (trust-verification gap) */}
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  {/* OTA listing card (left) — guest found you here */}
+                  <rect x="1" y="10" width="13" height="18" rx="2" stroke={C.sienna} strokeWidth="1.4"/>
+                  <rect x="3" y="12" width="9" height="7" rx="0.8" fill={`${C.sienna}18`}/>
+                  <line x1="3" y1="22" x2="9"  y2="22" stroke={C.sienna} strokeWidth="1" strokeLinecap="round" opacity="0.6"/>
+                  <line x1="3" y1="25" x2="7"  y2="25" stroke={C.sienna} strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+                  {/* Checkmark badge on OTA card */}
+                  <circle cx="14" cy="11" r="4" fill={C.sienna}/>
+                  <polyline points="11.8,11 13.4,12.8 16.5,9.2" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  {/* Broken connecting arrow */}
+                  <line x1="16" y1="19" x2="19" y2="19" stroke={C.stone} strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="21" y1="19" x2="24" y2="19" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+                  <polyline points="22,16.5 24.5,19 22,21.5" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  {/* Browser/website frame (right) — empty, not found */}
+                  <rect x="26" y="7" width="13" height="24" rx="1.5" stroke={C.stoneL} strokeWidth="1.4" strokeDasharray="2.5 2"/>
+                  <line x1="26" y1="12" x2="39" y2="12" stroke={C.stoneL} strokeWidth="0.9" opacity="0.5"/>
+                  <rect x="28" y="8.5" width="8" height="2" rx="0.8" fill={`${C.stoneL}30`}/>
+                  {/* X = page not found */}
+                  <line x1="29" y1="17" x2="36" y2="24" stroke={C.stoneL} strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="36" y1="17" x2="29" y2="24" stroke={C.stoneL} strokeWidth="1.3" strokeLinecap="round"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>02</span>
               </div>
@@ -564,13 +587,29 @@ export function LandingPage() {
             {/* Card 3 — no systems, no staff */}
             <div className="reveal d3" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <path d="M32 4H4a2 2 0 00-2 2v18a2 2 0 002 2h20l8 6V6a2 2 0 00-2-2z" stroke={C.sienna} strokeWidth="1.5" strokeLinejoin="round"/>
-                  <circle cx="26" cy="5" r="6" fill={C.bgMid} stroke={C.sienna} strokeWidth="1.5"/>
-                  <line x1="26" y1="2.5" x2="26" y2="5"   stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="26" y1="5"   x2="28.2" y2="7" stroke={C.sienna} strokeWidth="1.4" strokeLinecap="round"/>
-                  <line x1="9" y1="13" x2="19" y2="13" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <line x1="9" y1="18" x2="15" y2="18" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
+                {/* Icon 03: Phone + midnight message bubbles — manual overwhelm at night */}
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  {/* Phone body */}
+                  <rect x="13" y="10" width="14" height="24" rx="2.5" stroke={C.sienna} strokeWidth="1.4"/>
+                  <line x1="17" y1="10" x2="23" y2="10" stroke={C.sienna} strokeWidth="2" strokeLinecap="round" opacity="0.25"/>
+                  {/* Message bubble 1 — left side (incoming, old) */}
+                  <rect x="1" y="8" width="11" height="8" rx="2" fill={`${C.sienna}15`} stroke={C.sienna} strokeWidth="1.2"/>
+                  <path d="M4 16 L5 18 L7 16" fill={`${C.sienna}15`} stroke={C.sienna} strokeWidth="1.1" strokeLinejoin="round"/>
+                  <line x1="3.5" y1="11" x2="9.5" y2="11" stroke={C.sienna} strokeWidth="0.9" strokeLinecap="round" opacity="0.55"/>
+                  <line x1="3.5" y1="13.5" x2="7.5" y2="13.5" stroke={C.sienna} strokeWidth="0.9" strokeLinecap="round" opacity="0.4"/>
+                  {/* Message bubble 2 — top right (recent) */}
+                  <rect x="28" y="4" width="11" height="8" rx="2" fill={`${C.sienna}15`} stroke={C.sienna} strokeWidth="1.2"/>
+                  <path d="M31 12 L32 14 L34 12" fill={`${C.sienna}15`} stroke={C.sienna} strokeWidth="1.1" strokeLinejoin="round"/>
+                  <line x1="30" y1="7"  x2="37" y2="7"  stroke={C.sienna} strokeWidth="0.9" strokeLinecap="round" opacity="0.55"/>
+                  <line x1="30" y1="9.5" x2="34" y2="9.5" stroke={C.sienna} strokeWidth="0.9" strokeLinecap="round" opacity="0.4"/>
+                  {/* Message bubble 3 — right (unanswered, dashed) */}
+                  <rect x="28" y="20" width="11" height="8" rx="2" fill={`${C.stoneL}15`} stroke={C.stoneL} strokeWidth="1.2" strokeDasharray="2.5 2"/>
+                  <line x1="30" y1="23" x2="37" y2="23" stroke={C.stoneL} strokeWidth="0.9" strokeLinecap="round" opacity="0.4"/>
+                  <line x1="30" y1="25.5" x2="34" y2="25.5" stroke={C.stoneL} strokeWidth="0.9" strokeLinecap="round" opacity="0.3"/>
+                  {/* Clock (bottom-left) — midnight indicator */}
+                  <circle cx="7" cy="33" r="5.5" stroke={C.stoneL} strokeWidth="1.2" fill="none"/>
+                  <line x1="7" y1="33" x2="7" y2="28.5" stroke={C.stoneL} strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="7" y1="33" x2="10" y2="33" stroke={C.stoneL} strokeWidth="1.1" strokeLinecap="round"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>03</span>
               </div>
@@ -591,13 +630,29 @@ export function LandingPage() {
             {/* Card 4 — earning a fraction */}
             <div className="reveal d4" style={{ background: C.bg, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <polyline points="3,30 10,22 17,26 25,14 33,10" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  <line x1="3"  y1="34" x2="33" y2="34" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <line x1="3"  y1="10" x2="3"  y2="34" stroke={C.stoneL} strokeWidth="1.2" strokeLinecap="round"/>
-                  <circle cx="10" cy="22" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
-                  <circle cx="25" cy="14" r="2.5" fill={C.bg} stroke={C.sienna} strokeWidth="1.4"/>
-                  <line x1="3" y1="22" x2="33" y2="22" stroke={C.stoneL} strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 2.5"/>
+                {/* Icon 04: Calendar with flat bars + peak arrows — missed revenue */}
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  {/* Calendar frame */}
+                  <rect x="1" y="6" width="38" height="32" rx="2" stroke={C.sienna} strokeWidth="1.4"/>
+                  <line x1="1" y1="14" x2="39" y2="14" stroke={C.sienna} strokeWidth="0.9"/>
+                  {/* Hanger rings */}
+                  <line x1="11" y1="4" x2="11" y2="9" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round"/>
+                  <line x1="29" y1="4" x2="29" y2="9" stroke={C.sienna} strokeWidth="1.6" strokeLinecap="round"/>
+                  {/* Mon–Fri flat bars (all same height — the flat-rate problem) */}
+                  <rect x="3"  y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8"/>
+                  <rect x="9"  y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8"/>
+                  <rect x="15" y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8"/>
+                  {/* Fri — PEAK but still flat */}
+                  <rect x="21" y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8" strokeDasharray="2 1.5"/>
+                  {/* Sat — PEAK but still flat */}
+                  <rect x="27" y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8" strokeDasharray="2 1.5"/>
+                  {/* Sun — PEAK but still flat */}
+                  <rect x="33" y="29" width="5" height="8" rx="0.5" fill={`${C.stoneL}35`} stroke={C.stoneL} strokeWidth="0.8" strokeDasharray="2 1.5"/>
+                  {/* Upward arrows on peak days — "should be earning here" */}
+                  <line x1="23.5" y1="28" x2="23.5" y2="20" stroke={C.sienna} strokeWidth="1.3" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+                  <polyline points="21,22 23.5,19 26,22" stroke={C.sienna} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  <line x1="29.5" y1="28" x2="29.5" y2="17" stroke={C.sienna} strokeWidth="1.3" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+                  <polyline points="27,19 29.5,16 32,19" stroke={C.sienna} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                 </svg>
                 <span style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", letterSpacing: 2 }}>04</span>
               </div>
