@@ -1,0 +1,26 @@
+You are writing the problem statement section for a Bali villa onboarding company's website. The target audience is foreign villa owners (Australian, European) who just finished building or buying a villa in Bali and don't know how to start earning from it.
+
+Write 4 pain point cards. Each card needs:
+- A short title (max 6 words)
+- A 2-sentence description selling the pain
+- One hard data stat with a source label
+- 3-4 bullet points expanding on what's actually going wrong
+- One "we solve this with..." line at the bottom
+
+Tone: direct, confident, data-backed. No corporate language. No em dashes. Write like you're talking to a smart friend who owns a villa and is losing money without knowing why.
+
+The 4 pain points in order:
+
+1. OTA VISIBILITY
+The owner is only on Airbnb. They're missing Booking.com, Agoda, and Traveloka entirely. Frame it as being invisible on platforms competitors already own. Key stat: Traveloka holds 42% of Indonesian OTA market share.
+
+2. BRAND & VISUAL IDENTITY
+The villa looks identical to 84,000+ other Bali listings. Guests decide in 2.5 seconds. Most owners skip professional photography. Key stats: professional photos = 28% more bookings, 26% higher nightly rate, 40% more earnings. 57% of owners still use phone photos.
+
+3. GUEST MANAGEMENT (operations)
+Slow replies cost bookings. No pre-arrival guide. No automated communication. Confused guests leave bad reviews. Key stats: 48% of bookings go to whoever replies first. Guests wait under 8 minutes before moving to the next listing. Properties below 4.5 stars get buried in search.
+
+4. REVENUE (dynamic pricing)
+Flat pricing is costing them money daily. They undercharge on peak dates, overcharge on slow ones. Key stats: 40% average revenue uplift with dynamic pricing. Bali discount rates jumped from 15% to 19% in one year. A 10-20% occupancy shortfall = tens of thousands in lost annual revenue.
+
+Do not pitch direct booking as its own pain point. Slip it in naturally where relevant inside other cards.

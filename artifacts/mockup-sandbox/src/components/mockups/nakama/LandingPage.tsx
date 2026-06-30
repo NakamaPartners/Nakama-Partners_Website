@@ -250,6 +250,22 @@ const CSS = `
   /* ── Atm glow ────────────────────────────────────────────── */
   @keyframes atm { 0%,100% { opacity:0.8; } 50% { opacity:1; } }
 
+  /* ── Pain grid ───────────────────────────────────────────── */
+  .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .pain-grid { grid-template-columns: 1fr; } }
+  .pain-card {
+    border: 1px solid rgba(255,255,255,0.08); padding: 28px 28px 0;
+    cursor: pointer; transition: border-color 0.25s ease, background 0.25s ease;
+    background: rgba(255,255,255,0.02);
+  }
+  .pain-card:hover { border-color: rgba(42,96,68,0.5); }
+  .pain-card.open  { border-color: ${C.sienna}; background: rgba(42,96,68,0.05); }
+  .pain-expand {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.55s cubic-bezier(.22,1,.36,1);
+  }
+  .pain-card.open .pain-expand { max-height: 360px; }
+
   /* ── Onboarding interactive ───────────────────────────────── */
   @keyframes obUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
   @keyframes obIn  { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
@@ -329,6 +345,90 @@ const ONBOARD = [
   },
 ];
 
+/* ── Pain point cards data ───────────────────────────────────  */
+const PAIN_CARDS = [
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect x="1"  y="1"  width="8" height="8" stroke={C.stone}  strokeWidth="1.2"/>
+        <rect x="13" y="1"  width="8" height="8" stroke={C.stone}  strokeWidth="1.2"/>
+        <rect x="1"  y="13" width="8" height="8" stroke={C.stone}  strokeWidth="1.2"/>
+        <rect x="13" y="13" width="8" height="8" stroke={C.sienna} strokeWidth="1.2"/>
+      </svg>
+    ),
+    title: 'Invisible on the platforms that matter',
+    body:  'Most new owners list on Airbnb and call it done. Three other platforms bring completely different audiences — and your competitors are already there.',
+    stat:  '42%',
+    statLabel: 'of Indonesian bookings happen on Traveloka alone',
+    bullets: [
+      'Booking.com and Agoda each target nationalities Airbnb barely reaches',
+      'Traveloka dominates the Indonesian domestic market your neighbours have locked in',
+      'Syncing availability across platforms requires the right tech stack from day one',
+      'Being absent from even one platform means losing qualified guests every single day',
+    ],
+    solve: 'full OTA setup and live calendar sync across all four platforms',
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect x="1" y="4" width="20" height="14" rx="1" stroke={C.stone} strokeWidth="1.2"/>
+        <circle cx="11" cy="11" r="3.5" stroke={C.stone} strokeWidth="1.2"/>
+        <circle cx="17" cy="7"  r="1"   fill={C.stone}/>
+      </svg>
+    ),
+    title: "Your property looks like everyone else's",
+    body:  'In a market of 84,000+ Bali listings, guests decide in 2.5 seconds whether to click or scroll past. Most properties look identical — and lose.',
+    stat:  '57%',
+    statLabel: "of villa owners still don't use professional photography",
+    bullets: [
+      'Professional photos bring 28% more bookings and 26% higher nightly rates on average',
+      'No distinct brand means no repeat guests and no word-of-mouth referrals',
+      'Generic descriptions rank lower in OTA algorithms that reward differentiation',
+      'A strong visual identity is the only real moat in an oversupplied market',
+    ],
+    solve: 'a full brand identity and a professional property shoot',
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <path d="M19 3H3a2 2 0 00-2 2v10a2 2 0 002 2h12l4 4V5a2 2 0 00-2-2z" stroke={C.stone} strokeWidth="1.2" strokeLinejoin="round"/>
+        <line x1="6" y1="8"  x2="16" y2="8"  stroke={C.stone} strokeWidth="1" strokeLinecap="round"/>
+        <line x1="6" y1="12" x2="12" y2="12" stroke={C.stone} strokeWidth="1" strokeLinecap="round"/>
+      </svg>
+    ),
+    title: 'Slow replies are costing you bookings',
+    body:  "Guests ask across WhatsApp, Airbnb, email, and Instagram at the same time. Slow replies don't just frustrate — they hand the booking to someone else.",
+    stat:  '48%',
+    statLabel: 'of bookings go to whoever replies first, regardless of price',
+    bullets: [
+      'Guests move to the next listing within 8 minutes of receiving no reply',
+      'Properties below 4.5 stars get buried in OTA search rankings permanently',
+      'No pre-arrival guide means confused guests and preventable bad reviews',
+      'Manual communication breaks down past two or three bookings at once',
+    ],
+    solve: 'automated guest flow from first inquiry through to checkout',
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <polyline points="2,16 8,10 12,13 20,5" stroke={C.stone} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        <polyline points="16,5 20,5 20,9"         stroke={C.stone} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    title: 'Flat pricing is quietly killing your revenue',
+    body:  'Setting one rate and leaving it is the most common — and most costly — mistake new property owners make. The market moves daily. Your pricing should too.',
+    stat:  '40%',
+    statLabel: 'average revenue uplift with dynamic pricing vs flat rates',
+    bullets: [
+      'Bali discount rates jumped from 15% to 19% in a single year — flat prices lose on both ends',
+      'Undercharging on peak dates is as damaging as sitting empty on slow ones',
+      'A 10-20% occupancy shortfall translates to tens of thousands in lost annual revenue',
+      'OTA algorithms reward frequently updated and competitive pricing with better placement',
+    ],
+    solve: 'dynamic pricing that adjusts automatically to real market demand',
+  },
+];
+
 /* ── Realistic conversion-funnel particle system ─────────────
    Funnel boundaries (SVG coords):
      upper: y = 40 + 0.1·x    (x=0 → y=40,  x=900 → y=130)
@@ -383,7 +483,8 @@ const PARTICLES: Particle[] = [
 ];
 
 export function LandingPage() {
-  const [onstage, setOnstage] = useState(0);
+  const [onstage,  setOnstage]  = useState(0);
+  const [painOpen, setPainOpen] = useState<number | null>(null);
   const obsRef        = useRef<IntersectionObserver | null>(null);
   const particleRefs  = useRef<(SVGCircleElement | null)[]>([]);
   const phases        = useRef<number[]>(PARTICLES.map(p => p.phase));
@@ -690,6 +791,98 @@ export function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* ── PAIN ──────────────────────────────────────────────── */}
+      <section id="pain" className="sec-pad" style={{ background: C.bgMid }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+
+          {/* Header */}
+          <div className="reveal" style={{ marginBottom: 20 }}>
+            <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 14 }}>The problem</span>
+            <h2 className="display" style={{ fontSize: 'clamp(26px,3.8vw,44px)', fontWeight: 800, color: C.cream, lineHeight: 1.12, marginBottom: 20, maxWidth: 680 }}>
+              Bali has more visitors than ever.<br/>So why is your property still empty?
+            </h2>
+            <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.85, fontWeight: 300, maxWidth: 660 }}>
+              Bali welcomed 6.33 million international visitors in 2024 — yet booking values fell 21.6% as supply grew 18% year-on-year. The demand is there. The problem is how most property owners show up to compete for it.
+            </p>
+          </div>
+
+          {/* Instruction hint */}
+          <div className="reveal" style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '36px 0', padding: '12px 18px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', width: 'fit-content' }}>
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <circle cx="7.5" cy="7.5" r="6.5" stroke={C.stone} strokeWidth="1"/>
+              <line x1="7.5" y1="5" x2="7.5" y2="8.5" stroke={C.stone} strokeWidth="1.2" strokeLinecap="round"/>
+              <circle cx="7.5" cy="10.5" r="0.8" fill={C.stone}/>
+            </svg>
+            <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>
+              <strong style={{ color: C.stoneL, fontWeight: 500 }}>Click any card</strong> to see what's really going wrong — and how we fix it.
+            </span>
+          </div>
+
+          {/* Cards */}
+          <div className="pain-grid">
+            {PAIN_CARDS.map((card, i) => (
+              <div
+                key={i}
+                className={`pain-card reveal d${i + 1}${painOpen === i ? ' open' : ''}`}
+                onClick={() => setPainOpen(painOpen === i ? null : i)}
+              >
+                {/* Card top row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <span style={{ fontSize: 9, letterSpacing: 2.5, color: `${C.stone}80`, fontFamily: "'Jost',sans-serif" }}>
+                    PROBLEM {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 14 14" style={{ transition: 'transform 0.3s ease', transform: painOpen === i ? 'rotate(45deg)' : 'none', flexShrink: 0 }}>
+                    <line x1="7" y1="2" x2="7" y2="12" stroke={C.stone} strokeWidth="1.2" strokeLinecap="round"/>
+                    <line x1="2" y1="7" x2="12" y2="7" stroke={C.stone} strokeWidth="1.2" strokeLinecap="round"/>
+                  </svg>
+                </div>
+
+                {/* Icon */}
+                <div style={{ marginBottom: 16 }}>{card.icon}</div>
+
+                {/* Title */}
+                <h3 className="display" style={{ fontSize: 'clamp(16px,1.8vw,20px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 12 }}>
+                  {card.title}
+                </h3>
+
+                {/* Body */}
+                <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.8, fontWeight: 300, marginBottom: 20 }}>
+                  {card.body}
+                </p>
+
+                {/* Stat callout */}
+                <div style={{ background: C.bgSoft, border: `1px solid rgba(42,96,68,0.3)`, padding: '14px 18px', marginBottom: 20 }}>
+                  <div className="display" style={{ fontSize: 30, fontWeight: 800, color: C.siennaL, marginBottom: 4 }}>{card.stat}</div>
+                  <div style={{ fontSize: 11, color: C.stone, fontWeight: 300, lineHeight: 1.5 }}>{card.statLabel}</div>
+                </div>
+
+                {/* Expandable detail */}
+                <div className="pain-expand">
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20, paddingBottom: 28 }}>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 22 }}>
+                      {card.bullets.map((b, bi) => (
+                        <li key={bi} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                          <div style={{ width: 4, height: 4, background: C.sienna, flexShrink: 0, marginTop: 7 }}/>
+                          <span style={{ fontSize: 13, color: C.stoneL, lineHeight: 1.75, fontWeight: 300 }}>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ width: 22, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                      <span style={{ fontSize: 11, color: C.siennaL, letterSpacing: 1, fontFamily: "'Jost',sans-serif", fontWeight: 400 }}>
+                        We solve this with {card.solve}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
 
       {/* ── SERVICES ──────────────────────────────────────────── */}
       <section id="services" className="sec-pad" style={{ background:C.bg }}>
