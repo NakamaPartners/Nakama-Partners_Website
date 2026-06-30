@@ -3,6 +3,10 @@ import nakamaLogo    from '@/assets/nakama-logo-official.jpeg';
 import propertyHero  from '@/assets/property-hero.png';
 import propertyAbout from '@/assets/property-about2.png';
 import ctaBg         from '@/assets/cta-bg.png';
+import airbnbLogo    from '@/assets/ota-airbnb.png';
+import bookingLogo   from '@/assets/ota-booking.png';
+import agodaLogo     from '@/assets/ota-agoda.png';
+import travelokaLogo from '@/assets/ota-traveloka.png';
 
 /*
   NAKAMA PARTNERS — Light theme landing page
@@ -161,8 +165,7 @@ const CSS = `
   /* Process grid */
   .process-grid { display:grid; grid-template-columns:repeat(4,1fr); }
   @media (max-width:640px) { .process-grid { grid-template-columns:1fr 1fr; } }
-  .proc-cell { border-left:1px solid rgba(0,0,0,0.09); }
-  .proc-cell:first-child { border-left:none; }
+  .proc-cell { background: ${C.bg}; }
 
   /* Footer grid */
   .footer-grid { display:grid; grid-template-columns:1.8fr 1fr 1fr 1fr; gap:clamp(24px,4vw,48px); padding-bottom:48px; margin-bottom:32px; border-bottom:1px solid rgba(0,0,0,0.08); }
@@ -414,42 +417,63 @@ const PARTICLES: Array<{
   { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
 ];
 
-/* OTA brand logos rendered as SVG for the network scene */
+/* OTA brand logos rendered as SVG <image> with circle clip */
 function OtaLogo({ label, cx, cy }: { label: string; cx: number; cy: number }) {
-  if (label === 'Airbnb') {
-    // Bélo: rounded teardrop with circle hole — Airbnb coral
-    const p = `M${cx} ${cy-11} C${cx-3} ${cy-11} ${cx-8} ${cy-7} ${cx-8} ${cy-2} C${cx-8} ${cy+3} ${cx-3} ${cy+11} ${cx} ${cy+11} C${cx+3} ${cy+11} ${cx+8} ${cy+3} ${cx+8} ${cy-2} C${cx+8} ${cy-7} ${cx+3} ${cy-11} ${cx} ${cy-11} Z`;
-    return (
-      <>
-        <path d={p} fill="#FF5A5F"/>
-        <circle cx={cx} cy={cy-2} r="4" fill="white"/>
-      </>
-    );
-  }
-  if (label === 'Booking.com') {
-    // Bold "B." — Booking.com navy
-    return (
-      <text x={cx-3} y={cy+7} fontFamily="Arial Black,sans-serif" fontSize="18" fontWeight="900" fill="#003B95">B.</text>
-    );
-  }
-  if (label === 'Agoda') {
-    // Red badge with "A" — Agoda red
-    return (
-      <>
-        <circle cx={cx} cy={cy} r="13" fill="#E9123A"/>
-        <text x={cx} y={cy+5} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="800" fill="white">A</text>
-      </>
-    );
-  }
+  const clipId = `otaclip-${cx}-${cy}`;
+  const r = 25;
+
+  // Traveloka: bird icon on white — show full image centered
   if (label === 'Traveloka') {
-    // Blue badge with "T" — Traveloka blue
     return (
       <>
-        <circle cx={cx} cy={cy} r="13" fill="#018EEA"/>
-        <text x={cx} y={cy+5} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="800" fill="white">T</text>
+        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
+        <image href={travelokaLogo}
+          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
+          clipPath={`url(#${clipId})`}
+          preserveAspectRatio="xMidYMid meet"/>
       </>
     );
   }
+
+  // Airbnb: wide logo — use xMinYMid slice to show bélo on left
+  if (label === 'Airbnb') {
+    return (
+      <>
+        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
+        <image href={airbnbLogo}
+          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
+          clipPath={`url(#${clipId})`}
+          preserveAspectRatio="xMinYMid slice"/>
+      </>
+    );
+  }
+
+  // Booking.com: wide text logo — show left portion ("B")
+  if (label === 'Booking.com') {
+    return (
+      <>
+        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
+        <image href={bookingLogo}
+          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
+          clipPath={`url(#${clipId})`}
+          preserveAspectRatio="xMinYMid slice"/>
+      </>
+    );
+  }
+
+  // Agoda: text + coloured dots — show bottom half (dots) via yMax slice
+  if (label === 'Agoda') {
+    return (
+      <>
+        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
+        <image href={agodaLogo}
+          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
+          clipPath={`url(#${clipId})`}
+          preserveAspectRatio="xMidYMax slice"/>
+      </>
+    );
+  }
+
   return null;
 }
 
@@ -1466,14 +1490,14 @@ export function LandingPage() {
 
       {/* STATS */}
       <section className="sec-pad-sm" style={{ background: C.bgSoft, borderTop: `1px solid rgba(0,0,0,0.07)`, borderBottom: `1px solid rgba(0,0,0,0.07)` }}>
-        <div className="stats-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div className="stats-grid" style={{ maxWidth: 1100, margin: '0 auto', gap: 1, background: 'rgba(0,0,0,0.09)' }}>
           {[
             ['Bespoke',    'Every property designed from the ground up', 'No templates. No shortcuts.'],
             ['Integrated', 'Brand, website, and automation as one system', 'Not three separate vendors'],
             ['Bilingual',  'English and Bahasa Indonesia', 'Across every guest touchpoint'],
             ['Long-term',  'We stay and grow with your property', 'Not a one-off project'],
           ].map(([head, label, sub], i) => (
-            <div key={head} className={`reveal d${i + 1}`} style={{ textAlign: 'center', padding: 'clamp(20px,4vw,40px) 16px', borderBottom: `1px solid rgba(0,0,0,0.08)`, borderRight: i < 3 ? `1px solid rgba(0,0,0,0.08)` : 'none' }}>
+            <div key={head} className={`reveal d${i + 1}`} style={{ textAlign: 'center', padding: 'clamp(20px,4vw,40px) 16px', background: C.bgSoft }}>
               <div className="display" style={{ fontSize: 'clamp(17px,2.2vw,22px)', fontWeight: 700, color: C.siennaL, lineHeight: 1.2 }}>{head}</div>
               <div className="label" style={{ color: C.stone, marginTop: 14, fontSize: 10 }}>{label}</div>
               <div style={{ fontSize: 12, color: C.stoneL, marginTop: 6, fontWeight: 300 }}>{sub}</div>
@@ -1496,7 +1520,7 @@ export function LandingPage() {
               <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>Four phases. Clear deliverables. Your sign-off before we proceed. You are always informed and always in control.</p>
             </div>
           </div>
-          <div className="process-grid">
+          <div className="process-grid" style={{ gap: 1, background: 'rgba(0,0,0,0.08)' }}>
             {[
               { num: '01', phase: 'Discovery', title: 'We learn your property.',        desc: "A focused conversation maps your property's character, who your guests are, what makes it different, and what you want from it. This is the foundation." },
               { num: '02', phase: 'Design',    title: 'Your brand takes shape.',         desc: 'Identity, messaging, website wireframes, and automation flows — designed, reviewed, and approved before anything is built.' },
@@ -1504,9 +1528,7 @@ export function LandingPage() {
               { num: '04', phase: 'Growth',    title: 'We stay alongside you.',          desc: 'You go live. We remain — monitoring performance, refining systems, and compounding your property value over time.' },
             ].map((step, i) => (
               <div key={i} className={`reveal d${i + 1} proc-cell`} style={{
-                padding: 'clamp(28px,4vw,44px) 0',
-                paddingLeft:  i > 0 ? 'clamp(14px,3vw,28px)' : 0,
-                paddingRight: i < 3 ? 'clamp(14px,3vw,28px)' : 0,
+                padding: 'clamp(28px,4vw,44px) clamp(16px,3vw,28px)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
                   <span className="display" style={{ fontSize: 26, fontWeight: 700, color: C.sienna, lineHeight: 1 }}>{step.num}</span>
@@ -1553,7 +1575,7 @@ export function LandingPage() {
           alt=""
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', pointerEvents: 'none' }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(242,240,235,0.72)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(242,245,243,0.55) 0%, rgba(232,237,233,0.65) 100%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <span className="reveal d1 label" style={{ color: C.sienna, display: 'block', marginBottom: 24, fontSize: 10 }}>Begin the journey</span>
           <h2 className="reveal d2 display" style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 800, lineHeight: 1.0, color: C.cream, marginBottom: 24, letterSpacing: '-0.03em' }}>
