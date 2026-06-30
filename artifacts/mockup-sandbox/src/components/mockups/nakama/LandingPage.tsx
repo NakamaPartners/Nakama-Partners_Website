@@ -336,6 +336,31 @@ const PARTICLES: Array<{
   { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
 ];
 
+function NakamaLogo({ height = 48 }: { height?: number }) {
+  const w = height * (210 / 54);
+  return (
+    <svg height={height} width={w} viewBox="0 0 210 54" fill="none">
+      {/* Left head */}
+      <circle cx="14" cy="10" r="9"  fill="#2A6044"/>
+      {/* Right head */}
+      <circle cx="44" cy="10" r="9"  fill="#2A6044"/>
+      {/* Body — solid filled "n" arch */}
+      <path
+        d="M5 52 L5 26 C5 17 9 13 16 13 C21 13 25 17 27 22 C29 17 33 13 38 13 C45 13 49 17 49 26 L49 52 Z"
+        fill="#2A6044"
+      />
+      {/* "nakama" wordmark */}
+      <text x="62" y="35" fontFamily="'Sora',sans-serif" fontSize={28} fontWeight={700} fill="#2A6044" letterSpacing={-0.4}>
+        nakama
+      </text>
+      {/* "PARTNERS" — fixed width so it never exceeds "nakama" */}
+      <text x="62" y="50" fontFamily="'Jost',sans-serif" fontSize={8} fontWeight={300} fill="#2A6044" textLength={96} lengthAdjust="spacing">
+        PARTNERS
+      </text>
+    </svg>
+  );
+}
+
 export function LandingPage() {
   const [onstage, setOnstage] = useState(0);
   const [svcOpen, setSvcOpen] = useState(0);
@@ -417,11 +442,7 @@ export function LandingPage() {
         borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img
-            src={nakamaLogo}
-            alt="Nakama Partners"
-            style={{ height: 68, width: 'auto', display: 'block' }}
-          />
+          <NakamaLogo height={48} />
         </div>
         <div className="nav-links-center">
           {['Services','Process','About','Stories'].map(l => <span key={l} className="nav-link">{l}</span>)}
@@ -1270,11 +1291,7 @@ export function LandingPage() {
           <div className="footer-grid">
             <div className="footer-brand">
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-                <img
-                  src={nakamaLogo}
-                  alt="Nakama"
-                  style={{ height: 40, width: 'auto', display: 'block' }}
-                />
+                <NakamaLogo height={36} />
               </div>
               <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.75, fontWeight: 300, maxWidth: 210 }}>Property onboarding and branding. We help investors turn their properties into earning, well-branded destinations and grow alongside them.</p>
             </div>
