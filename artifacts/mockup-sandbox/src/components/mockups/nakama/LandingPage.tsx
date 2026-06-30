@@ -132,13 +132,16 @@ const CSS = `
   .sec-pad    { padding: clamp(64px,10vw,120px) clamp(22px,5vw,64px); }
   .sec-pad-sm { padding: clamp(40px,6vw,72px)  clamp(22px,5vw,64px); }
 
-  /* Accordion services */
-  .svc-acc-row { border-bottom:1px solid rgba(0,0,0,0.08); cursor:pointer; }
-  .svc-acc-header { display:flex; align-items:center; gap:20px; padding:28px 0; user-select:none; }
-  .svc-acc-header:hover .svc-acc-title { color:${C.cream}; }
-  .svc-acc-num { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; letter-spacing:2px; min-width:28px; }
-  .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
-  .svc-acc-title.active { color:${C.cream}; }
+  /* Accordion services — enhanced */
+  .svc-acc-row { border-bottom:1px solid rgba(0,0,0,0.07); border-left:3px solid transparent; cursor:pointer; transition:border-color 0.28s ease, background 0.22s ease; }
+  .svc-acc-row:hover { background:rgba(42,96,68,0.025); }
+  .svc-acc-row.open-row { border-left-color:${C.sienna}; background:rgba(42,96,68,0.04); }
+  .svc-acc-header { display:flex; align-items:center; gap:20px; padding:28px 0 28px 18px; user-select:none; }
+  .svc-acc-header:hover .svc-acc-title { color:${C.stone}; opacity:1; }
+  .svc-acc-num { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; letter-spacing:2px; min-width:28px; transition:color 0.22s ease; }
+  .svc-acc-num.active { color:${C.sienna}; }
+  .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stoneL}; opacity:0.65; transition:color 0.22s ease, opacity 0.22s ease; flex:1; }
+  .svc-acc-title.active { color:${C.cream}; opacity:1; }
 
   /* Service visual scenes */
   @keyframes svcDash      { to { stroke-dashoffset: -24; } }
@@ -810,24 +813,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* MARQUEE — dark scrolling band */}
-      <div style={{ background: C.cream, overflow: 'hidden' }}>
-        <div className="marquee-track" style={{ padding: '15px 0' }}>
-          {[0, 1].flatMap(r =>
-            ['OTA SETUP', 'BRAND DESIGN', 'WHATSAPP AUTOMATION', 'REVENUE GROWTH', 'BALI', 'SOUTHEAST ASIA', 'DIRECT BOOKINGS', 'PROPERTY WEBSITES'].map(item => (
-              <span key={`${r}-${item}`} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 28, paddingRight: 36,
-                fontFamily: "'Jost',sans-serif", fontSize: 10, letterSpacing: 3.5,
-                color: 'rgba(242,245,243,0.32)', whiteSpace: 'nowrap',
-              }}>
-                {item}
-                <span style={{ width: 4, height: 4, borderRadius: '50%', background: C.sienna, display: 'inline-block', flexShrink: 0 }}/>
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-
       {/* PROBLEM — editorial, no interaction */}
       <section id="pain" className="sec-pad" style={{ background: C.bgMid }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -1012,7 +997,7 @@ export function LandingPage() {
       </section>
 
       {/* SERVICES ACCORDION */}
-      <section id="services" className="sec-pad" style={{ background: C.bg }}>
+      <section id="services" className="sec-pad" style={{ background: C.bgSoft }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
           <div className="sec-header">
@@ -1036,11 +1021,11 @@ export function LandingPage() {
               {SERVICES_ACC.map((svc, i) => (
                 <div
                   key={i}
-                  className="svc-acc-row"
+                  className={`svc-acc-row${svcOpen === i ? ' open-row' : ''}`}
                   onClick={() => setSvcOpen(i)}
                 >
                   <div className="svc-acc-header">
-                    <span className="svc-acc-num">{svc.num}</span>
+                    <span className={`svc-acc-num${svcOpen === i ? ' active' : ''}`}>{svc.num}</span>
                     <div style={{ flex: 1 }}>
                       <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
                     </div>
@@ -1053,13 +1038,17 @@ export function LandingPage() {
                   </div>
 
                   <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 480 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                    <div style={{ padding: '4px 0 32px clamp(24px,3vw,40px)' }}>
+                    <div style={{ padding: '0 0 32px 18px' }}>
                       <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 24 }}>
                         {svc.desc}
                       </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 0 }}>
-                        <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
-                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
+                      <div style={{
+                        display: 'inline-flex', alignItems: 'center',
+                        padding: '12px 18px',
+                        background: `rgba(42,96,68,0.07)`,
+                        borderLeft: `3px solid ${C.sienna}`,
+                      }}>
+                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 600, lineHeight: 1.5 }}>{svc.result}</span>
                       </div>
                     </div>
                   </div>
@@ -1133,7 +1122,7 @@ export function LandingPage() {
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
-            <div style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', minHeight: 380 }}>
+            <div style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', height: 440 }}>
               {/* Progress bar */}
               <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', position: 'relative', flexShrink: 0 }}>
                 <div style={{
@@ -1488,21 +1477,22 @@ export function LandingPage() {
 
       {/* NUMBERS — dark contrast block */}
       <section style={{ background: C.cream }}>
-        <div className="nums-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div className="nums-grid">
           {[
-            { num: '4',    unit: 'platforms',    sub: 'Airbnb, Booking.com, Agoda, Traveloka — plus your own direct booking site.' },
-            { num: '3',    unit: 'week launch',  sub: 'Average time from first call to a live brand, website, and listings.' },
-            { num: '100%', unit: 'bilingual',    sub: 'Every guest touchpoint in English and Bahasa Indonesia.' },
+            { num: '4',      unit: 'platforms',   sub: 'Airbnb, Booking.com, Agoda, Traveloka — plus your own direct booking site.' },
+            { num: '3',      unit: 'week launch', sub: 'Average time from first call to a live brand, website, and listings.' },
+            { num: '100%',   unit: 'bilingual',   sub: 'Every guest touchpoint in English and Bahasa Indonesia.' },
             { num: '\u221e', unit: 'partnership', sub: 'We stay and grow with you. No delivery and disappear.' },
           ].map(({ num, unit, sub }, i) => (
             <div key={unit} className={`reveal d${i + 1}`} style={{
               background: C.siennaD,
-              padding: 'clamp(40px,6vw,72px) clamp(20px,3.5vw,44px)',
+              padding: 'clamp(28px,4vw,48px) clamp(20px,3vw,36px)',
               display: 'flex', flexDirection: 'column',
+              minHeight: 240,
             }}>
-              <div className="display" style={{ fontSize: 'clamp(56px,7.5vw,96px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 10 }}>{num}</div>
+              <div className="display" style={{ fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 8 }}>{num}</div>
               <div className="label" style={{ color: C.siennaL, fontSize: 9, marginBottom: 'auto' }}>{unit}</div>
-              <p style={{ fontSize: 12, color: 'rgba(242,245,243,0.38)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 18, marginTop: 28 }}>{sub}</p>
+              <p style={{ fontSize: 11, color: 'rgba(242,245,243,0.36)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 14, marginTop: 20 }}>{sub}</p>
             </div>
           ))}
         </div>
