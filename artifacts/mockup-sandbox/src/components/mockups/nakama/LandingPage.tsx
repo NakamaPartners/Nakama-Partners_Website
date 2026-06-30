@@ -417,65 +417,21 @@ const PARTICLES: Array<{
   { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
 ];
 
-/* OTA brand logos rendered as SVG <image> with circle clip */
-function OtaLogo({ label, cx, cy }: { label: string; cx: number; cy: number }) {
-  const clipId = `otaclip-${cx}-${cy}`;
-  const r = 25;
+// Logo source map — keyed by platform label
+const OTA_LOGOS: Record<string, string> = {
+  'Airbnb':      airbnbLogo,
+  'Booking.com': bookingLogo,
+  'Agoda':       agodaLogo,
+  'Traveloka':   travelokaLogo,
+};
 
-  // Traveloka: bird icon on white — show full image centered
-  if (label === 'Traveloka') {
-    return (
-      <>
-        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
-        <image href={travelokaLogo}
-          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
-          clipPath={`url(#${clipId})`}
-          preserveAspectRatio="xMidYMid meet"/>
-      </>
-    );
-  }
-
-  // Airbnb: wide logo — use xMinYMid slice to show bélo on left
-  if (label === 'Airbnb') {
-    return (
-      <>
-        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
-        <image href={airbnbLogo}
-          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
-          clipPath={`url(#${clipId})`}
-          preserveAspectRatio="xMinYMid slice"/>
-      </>
-    );
-  }
-
-  // Booking.com: wide text logo — show left portion ("B")
-  if (label === 'Booking.com') {
-    return (
-      <>
-        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
-        <image href={bookingLogo}
-          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
-          clipPath={`url(#${clipId})`}
-          preserveAspectRatio="xMinYMid slice"/>
-      </>
-    );
-  }
-
-  // Agoda: text + coloured dots — show bottom half (dots) via yMax slice
-  if (label === 'Agoda') {
-    return (
-      <>
-        <defs><clipPath id={clipId}><circle cx={cx} cy={cy} r={r}/></clipPath></defs>
-        <image href={agodaLogo}
-          x={cx - r} y={cy - r} width={r * 2} height={r * 2}
-          clipPath={`url(#${clipId})`}
-          preserveAspectRatio="xMidYMax slice"/>
-      </>
-    );
-  }
-
-  return null;
-}
+// Badge dimensions per platform (chip sized to logo's natural aspect)
+const OTA_BADGE: Record<string, { bw: number; bh: number; rx: number; pad: number }> = {
+  'Airbnb':      { bw: 72, bh: 26, rx: 7,  pad: 5  }, // wide chip for bélo+text
+  'Booking.com': { bw: 70, bh: 24, rx: 7,  pad: 4  }, // wide chip for text logo
+  'Agoda':       { bw: 58, bh: 44, rx: 10, pad: 6  }, // portrait chip for text+dots
+  'Traveloka':   { bw: 46, bh: 46, rx: 12, pad: 5  }, // square chip for bird icon
+};
 
 /* ── Service Visual: animated illustration panel ── */
 function ServiceVisual({ active }: { active: number }) {
@@ -504,6 +460,11 @@ function ServiceVisual({ active }: { active: number }) {
       {/* ── Scene 0: OTA platform network ── */}
       <div style={pane(0)}>
         <svg viewBox="0 0 320 296" width="320" height="296">
+          <defs>
+            <filter id="chipShadow" x="-25%" y="-25%" width="150%" height="150%">
+              <feDropShadow dx="0" dy="1.5" stdDeviation="3" floodOpacity="0.11"/>
+            </filter>
+          </defs>
           {/* Flowing dashed connection lines */}
           {platforms.map((p, i) => (
             <line key={i} x1={p.x} y1={p.y} x2={propX} y2={propY}
@@ -540,13 +501,25 @@ function ServiceVisual({ active }: { active: number }) {
           <polygon points={`${propX},${propY-18} ${propX+15},${propY-4} ${propX-15},${propY-4}`} fill={C.sienna} opacity="0.85"/>
           <rect x={propX-8} y={propY-4} width="16" height="14" rx="1.5" fill={C.sienna} opacity="0.85"/>
 
-          {/* OTA platform circles with brand logos */}
-          {platforms.map((p, i) => (
-            <g key={i}>
-              <circle cx={p.x} cy={p.y} r="27" fill="white" stroke={`rgba(42,96,68,0.18)`} strokeWidth="1.5"/>
-              <OtaLogo label={p.label} cx={p.x} cy={p.y}/>
-            </g>
-          ))}
+          {/* OTA platform badge chips */}
+          {platforms.map((p, i) => {
+            const b = OTA_BADGE[p.label];
+            return (
+              <g key={i} filter="url(#chipShadow)">
+                <rect
+                  x={p.x - b.bw / 2} y={p.y - b.bh / 2}
+                  width={b.bw} height={b.bh} rx={b.rx}
+                  fill="white" stroke="rgba(42,96,68,0.16)" strokeWidth="1"/>
+                <image
+                  href={OTA_LOGOS[p.label]}
+                  x={p.x - b.bw / 2 + b.pad}
+                  y={p.y - b.bh / 2 + b.pad}
+                  width={b.bw - b.pad * 2}
+                  height={b.bh - b.pad * 2}
+                  preserveAspectRatio="xMidYMid meet"/>
+              </g>
+            );
+          })}
 
           {/* Caption */}
           <text x={propX} y={280} textAnchor="middle"
