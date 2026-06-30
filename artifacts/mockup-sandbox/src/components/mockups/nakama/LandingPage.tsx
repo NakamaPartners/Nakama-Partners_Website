@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import nakamaLogo    from '@/assets/nakama-logo-new.png';
+import nakamaLogo    from '@/assets/nakama-logo-official.jpeg';
 import propertyHero  from '@/assets/property-hero.png';
 import propertyAbout from '@/assets/property-about2.png';
 import ctaBg         from '@/assets/cta-bg.png';
@@ -215,6 +215,64 @@ const CSS = `
   .foot-link:hover { color:${C.cream}; }
 
   @media (max-width: 600px) { .scroll-hint { display: none !important; } }
+
+  /* ── Mobile responsive ── */
+  @media (max-width: 768px) {
+    /* Nav: collapse links and ghost button */
+    .nav-links-center  { display: none !important; }
+    .nav-desktop-only  { display: none !important; }
+
+    /* Reduce nav height */
+    nav { height: 58px !important; }
+
+    /* Hero: tighten bottom padding */
+    .hero-lower { grid-template-columns: 1fr !important; gap: 28px !important; }
+
+    /* Services: single column, hide visual */
+    .svc-grid       { grid-template-columns: 1fr !important; }
+    .svc-visual-col { display: none !important; }
+
+    /* Pain rows: stack vertically */
+    .pain-row { flex-direction: column !important; gap: 14px !important; }
+
+    /* Onboarding: single column */
+    .onboard-grid { grid-template-columns: 1fr !important; }
+
+    /* Section headers: single column */
+    .sec-header { grid-template-columns: 1fr !important; margin-bottom: 36px !important; }
+
+    /* Section padding */
+    .sec-pad    { padding: 56px 20px !important; }
+    .sec-pad-sm { padding: 40px 20px !important; }
+
+    /* Stats and process */
+    .stats-grid   { grid-template-columns: 1fr 1fr !important; }
+    .process-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ob pills: wrap tighter */
+    .ob-pill { padding: 7px 13px !important; font-size: 8px !important; }
+
+    /* Pipeline: 1-col */
+    .pipeline-scroll { overflow-x: auto !important; }
+
+    /* Trust bar */
+    .trust-item { padding: 5px 12px !important; font-size: 11px !important; }
+
+    /* Footer */
+    .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+    .footer-brand { grid-column: 1 / -1 !important; }
+
+    /* About grid */
+    .about-grid { grid-template-columns: 1fr !important; }
+    .about-img  { min-height: 220px !important; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid   { grid-template-columns: 1fr 1fr !important; }
+    .process-grid { grid-template-columns: 1fr 1fr !important; }
+    .footer-grid  { grid-template-columns: 1fr !important; }
+    .svc-acc-title { font-size: 17px !important; }
+  }
 `;
 
 const PIPELINE: Array<{
@@ -538,28 +596,13 @@ function ServiceVisual({ active }: { active: number }) {
   );
 }
 
-function NakamaLogo({ height = 48 }: { height?: number }) {
-  const w = height * (210 / 54);
+function NakamaLogo({ height = 40 }: { height?: number }) {
   return (
-    <svg height={height} width={w} viewBox="0 0 210 54" fill="none">
-      {/* Left head */}
-      <circle cx="14" cy="10" r="9"  fill="#2A6044"/>
-      {/* Right head */}
-      <circle cx="44" cy="10" r="9"  fill="#2A6044"/>
-      {/* Body — solid filled "n" arch */}
-      <path
-        d="M5 52 L5 26 C5 17 9 13 16 13 C21 13 25 17 27 22 C29 17 33 13 38 13 C45 13 49 17 49 26 L49 52 Z"
-        fill="#2A6044"
-      />
-      {/* "nakama" wordmark */}
-      <text x="62" y="35" fontFamily="'Sora',sans-serif" fontSize={28} fontWeight={700} fill="#2A6044" letterSpacing={-0.4}>
-        nakama
-      </text>
-      {/* "PARTNERS" — fixed width so it never exceeds "nakama" */}
-      <text x="62" y="50" fontFamily="'Jost',sans-serif" fontSize={8} fontWeight={300} fill="#2A6044" textLength={96} lengthAdjust="spacing">
-        PARTNERS
-      </text>
-    </svg>
+    <img
+      src={nakamaLogo}
+      alt="Nakama Partners"
+      style={{ height, width: 'auto', display: 'block', objectFit: 'contain' }}
+    />
   );
 }
 
@@ -644,12 +687,12 @@ export function LandingPage() {
         borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <NakamaLogo height={48} />
+          <NakamaLogo height={36} />
         </div>
         <div className="nav-links-center">
           {['Services','Process','About','Stories'].map(l => <span key={l} className="nav-link">{l}</span>)}
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12 }}>Chat with us</button>
           <button className="btn-primary" style={{ padding: '9px 20px', fontSize: 12 }}>Grow with Nakama</button>
         </div>
@@ -917,7 +960,7 @@ export function LandingPage() {
           </div>
 
           {/* 2-col: accordion left · animated visual right */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
+          <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
             <div className="reveal d2">
               {SERVICES_ACC.map((svc, i) => (
@@ -954,7 +997,7 @@ export function LandingPage() {
               ))}
             </div>
 
-            <div className="reveal d3">
+            <div className="reveal d3 svc-visual-col">
               <ServiceVisual active={svcOpen} />
             </div>
 
@@ -992,7 +1035,7 @@ export function LandingPage() {
           </div>
 
           {/* Main grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
+          <div className="onboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
 
             {/* Left: text */}
             <div key={`txt-${onstage}`} style={{ animation: 'obUp 0.4s ease both' }}>
