@@ -282,29 +282,29 @@ const PIPELINE: Array<{
 /* Onboarding stages */
 const ONBOARD = [
   {
-    label: 'Discovery',
-    title: 'We start by listening.',
-    desc: 'A focused intake session maps your property — type, location, target guest, revenue goals. No forms. Just a sharp conversation that gives us everything we need.',
+    label: 'First Call',
+    title: "You never have to figure this out alone.",
+    desc: "You've built or bought something real. The hard part is done. What comes next is where most owners get stuck — the brand, the platforms, the systems. One conversation with us, and you won't have to.",
   },
   {
-    label: 'Brand Build',
-    title: 'Your identity is crafted.',
-    desc: "Property name, colour palette, typography, and tone of voice, built from scratch around your property's personality and market position. No templates.",
+    label: 'Your Brand',
+    title: 'It clicks into place.',
+    desc: "A name, a palette, a voice — built around your property's real character. Most clients say this is the moment it stops feeling like an investment and starts feeling like a destination.",
   },
   {
-    label: 'Website',
-    title: 'Your digital home goes live.',
-    desc: 'A custom property website, fast, mobile-first, with direct booking integration. Guests arrive on a page that feels like the property itself.',
+    label: 'Goes Live',
+    title: 'From nothing to running.',
+    desc: "Website live. OTAs active. WhatsApp responding while you sleep. We build it, connect it, test it. You approve the result. That's it.",
   },
   {
-    label: 'Automation',
-    title: 'WhatsApp handles inquiries 24/7.',
-    desc: 'An intelligent bot answers availability questions, sends rate cards, and routes serious guests to you, so no lead goes cold overnight.',
+    label: 'Automated',
+    title: 'Works while you sleep.',
+    desc: "Guests get answered in seconds. Calendars never double-book. Check-in details go out automatically. Your property runs like a professional operation, without you being on call.",
   },
   {
-    label: 'Revenue',
-    title: 'OTAs sync. Bookings begin.',
-    desc: 'Your property is distributed across the right platforms, calendar synced, and pricing strategy set. Revenue starts moving from day one.',
+    label: 'First Booking',
+    title: 'There it is.',
+    desc: "The first booking confirmation lands in your inbox. Revenue starts moving. We're watching the same numbers you are — and already working on getting the next one.",
   },
 ];
 
@@ -398,7 +398,7 @@ const SERVICES_ACC = [
     num: '01',
     title: 'Get found everywhere guests book',
     sub:   'OTA setup across all 4 platforms',
-    desc:  'Most property owners list on Airbnb and stop there. We set up your property on all 4 major platforms, fully optimized, properly written, and ranked to appear from day one. Each platform brings a different audience. You need all of them.',
+    desc:  'Most owners list on one platform and stop there. We set up all four major platforms, fully optimized, from day one. Each brings a completely different audience.',
     features: [
       { head: 'Airbnb',               body: 'Western and global travelers' },
       { head: 'Booking.com',          body: 'European and Asian travelers' },
@@ -416,7 +416,7 @@ const SERVICES_ACC = [
     num: '02',
     title: 'Look like a property worth booking',
     sub:   'Brand and image, website, identity, and presence',
-    desc:  'In a market of 84,000+ listings, guests decide in 2.5 seconds. Your property might be stunning, but if the website looks amateur and the photos look like phone shots, you lose to the property next door. We build the brand and visual presence that makes guests trust you before they even book.',
+    desc:  '84,000+ listings in Bali. Guests decide in 2.5 seconds. We build the brand, the website, and the visual presence that makes guests trust you before they book.',
     features: [
       { head: 'Direct booking website',       body: 'Gallery, amenities, contact, WhatsApp button, SEO basics, mobile optimized' },
       { head: 'Instagram setup',              body: 'Bio, highlights, Linktree, 3 launch posts. Your social presence from day one.' },
@@ -430,7 +430,7 @@ const SERVICES_ACC = [
     num: '03',
     title: "Run itself while you're not there",
     sub:   'Operations, calendars, guest communication, and reporting',
-    desc:  "The real work of running a property is the daily stuff. Answering guests at 2am, making sure calendars don't double-book, sending check-in details, chasing reviews. We set up the systems that handle all of it automatically, so you don't have to be online 24/7 to run a professional property operation.",
+    desc:  "Answering guests at 2am, preventing double-books, sending check-in details, chasing reviews. We set up the systems that handle all of it automatically.",
     features: [
       { head: 'Availability management',   body: 'iCal sync or channel manager keeps all platforms in sync. No double bookings. Manual blocks handled instantly.' },
       { head: 'Digital guestbook',         body: 'WiFi, check-in instructions, house rules, local tips. All in one branded link guests get before they arrive.' },
@@ -626,6 +626,70 @@ export function LandingPage() {
             </div>
           </div>
         </div>
+        {/* Dashboard widget */}
+        <div style={{
+          position: 'absolute', right: 'clamp(24px, 5vw, 72px)', top: '18%',
+          zIndex: 10, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end',
+          pointerEvents: 'none',
+        }}>
+          {/* Main card */}
+          <div style={{
+            background: 'rgba(10,18,12,0.88)', backdropFilter: 'blur(24px) saturate(160%)',
+            border: '1px solid rgba(255,255,255,0.09)', padding: '24px 26px', width: 260,
+            boxShadow: '0 32px 80px rgba(0,0,0,0.55)',
+            animation: 'obUp 0.7s ease 0.3s both',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.siennaL, boxShadow: `0 0 6px ${C.siennaL}` }}/>
+              <span style={{ fontSize: 9, color: C.stone, fontFamily: "'Jost',sans-serif", letterSpacing: 2, textTransform: 'uppercase' }}>Live · Property Dashboard</span>
+            </div>
+            <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: C.cream, lineHeight: 1.15, marginBottom: 4 }}>
+              Kelapa Property
+            </div>
+            <div style={{ fontSize: 11, color: C.stone, fontFamily: "'Jost',sans-serif", marginBottom: 22, fontWeight: 300 }}>
+              Seminyak, Bali · 4 rooms
+            </div>
+            <div style={{ display: 'flex', gap: 28 }}>
+              <div>
+                <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 20, fontWeight: 800, color: C.siennaL, lineHeight: 1 }}>+127%</div>
+                <div style={{ fontSize: 10, color: C.stone, fontFamily: "'Jost',sans-serif", marginTop: 3, fontWeight: 300 }}>Revenue</div>
+              </div>
+              <div>
+                <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 20, fontWeight: 800, color: C.cream, lineHeight: 1 }}>94%</div>
+                <div style={{ fontSize: 10, color: C.stone, fontFamily: "'Jost',sans-serif", marginTop: 3, fontWeight: 300 }}>Occupancy</div>
+              </div>
+            </div>
+          </div>
+
+          {/* WhatsApp notification */}
+          <div style={{
+            background: 'rgba(13,23,16,0.94)', backdropFilter: 'blur(20px)',
+            border: `1px solid rgba(42,96,68,0.28)`, padding: '10px 14px',
+            display: 'flex', gap: 10, alignItems: 'center', width: 210, alignSelf: 'flex-start', marginLeft: 8,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
+          }}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ flexShrink: 0 }}>
+              <circle cx="14" cy="14" r="13.5" fill="rgba(42,96,68,0.22)" stroke="rgba(42,96,68,0.4)" strokeWidth="0.8"/>
+              <path d="M14 8a6 6 0 0 1 5.196 9.002L20 20l-3.13-.849A6 6 0 1 1 14 8z" stroke={C.siennaL} strokeWidth="1.1" strokeLinejoin="round" fill="none"/>
+            </svg>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: C.cream, fontFamily: "'Jost',sans-serif" }}>WhatsApp Bot</div>
+              <div style={{ fontSize: 10, color: C.stone, fontWeight: 300 }}>Replied in 2 seconds</div>
+            </div>
+          </div>
+
+          {/* Booking notification */}
+          <div style={{
+            background: 'rgba(42,96,68,0.18)', backdropFilter: 'blur(20px)',
+            border: `1px solid rgba(42,96,68,0.38)`, padding: '13px 16px', width: 192,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: C.cream, fontFamily: "'Sora',sans-serif", marginBottom: 5 }}>New booking!</div>
+            <div style={{ fontSize: 10, color: C.stoneL, fontWeight: 300 }}>Via direct website</div>
+            <div style={{ fontSize: 10, color: C.stone, fontWeight: 300 }}>3 nights · 2 guests</div>
+          </div>
+        </div>
+
         <div className="scroll-hint" style={{ position: 'absolute', bottom: 36, right: 56, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, opacity: 0.35 }}>
           <span className="label" style={{ color: C.stoneL, fontSize: 9, writingMode: 'vertical-rl' }}>Scroll</span>
           <div style={{ width: 1, height: 40, background: `linear-gradient(${C.stoneL}, transparent)` }} />
@@ -641,19 +705,14 @@ export function LandingPage() {
             <h2 className="display" style={{ fontSize: 'clamp(26px,3.8vw,44px)', fontWeight: 800, color: C.cream, lineHeight: 1.12, marginBottom: 20, maxWidth: 680 }}>
               Bali has more visitors than ever.<br />So why is your property still empty?
             </h2>
-            <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.85, fontWeight: 300, maxWidth: 660 }}>
-              Bali welcomed 6.33 million international visitors in 2024, yet booking values fell 21.6% as supply grew 18% year-on-year. The demand is there. The problem is how most property owners show up to compete for it.
+            <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.85, fontWeight: 300, maxWidth: 580 }}>
+              6.33 million visitors. Booking values down 21.6%. The demand is there. The problem is how most owners show up to compete for it.
             </p>
           </div>
 
-          <div className="reveal" style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '36px 0', padding: '12px 18px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', width: 'fit-content' }}>
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-              <circle cx="7.5" cy="7.5" r="6.5" stroke={C.stone} strokeWidth="1"/>
-              <line x1="7.5" y1="5" x2="7.5" y2="8.5" stroke={C.stone} strokeWidth="1.2" strokeLinecap="round"/>
-              <circle cx="7.5" cy="10.5" r="0.8" fill={C.stone}/>
-            </svg>
-            <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>
-              <strong style={{ color: C.stoneL, fontWeight: 500 }}>Click any card</strong> to see what's really going wrong, and how we fix it.
+          <div className="reveal" style={{ marginBottom: 36, marginTop: 4 }}>
+            <span style={{ fontSize: 13, color: `${C.stone}99`, fontWeight: 300 }}>
+              Select a card to expand.
             </span>
           </div>
 
@@ -689,7 +748,7 @@ export function LandingPage() {
                   <div style={{ fontSize: 11, color: C.stone, fontWeight: 300, lineHeight: 1.5 }}>{card.statLabel}</div>
                 </div>
 
-                <div className="pain-expand">
+                <div style={{ overflow: 'hidden', maxHeight: painOpen === i ? 700 : 0, transition: 'max-height 0.45s cubic-bezier(.4,0,.2,1)' }}>
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20, paddingBottom: 28 }}>
                     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 22 }}>
                       {card.bullets.map((b, bi) => (
@@ -726,7 +785,7 @@ export function LandingPage() {
             </div>
             <div className="reveal d1" style={{ display: 'flex', alignItems: 'flex-end' }}>
               <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
-                Most owners try to solve these problems one at a time, with different vendors who don't talk to each other. We handle all three as one connected system, built around your property and managed by us as your long-term partner.
+                Most owners solve these one at a time, with vendors who don't talk to each other. We handle all three as one system.
               </p>
             </div>
           </div>
@@ -752,7 +811,7 @@ export function LandingPage() {
                   </svg>
                 </div>
 
-                <div className={`svc-acc-body${svcOpen === i ? ' open' : ''}`}>
+                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 1200 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
                   <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.85, fontWeight: 300, marginBottom: 24, maxWidth: 820 }}>
                     {svc.desc}
                   </p>
@@ -789,7 +848,7 @@ export function LandingPage() {
           <div className="reveal" style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 48 }}>
             <span className="label" style={{ color: C.sienna }}>The process</span>
             <h2 className="display" style={{ fontSize: 'clamp(26px,3.2vw,38px)', fontWeight: 800, color: C.cream, lineHeight: 1.15, margin: 0 }}>
-              From bare property<br />to active revenue.
+              The journey every owner faces.<br />We walk it with you.
             </h2>
           </div>
 
