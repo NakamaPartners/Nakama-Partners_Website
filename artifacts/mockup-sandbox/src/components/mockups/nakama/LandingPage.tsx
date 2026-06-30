@@ -136,6 +136,14 @@ const CSS = `
   .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
   .svc-acc-title.active { color:${C.cream}; }
 
+  /* Service visual scenes */
+  @keyframes svcDash      { to { stroke-dashoffset: -24; } }
+  @keyframes svcStarPop   { from { opacity:0; transform:scale(0) rotate(-15deg); } to { opacity:1; transform:scale(1) rotate(0deg); } }
+  @keyframes svcMsgIn     { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  @keyframes svcDotBlink  { 0%,100% { opacity:0.25; } 50% { opacity:1; } }
+  @keyframes svcShine     { from { left:-80%; } to { left:200%; } }
+  @keyframes svcTypeFade  { 0%,100% { opacity:0; } 15%,75% { opacity:1; } }
+
   /* Section header */
   .sec-header { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,64px); align-items:start; margin-bottom:clamp(48px,7vw,80px); }
   @media (max-width:700px) { .sec-header { grid-template-columns:1fr; } }
@@ -335,6 +343,200 @@ const PARTICLES: Array<{
   { normY:0.40, r:2.0, dur:5000, phase:0.75, dropAt:940, sienna:true  },
   { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
 ];
+
+/* ── Service Visual: animated illustration panel ── */
+function ServiceVisual({ active }: { active: number }) {
+  const scene = active < 0 ? 0 : Math.min(active, 2);
+
+  const pane = (idx: number): React.CSSProperties => ({
+    position: 'absolute', inset: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    opacity: scene === idx ? 1 : 0,
+    transition: 'opacity 0.55s ease',
+    pointerEvents: scene === idx ? 'auto' : 'none',
+  });
+
+  // OTA scene geometry (320×296 viewBox)
+  const propX = 160, propY = 150;
+  const platforms = [
+    { label: 'Airbnb',      x: 160, y: 36  },
+    { label: 'Booking.com', x: 283, y: 114 },
+    { label: 'Agoda',       x: 264, y: 228 },
+    { label: 'Traveloka',   x: 48,  y: 172 },
+  ];
+
+  return (
+    <div style={{ position:'sticky', top:120, borderRadius:6, overflow:'hidden', background:C.bgSoft, height:420 }}>
+
+      {/* ── Scene 0: OTA platform network ── */}
+      <div style={pane(0)}>
+        <svg viewBox="0 0 320 296" width="320" height="296">
+          {/* Flowing dashed connection lines */}
+          {platforms.map((p, i) => (
+            <line key={i} x1={p.x} y1={p.y} x2={propX} y2={propY}
+              stroke={C.sienna} strokeWidth="1.3" strokeDasharray="5 7" opacity="0.28"
+              style={{ animation: `svcDash ${1.3 + i * 0.22}s linear infinite` }}
+            />
+          ))}
+
+          {/* Booking signal dots travelling to property */}
+          {platforms.map((p, i) => (
+            <circle key={i} cx={p.x} cy={p.y} r="4.5" fill={C.sienna}>
+              <animateTransform attributeName="transform" type="translate"
+                from="0,0" to={`${propX - p.x},${propY - p.y}`}
+                dur={`${1.8 + i * 0.38}s`} begin={`${i * 0.46}s`} repeatCount="indefinite"
+              />
+              <animate attributeName="opacity" values="0;0.85;0.85;0"
+                dur={`${1.8 + i * 0.38}s`} begin={`${i * 0.46}s`} repeatCount="indefinite"
+              />
+            </circle>
+          ))}
+
+          {/* Pulse rings at property center */}
+          {[0, 1.5].map((delay, i) => (
+            <circle key={i} cx={propX} cy={propY} r="14" fill="none" stroke={C.sienna} strokeWidth="1">
+              <animate attributeName="r"       values="14;44" dur="3s" begin={`${delay}s`} repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.45;0" dur="3s" begin={`${delay}s`} repeatCount="indefinite"/>
+            </circle>
+          ))}
+
+          {/* Property node */}
+          <rect x={propX-38} y={propY-30} width="76" height="54" rx="5"
+            fill="white" stroke={`rgba(42,96,68,0.22)`} strokeWidth="1.5"/>
+          {/* House silhouette */}
+          <polygon points={`${propX},${propY-18} ${propX+15},${propY-4} ${propX-15},${propY-4}`} fill={C.sienna} opacity="0.85"/>
+          <rect x={propX-8} y={propY-4} width="16" height="14" rx="1.5" fill={C.sienna} opacity="0.85"/>
+
+          {/* OTA platform circles */}
+          {platforms.map((p, i) => (
+            <g key={i}>
+              <circle cx={p.x} cy={p.y} r="27" fill="white" stroke={`rgba(42,96,68,0.18)`} strokeWidth="1.5"/>
+              <text x={p.x} y={p.y + 4} textAnchor="middle"
+                fontFamily="'Jost',sans-serif"
+                fontSize={p.label === 'Booking.com' ? 7.5 : 9.5}
+                fontWeight="500" fill={C.cream}>{p.label}</text>
+            </g>
+          ))}
+
+          {/* Caption */}
+          <text x={propX} y={280} textAnchor="middle"
+            fontFamily="'Jost',sans-serif" fontSize="9" letterSpacing="2.5"
+            fill={C.sienna} opacity="0.55">LIVE ON 4 PLATFORMS</text>
+        </svg>
+      </div>
+
+      {/* ── Scene 1: Brand Transformation ── */}
+      <div style={pane(1)}>
+        <div style={{ display:'flex', alignItems:'center', gap:16, padding:'0 28px', width:'100%' }}>
+
+          {/* Before */}
+          <div style={{ flex:1, background:'white', border:`1px solid rgba(0,0,0,0.1)`, borderRadius:6, overflow:'hidden', opacity:0.72 }}>
+            <div style={{ height:88, background:'#CACACA', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect x="3" y="8" width="30" height="22" rx="2" fill="#B0B0B0"/>
+                <circle cx="12" cy="17" r="5" fill="#909090"/>
+                <polygon points="6,30 15,20 23,28 28,22 33,30" fill="#A0A0A0"/>
+              </svg>
+            </div>
+            <div style={{ padding:'10px 13px 13px' }}>
+              <div style={{ fontSize:10, fontFamily:"'Jost',sans-serif", fontWeight:500, color:'#888', marginBottom:5, letterSpacing:0.5 }}>PROPERTY 12</div>
+              <div style={{ display:'flex', gap:2, marginBottom:5 }}>
+                {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:11, color: s<=3 ? '#F59E0B' : '#D5D5D5' }}>★</span>)}
+              </div>
+              <div style={{ fontSize:9, color:'#AAAAAA', fontFamily:"'Jost',sans-serif" }}>1 platform only</div>
+            </div>
+          </div>
+
+          {/* Arrow */}
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, flexShrink:0 }}>
+            <svg width="34" height="22" viewBox="0 0 34 22">
+              <path d="M1 11 L26 11 M20 4 L28 11 L20 18" stroke={C.sienna} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontSize:7.5, fontFamily:"'Jost',sans-serif", color:C.sienna, letterSpacing:2 }}>BRAND</span>
+          </div>
+
+          {/* After */}
+          <div style={{ flex:1, background:'white', border:`1px solid rgba(42,96,68,0.3)`, borderRadius:6, overflow:'hidden', boxShadow:`0 6px 28px rgba(42,96,68,0.14)` }}>
+            <div style={{ height:88, background:C.sienna, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+              <div style={{ position:'absolute', top:0, width:'55%', height:'100%', background:'rgba(255,255,255,0.07)', transform:'skewX(-18deg)', animation:'svcShine 4s ease 0.8s infinite' }}/>
+              <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+                <polygon points="16,3 29,19 3,19" fill="white" opacity="0.75"/>
+                <rect x="10" y="19" width="12" height="10" rx="1" fill="white" opacity="0.75"/>
+              </svg>
+            </div>
+            <div style={{ padding:'10px 13px 13px' }}>
+              <div style={{ fontSize:10, fontFamily:"'Sora',sans-serif", fontWeight:700, color:C.cream, marginBottom:5, letterSpacing:0.8 }}>LUNA HOUSE</div>
+              <div style={{ display:'flex', gap:2, marginBottom:5 }}>
+                {[1,2,3,4,5].map(s => (
+                  <span key={s} style={{ fontSize:11, color:'#F59E0B', animation:`svcStarPop 0.35s cubic-bezier(.22,1,.36,1) ${0.5 + s * 0.1}s both` }}>★</span>
+                ))}
+              </div>
+              <div style={{ fontSize:9, color:C.siennaL, fontFamily:"'Jost',sans-serif" }}>4 platforms · direct booking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Scene 2: WhatsApp Automation ── */}
+      <div style={pane(2)}>
+        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 6px 32px rgba(0,0,0,0.12)` }}>
+
+          {/* Header */}
+          <div style={{ background:C.sienna, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ width:32, height:32, borderRadius:'50%', background:'rgba(255,255,255,0.18)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <circle cx="8" cy="6" r="3.5" fill="white"/>
+                <path d="M2 14.5C2 11 4.5 9 8 9C11.5 9 14 11 14 14.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontSize:11, color:'white', fontFamily:"'Jost',sans-serif", fontWeight:500 }}>Guest Inquiry</div>
+              <div style={{ fontSize:8.5, color:'rgba(255,255,255,0.6)', fontFamily:"'Jost',sans-serif" }}>02:47 AM</div>
+            </div>
+          </div>
+
+          {/* Chat body */}
+          <div style={{ background:'#ECE5DD', padding:'14px 12px', display:'flex', flexDirection:'column', gap:10, minHeight:196 }}>
+
+            {/* Guest message */}
+            <div style={{ display:'flex', justifyContent:'flex-start', animation:'svcMsgIn 0.5s ease 0.3s both', opacity:0 }}>
+              <div style={{ background:'white', borderRadius:'3px 12px 12px 12px', padding:'8px 11px', maxWidth:'82%', boxShadow:'0 1px 2px rgba(0,0,0,0.09)' }}>
+                <div style={{ fontSize:11, color:'#2C3333', fontFamily:"'Jost',sans-serif", lineHeight:1.55 }}>Hi, can I check in early? Around 12pm?</div>
+                <div style={{ fontSize:8.5, color:'#AAA', fontFamily:"'Jost',sans-serif", marginTop:3, textAlign:'right' }}>02:47</div>
+              </div>
+            </div>
+
+            {/* Typing indicator — appears briefly then fades */}
+            <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcTypeFade 2.8s ease 1.1s both' }}>
+              <div style={{ background:C.sienna, borderRadius:'12px 3px 12px 12px', padding:'10px 14px' }}>
+                <div style={{ display:'flex', gap:4, alignItems:'center', height:14 }}>
+                  {[0, 0.18, 0.36].map((d, i) => (
+                    <div key={i} style={{ width:5, height:5, borderRadius:'50%', background:'rgba(255,255,255,0.7)', animation:`svcDotBlink 0.9s ease ${d}s infinite` }}/>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Auto-reply */}
+            <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcMsgIn 0.5s ease 2.1s both', opacity:0 }}>
+              <div style={{ background:C.sienna, borderRadius:'12px 3px 12px 12px', padding:'8px 11px', maxWidth:'86%', boxShadow:'0 1px 2px rgba(0,0,0,0.09)' }}>
+                <div style={{ fontSize:11, color:'white', fontFamily:"'Jost',sans-serif", lineHeight:1.55 }}>Hi! Early check-in at 12pm is confirmed. WiFi: NakamaCanggu. See you soon!</div>
+                <div style={{ fontSize:8.5, color:'rgba(255,255,255,0.5)', fontFamily:"'Jost',sans-serif", marginTop:3, textAlign:'right' }}>02:47 · sent in 4s</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Badge */}
+          <div style={{ padding:'7px 14px', borderTop:`1px solid rgba(0,0,0,0.06)`, display:'flex', alignItems:'center', gap:7 }}>
+            <div style={{ width:6, height:6, borderRadius:'50%', background:C.siennaL, flexShrink:0 }}/>
+            <span style={{ fontSize:9, fontFamily:"'Jost',sans-serif", color:C.stone, letterSpacing:0.8 }}>Automated by Nakama</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
 
 function NakamaLogo({ height = 48 }: { height?: number }) {
   const w = height * (210 / 54);
@@ -714,52 +916,48 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="reveal d2">
-            {SERVICES_ACC.map((svc, i) => (
-              <div
-                key={i}
-                className="svc-acc-row"
-                onClick={() => setSvcOpen(svcOpen === i ? -1 : i)}
-              >
-                <div className="svc-acc-header">
-                  <span className="svc-acc-num">{svc.num}</span>
-                  <div style={{ flex: 1 }}>
-                    <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
-                  </div>
-                  <svg
-                    width="16" height="16" viewBox="0 0 16 16"
-                    style={{ transition: 'transform 0.3s ease', transform: svcOpen === i ? 'rotate(180deg)' : 'none', flexShrink: 0 }}
-                  >
-                    <polyline points="4,6 8,10 12,6" stroke={svcOpen === i ? C.sienna : C.stoneL} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+          {/* 2-col: accordion left · animated visual right */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
-                <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 640 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                  <div style={{ padding: '4px 0 36px clamp(28px,3.5vw,48px)' }}>
-                    <p style={{ fontSize: 16, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 28, maxWidth: 640 }}>
-                      {svc.desc}
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, maxWidth: 640, marginBottom: i === 0 ? 28 : 0 }}>
-                      <div style={{ width: 28, height: 1, background: C.sienna, flexShrink: 0 }}/>
-                      <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
+            <div className="reveal d2">
+              {SERVICES_ACC.map((svc, i) => (
+                <div
+                  key={i}
+                  className="svc-acc-row"
+                  onClick={() => setSvcOpen(i)}
+                >
+                  <div className="svc-acc-header">
+                    <span className="svc-acc-num">{svc.num}</span>
+                    <div style={{ flex: 1 }}>
+                      <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
                     </div>
-                    {i === 0 && (
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, maxWidth: 640 }}>
-                        {['Airbnb', 'Booking.com', 'Agoda', 'Traveloka'].map((platform) => (
-                          <div key={platform} style={{ padding: '14px 12px', border: `1px solid rgba(42,96,68,0.18)`, background: `rgba(42,96,68,0.04)` }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-                              <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.siennaL, flexShrink: 0 }} />
-                              <span style={{ fontSize: 8, color: C.siennaL, fontFamily: "'Jost',sans-serif", letterSpacing: 1.5 }}>LIVE</span>
-                            </div>
-                            <div style={{ fontSize: 11, color: C.cream, fontWeight: 500, fontFamily: "'Jost',sans-serif", lineHeight: 1.3 }}>{platform}</div>
-                          </div>
-                        ))}
+                    <svg
+                      width="16" height="16" viewBox="0 0 16 16"
+                      style={{ transition: 'transform 0.3s ease', transform: svcOpen === i ? 'rotate(180deg)' : 'none', flexShrink: 0 }}
+                    >
+                      <polyline points="4,6 8,10 12,6" stroke={svcOpen === i ? C.sienna : C.stoneL} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+
+                  <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 480 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
+                    <div style={{ padding: '4px 0 32px clamp(24px,3vw,40px)' }}>
+                      <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 24 }}>
+                        {svc.desc}
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 0 }}>
+                        <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <div className="reveal d3">
+              <ServiceVisual active={svcOpen} />
+            </div>
+
           </div>
         </div>
       </section>
