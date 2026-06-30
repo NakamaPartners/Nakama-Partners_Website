@@ -405,23 +405,23 @@ const PAIN_POINTS = [
 
 const PARTICLES: Array<{
   normY: number; r: number; dur: number; phase: number;
-  dropAt: number; sienna: boolean;
+  gate: number; sienna: boolean;
 }> = [
-  { normY:0.30, r:3.2, dur:4200, phase:0.00, dropAt:940, sienna:true  },
-  { normY:0.62, r:2.5, dur:5100, phase:0.18, dropAt:940, sienna:true  },
-  { normY:0.45, r:2.0, dur:4700, phase:0.36, dropAt:940, sienna:true  },
-  { normY:0.20, r:2.8, dur:3900, phase:0.52, dropAt:940, sienna:false },
-  { normY:0.78, r:2.3, dur:5400, phase:0.70, dropAt:940, sienna:true  },
-  { normY:0.55, r:3.0, dur:4400, phase:0.85, dropAt:940, sienna:true  },
-  { normY:0.35, r:2.1, dur:4900, phase:0.12, dropAt:940, sienna:false },
-  { normY:0.65, r:2.7, dur:3800, phase:0.40, dropAt:940, sienna:true  },
-  { normY:0.10, r:1.8, dur:5200, phase:0.62, dropAt:600, sienna:false },
-  { normY:0.88, r:2.2, dur:4600, phase:0.78, dropAt:450, sienna:false },
-  { normY:0.22, r:2.4, dur:3700, phase:0.94, dropAt:520, sienna:false },
-  { normY:0.70, r:1.9, dur:4800, phase:0.28, dropAt:380, sienna:false },
-  { normY:0.50, r:2.6, dur:4100, phase:0.55, dropAt:680, sienna:false },
-  { normY:0.40, r:2.0, dur:5000, phase:0.75, dropAt:940, sienna:true  },
-  { normY:0.60, r:2.9, dur:3600, phase:0.90, dropAt:940, sienna:true  },
+  { normY:0.30, r:3.2, dur:4200, phase:0.00, gate:940, sienna:true  },
+  { normY:0.62, r:2.5, dur:5100, phase:0.18, gate:940, sienna:true  },
+  { normY:0.45, r:2.0, dur:4700, phase:0.36, gate:940, sienna:true  },
+  { normY:0.20, r:2.8, dur:3900, phase:0.52, gate:225, sienna:false },
+  { normY:0.78, r:2.3, dur:5400, phase:0.70, gate:940, sienna:true  },
+  { normY:0.55, r:3.0, dur:4400, phase:0.85, gate:940, sienna:true  },
+  { normY:0.35, r:2.1, dur:4900, phase:0.12, gate:450, sienna:false },
+  { normY:0.65, r:2.7, dur:3800, phase:0.40, gate:940, sienna:true  },
+  { normY:0.10, r:1.8, dur:5200, phase:0.62, gate:675, sienna:false },
+  { normY:0.88, r:2.2, dur:4600, phase:0.78, gate:225, sienna:false },
+  { normY:0.22, r:2.4, dur:3700, phase:0.94, gate:450, sienna:false },
+  { normY:0.70, r:1.9, dur:4800, phase:0.28, gate:675, sienna:false },
+  { normY:0.50, r:2.6, dur:4100, phase:0.55, gate:450, sienna:false },
+  { normY:0.40, r:2.0, dur:5000, phase:0.75, gate:940, sienna:true  },
+  { normY:0.60, r:2.9, dur:3600, phase:0.90, gate:940, sienna:true  },
 ];
 
 // Logo source map — keyed by platform label
@@ -692,33 +692,36 @@ export function LandingPage() {
     const tick = (now: number) => {
       const dt = prev === null ? 0 : Math.min((now - prev) / 1000, 0.05);
       prev = now;
+      const SPEED = 0.7; // 30% slower than before
       PARTICLES.forEach((p, i) => {
         const el = particleRefs.current[i];
         if (!el) return;
-        phases.current[i] = (phases.current[i] + dt / (p.dur / 1000)) % 1;
+        phases.current[i] = (phases.current[i] + SPEED * dt / (p.dur / 1000)) % 1;
         const t = phases.current[i];
         const x = t * 960 - 20;
-        const xc = Math.max(0, Math.min(x, 900));
-        let normY = p.normY;
-        if (p.dropAt < 940) {
-          const driftStart = p.dropAt - 120;
-          if (xc > driftStart) {
-            const drift = Math.min(1, (xc - driftStart) / 120);
-            const edgeDir = p.normY < 0.5 ? -1 : 1;
-            normY = p.normY + edgeDir * drift * 0.20;
-          }
+
+        if (p.sienna || x <= p.gate) {
+          // Travelling forward along the funnel band
+          const xc = Math.max(0, Math.min(x, 900));
+          const uy = 40 + xc / 10;
+          const ly = 240 - xc / 10;
+          const y  = uy + p.normY * (ly - uy);
+          const fadeIn = Math.min(1, (x + 20) / 60);
+          el.setAttribute('cx', x.toFixed(1));
+          el.setAttribute('cy', y.toFixed(1));
+          el.setAttribute('opacity', Math.max(0, fadeIn).toFixed(3));
+        } else {
+          // Lost to competitors: peel off and fall straight down the gate line
+          const uy = 40 + p.gate / 10;
+          const ly = 240 - p.gate / 10;
+          const yAtGate = uy + p.normY * (ly - uy);
+          const dropDist = x - p.gate;
+          const y = yAtGate + dropDist * 1.4;
+          const fadeOut = Math.max(0, 1 - dropDist / 80);
+          el.setAttribute('cx', p.gate.toFixed(1));
+          el.setAttribute('cy', y.toFixed(1));
+          el.setAttribute('opacity', fadeOut.toFixed(3));
         }
-        const uy = 40 + xc / 10;
-        const ly = 240 - xc / 10;
-        const y  = uy + normY * (ly - uy);
-        const fadeIn  = Math.min(1, (x + 20) / 60);
-        const fadeOut = p.dropAt < 940 && x > p.dropAt - 90
-          ? Math.max(0, (p.dropAt - x) / 90)
-          : 1;
-        const opacity = Math.max(0, Math.min(fadeIn, fadeOut));
-        el.setAttribute('cx', x.toFixed(1));
-        el.setAttribute('cy', y.toFixed(1));
-        el.setAttribute('opacity', opacity.toFixed(3));
       });
       raf = requestAnimationFrame(tick);
     };
@@ -1415,7 +1418,7 @@ export function LandingPage() {
             ].map((card, i) => (
               <div key={i} className={`reveal d${i + 1} feat-card-dark`}>
                 <span className="label" style={{ color: C.siennaL, fontSize: 10 }}>{card.num}</span>
-                <h3 className="display" style={{ fontSize: 'clamp(17px,2.2vw,21px)', fontWeight: 700, color: '#F2F5F3', lineHeight: 1.25 }}>{card.head}</h3>
+                <h3 className="display" style={{ fontSize: 'clamp(17px,2.2vw,21px)', fontWeight: 700, color: '#F2F5F3', lineHeight: 1.25, minHeight: '2.5em', display: 'flex', alignItems: 'flex-end' }}>{card.head}</h3>
                 <p style={{ fontSize: 14, color: 'rgba(242,245,243,0.48)', lineHeight: 1.85, fontWeight: 300 }}>{card.body}</p>
               </div>
             ))}
@@ -1432,10 +1435,10 @@ export function LandingPage() {
               alt="A Bali property at dusk"
               style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
             />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(transparent 55%, rgba(8,16,12,0.85))' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(transparent 40%, rgba(8,16,12,0.92))' }} />
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 28px' }}>
-              <p className="label" style={{ color: C.siennaL, fontSize: 9, marginBottom: 6 }}>Focused on</p>
-              <p style={{ fontFamily: "'Sora',sans-serif", fontWeight: 600, fontSize: 14, color: '#F2F5F3' }}>Bali and Southeast Asia</p>
+              <p className="label" style={{ color: '#8FD9B3', fontSize: 10, marginBottom: 6 }}>Focused on</p>
+              <p style={{ fontFamily: "'Sora',sans-serif", fontWeight: 600, fontSize: 15, color: '#FFFFFF' }}>Bali and Southeast Asia</p>
             </div>
           </div>
           <div className="reveal d1">
