@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import nakamaLogo from '@/assets/nakama-logo.png';
 
 /*
   NAKAMA — Bold modern landing page
@@ -9,17 +10,17 @@ import React, { useEffect, useRef, useState } from 'react';
 */
 
 const C = {
-  bg:      '#120D09',
-  bgMid:   '#1C1410',
-  bgSoft:  '#231A14',
-  linen:   '#F0EBE3',
-  sienna:  '#9B5D3F',
-  siennaL: '#C47A55',
-  siennaD: '#7A4730',
-  stone:   '#8B7D72',
-  stoneL:  '#B8ADA6',
-  rule:    '#C4A882',
-  cream:   '#F5EDD8',
+  bg:      '#08100C',
+  bgMid:   '#0D1710',
+  bgSoft:  '#121E15',
+  linen:   '#E6EEE9',
+  sienna:  '#2A6044',
+  siennaL: '#3D8A62',
+  siennaD: '#1E4533',
+  stone:   '#6B7B73',
+  stoneL:  '#9BB0A4',
+  rule:    '#4A9B6F',
+  cream:   '#F2F5F3',
 };
 
 const CSS = `
@@ -58,7 +59,7 @@ const CSS = `
   @keyframes pBorder  { from { transform:scaleY(0); } to { transform:scaleY(1); } }
   @keyframes pContent { from { opacity:0; transform:translateX(6px); } to { opacity:1; transform:none; } }
   @keyframes pLine    { from { transform:scaleY(0); } to { transform:scaleY(1); } }
-  @keyframes pGlow    { 0% { opacity:0; box-shadow:none; } 100% { opacity:1; box-shadow:0 0 28px rgba(196,122,85,0.3); } }
+  @keyframes pGlow    { 0% { opacity:0; box-shadow:none; } 100% { opacity:1; box-shadow:0 0 28px rgba(61,138,98,0.3); } }
   @keyframes dotPop   { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
   @keyframes labelIn  { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
 
@@ -155,10 +156,10 @@ const CSS = `
     background: transparent; color: ${C.cream};
     font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 400;
     letter-spacing: 0.04em; padding: 12px 26px;
-    border: 1px solid rgba(245,237,216,0.35); cursor: pointer;
+    border: 1px solid rgba(242,245,243,0.35); cursor: pointer;
     transition: border-color 0.25s ease, background 0.25s ease;
   }
-  .btn-outline-cream:hover { border-color: ${C.cream}; background: rgba(245,237,216,0.06); }
+  .btn-outline-cream:hover { border-color: ${C.cream}; background: rgba(242,245,243,0.06); }
 
   /* ── Section padding ─────────────────────────────────────── */
   .sec-pad    { padding: clamp(72px,10vw,120px) clamp(22px,5vw,64px); }
@@ -204,16 +205,16 @@ const CSS = `
   }
 
   /* ── Process grid ────────────────────────────────────────── */
-  .process-grid { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(245,237,216,0.08); }
+  .process-grid { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(242,245,243,0.08); }
   @media (max-width: 860px) {
     .process-grid { grid-template-columns: repeat(2,1fr); }
     .proc-cell:nth-child(odd) { padding-left: 0 !important; }
     .proc-cell:nth-child(even) { border-right: none !important; }
-    .proc-cell:nth-child(3), .proc-cell:nth-child(4) { border-top: 1px solid rgba(245,237,216,0.08); }
+    .proc-cell:nth-child(3), .proc-cell:nth-child(4) { border-top: 1px solid rgba(242,245,243,0.08); }
   }
   @media (max-width: 480px) {
     .process-grid { grid-template-columns: 1fr; }
-    .proc-cell { border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; border-top: 1px solid rgba(245,237,216,0.08) !important; }
+    .proc-cell { border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; border-top: 1px solid rgba(242,245,243,0.08) !important; }
     .proc-cell:first-child { border-top: none !important; }
   }
 
@@ -234,7 +235,7 @@ const CSS = `
     padding: clamp(24px,3.5vw,36px); display: flex; flex-direction: column; gap: 14px;
     transition: border-color 0.3s ease, background 0.3s ease;
   }
-  .feat-card:hover { border-color: ${C.sienna}55; background: rgba(155,93,63,0.06); }
+  .feat-card:hover { border-color: ${C.sienna}55; background: rgba(42,96,68,0.06); }
 
   /* ── Testimonials ────────────────────────────────────────── */
   .testi { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.07); transition: padding-left 0.4s cubic-bezier(.22,1,.36,1); }
@@ -464,12 +465,11 @@ export function LandingPage() {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="13" stroke={C.sienna} strokeWidth="1.5"/>
-            <circle cx="9"  cy="14" r="3.5" fill={C.sienna}/>
-            <circle cx="19" cy="14" r="3.5" fill={C.siennaL} opacity="0.7"/>
-          </svg>
-          <span style={{ fontFamily:"'Sora',sans-serif", fontSize:16, fontWeight:700, color:C.cream, letterSpacing:'0.02em' }}>nakama</span>
+          <img
+            src={nakamaLogo}
+            alt="Nakama Corporations"
+            style={{ height:40, width:'auto', filter:'brightness(0) invert(1)', display:'block' }}
+          />
         </div>
         <div className="nav-links-center">
           {['Services','Process','About','Stories'].map(l => <span key={l} className="nav-link">{l}</span>)}
@@ -489,8 +489,8 @@ export function LandingPage() {
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           background: `
-            radial-gradient(ellipse 60% 70% at 80% 50%, rgba(155,93,63,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 60% at 10% 80%, rgba(100,52,28,0.22) 0%, transparent 55%)
+            radial-gradient(ellipse 60% 70% at 80% 50%, rgba(42,96,68,0.18) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 60% at 10% 80%, rgba(20,70,40,0.22) 0%, transparent 55%)
           `,
           animation: 'atm 9s ease-in-out infinite',
         }} />
@@ -644,7 +644,7 @@ export function LandingPage() {
                 className={`reveal d${i}`}
                 style={{
                   padding: 'clamp(20px,2.5vw,28px)',
-                  background: stage.highlight ? `rgba(155,93,63,0.07)` : 'rgba(255,255,255,0.025)',
+                  background: stage.highlight ? `rgba(42,96,68,0.07)` : 'rgba(255,255,255,0.025)',
                   borderTop: `2px solid ${stage.highlight ? C.sienna : 'rgba(255,255,255,0.07)'}`,
                 }}
               >
@@ -910,7 +910,7 @@ export function LandingPage() {
                         </div>
                       </div>
                       {/* Mini site */}
-                      <div style={{ padding:'22px 20px', background:'#0D0A07' }}>
+                      <div style={{ padding:'22px 20px', background:'#080E0B' }}>
                         <div style={{ fontSize:8, color:`${C.stone}55`, letterSpacing:2.5, marginBottom:8, fontFamily:"'Jost',sans-serif", animation:'obUp 0.3s ease 0.1s both' }}>VILLA SEKAR · UBUD</div>
                         <div style={{ fontFamily:"'Sora',sans-serif", fontSize:20, fontWeight:800, color:C.cream, lineHeight:1.15, marginBottom:14, animation:'obUp 0.3s ease 0.2s both' }}>
                           Where calm<br/>meets craft.
@@ -939,7 +939,7 @@ export function LandingPage() {
                     <div style={{ fontSize:9, letterSpacing:2.5, color:`${C.stone}80`, fontFamily:"'Jost',sans-serif", marginBottom:18 }}>WHATSAPP AUTOMATION</div>
                     <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                       {/* Guest */}
-                      <div style={{ alignSelf:'flex-end', maxWidth:'78%', background:`rgba(155,93,63,0.18)`, border:`1px solid rgba(155,93,63,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 0.05s both' }}>
+                      <div style={{ alignSelf:'flex-end', maxWidth:'78%', background:`rgba(42,96,68,0.18)`, border:`1px solid rgba(42,96,68,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 0.05s both' }}>
                         <div style={{ fontSize:11, color:C.cream, lineHeight:1.5 }}>Hi, is Villa Sekar available 14–18 Dec?</div>
                         <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, textAlign:'right', fontFamily:"'Jost',sans-serif" }}>09:14</div>
                       </div>
@@ -950,7 +950,7 @@ export function LandingPage() {
                         <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, fontFamily:"'Jost',sans-serif" }}>09:14</div>
                       </div>
                       {/* Guest */}
-                      <div style={{ alignSelf:'flex-end', maxWidth:'40%', background:`rgba(155,93,63,0.18)`, border:`1px solid rgba(155,93,63,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 1.05s both' }}>
+                      <div style={{ alignSelf:'flex-end', maxWidth:'40%', background:`rgba(42,96,68,0.18)`, border:`1px solid rgba(42,96,68,0.28)`, padding:'9px 13px', animation:'obInR 0.3s ease 1.05s both' }}>
                         <div style={{ fontSize:11, color:C.cream }}>Yes please</div>
                         <div style={{ fontSize:7, color:`${C.stone}55`, marginTop:4, textAlign:'right', fontFamily:"'Jost',sans-serif" }}>09:15</div>
                       </div>
@@ -983,7 +983,7 @@ export function LandingPage() {
                       ))}
                     </div>
                     {/* Booking confirmed */}
-                    <div style={{ border:`1px solid rgba(155,93,63,0.35)`, background:'rgba(155,93,63,0.07)', padding:'16px 20px', marginBottom:20, animation:'obUp 0.4s ease 0.48s both' }}>
+                    <div style={{ border:`1px solid rgba(42,96,68,0.35)`, background:'rgba(42,96,68,0.07)', padding:'16px 20px', marginBottom:20, animation:'obUp 0.4s ease 0.48s both' }}>
                       <div style={{ fontSize:9, color:C.sienna, letterSpacing:2, marginBottom:8, fontFamily:"'Jost',sans-serif" }}>BOOKING CONFIRMED</div>
                       <div style={{ fontSize:14, color:C.cream, fontWeight:500, marginBottom:3 }}>14–18 December · 4 nights</div>
                       <div style={{ fontSize:12, color:C.stone }}>2 guests · $1,120 total</div>
@@ -999,7 +999,7 @@ export function LandingPage() {
                             display:'flex', alignItems:'center', justifyContent:'center',
                             fontSize:8, fontFamily:"'Jost',sans-serif",
                             color:    booked ? C.siennaL : `${C.stone}50`,
-                            background: booked ? 'rgba(155,93,63,0.16)' : 'transparent',
+                            background: booked ? 'rgba(42,96,68,0.16)' : 'transparent',
                           }}>{i + 1}</div>
                         );
                       })}
@@ -1020,46 +1020,46 @@ export function LandingPage() {
           <div className="reveal about-img" style={{ position:'relative', overflow:'hidden', background:`linear-gradient(180deg,${C.bg} 0%,${C.bgSoft} 100%)`, border:'1px solid rgba(255,255,255,0.06)', minHeight:480 }}>
 
             {/* Warm accent wash */}
-            <div style={{ position:'absolute', inset:0, background:`linear-gradient(145deg,rgba(155,93,63,0.22) 0%,transparent 55%)`, zIndex:1 }} />
+            <div style={{ position:'absolute', inset:0, background:`linear-gradient(145deg,rgba(42,96,68,0.22) 0%,transparent 55%)`, zIndex:1 }} />
 
             {/* Sky + clouds atmosphere */}
             <svg style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', zIndex:2 }} viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
               {/* Stars */}
-              <circle cx="200" cy="36" r="1.3" fill="rgba(245,237,216,0.40)"/>
-              <circle cx="285" cy="52" r="0.9" fill="rgba(245,237,216,0.28)"/>
-              <circle cx="128" cy="44" r="1.0" fill="rgba(245,237,216,0.32)"/>
-              <circle cx="360" cy="76" r="0.8" fill="rgba(245,237,216,0.22)"/>
-              <circle cx="68"  cy="58" r="0.7" fill="rgba(245,237,216,0.20)"/>
-              <circle cx="315" cy="38" r="0.6" fill="rgba(245,237,216,0.18)"/>
+              <circle cx="200" cy="36" r="1.3" fill="rgba(242,245,243,0.40)"/>
+              <circle cx="285" cy="52" r="0.9" fill="rgba(242,245,243,0.28)"/>
+              <circle cx="128" cy="44" r="1.0" fill="rgba(242,245,243,0.32)"/>
+              <circle cx="360" cy="76" r="0.8" fill="rgba(242,245,243,0.22)"/>
+              <circle cx="68"  cy="58" r="0.7" fill="rgba(242,245,243,0.20)"/>
+              <circle cx="315" cy="38" r="0.6" fill="rgba(242,245,243,0.18)"/>
               {/* Cloud cluster — upper left */}
-              <ellipse cx="88"  cy="88"  rx="62" ry="26" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
-              <ellipse cx="140" cy="70"  rx="50" ry="21" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
-              <ellipse cx="178" cy="88"  rx="40" ry="19" fill="rgba(245,237,216,0.025)" stroke="rgba(245,237,216,0.11)" strokeWidth="0.7"/>
+              <ellipse cx="88"  cy="88"  rx="62" ry="26" fill="rgba(242,245,243,0.025)" stroke="rgba(242,245,243,0.11)" strokeWidth="0.7"/>
+              <ellipse cx="140" cy="70"  rx="50" ry="21" fill="rgba(242,245,243,0.025)" stroke="rgba(242,245,243,0.11)" strokeWidth="0.7"/>
+              <ellipse cx="178" cy="88"  rx="40" ry="19" fill="rgba(242,245,243,0.025)" stroke="rgba(242,245,243,0.11)" strokeWidth="0.7"/>
               {/* Cloud cluster — upper right */}
-              <ellipse cx="308" cy="114" rx="54" ry="23" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
-              <ellipse cx="354" cy="98"  rx="42" ry="18" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
-              <ellipse cx="386" cy="114" rx="30" ry="14" fill="rgba(245,237,216,0.018)" stroke="rgba(245,237,216,0.07)" strokeWidth="0.7"/>
+              <ellipse cx="308" cy="114" rx="54" ry="23" fill="rgba(242,245,243,0.018)" stroke="rgba(242,245,243,0.07)" strokeWidth="0.7"/>
+              <ellipse cx="354" cy="98"  rx="42" ry="18" fill="rgba(242,245,243,0.018)" stroke="rgba(242,245,243,0.07)" strokeWidth="0.7"/>
+              <ellipse cx="386" cy="114" rx="30" ry="14" fill="rgba(242,245,243,0.018)" stroke="rgba(242,245,243,0.07)" strokeWidth="0.7"/>
               {/* Cloud cluster — mid, wispy */}
-              <ellipse cx="52"  cy="220" rx="46" ry="19" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
-              <ellipse cx="92"  cy="208" rx="36" ry="15" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
-              <ellipse cx="340" cy="210" rx="40" ry="17" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
-              <ellipse cx="375" cy="198" rx="30" ry="13" fill="rgba(245,237,216,0.015)" stroke="rgba(245,237,216,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="52"  cy="220" rx="46" ry="19" fill="rgba(242,245,243,0.015)" stroke="rgba(242,245,243,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="92"  cy="208" rx="36" ry="15" fill="rgba(242,245,243,0.015)" stroke="rgba(242,245,243,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="340" cy="210" rx="40" ry="17" fill="rgba(242,245,243,0.015)" stroke="rgba(242,245,243,0.055)" strokeWidth="0.6"/>
+              <ellipse cx="375" cy="198" rx="30" ry="13" fill="rgba(242,245,243,0.015)" stroke="rgba(242,245,243,0.055)" strokeWidth="0.6"/>
               {/* Cloud cluster — lower, very faint */}
-              <ellipse cx="110" cy="330" rx="38" ry="15" fill="rgba(245,237,216,0.010)" stroke="rgba(245,237,216,0.04)" strokeWidth="0.6"/>
-              <ellipse cx="300" cy="350" rx="44" ry="17" fill="rgba(245,237,216,0.010)" stroke="rgba(245,237,216,0.04)" strokeWidth="0.6"/>
+              <ellipse cx="110" cy="330" rx="38" ry="15" fill="rgba(242,245,243,0.010)" stroke="rgba(242,245,243,0.04)" strokeWidth="0.6"/>
+              <ellipse cx="300" cy="350" rx="44" ry="17" fill="rgba(242,245,243,0.010)" stroke="rgba(242,245,243,0.04)" strokeWidth="0.6"/>
             </svg>
 
             {/* Building — taller, bottom-anchored */}
             <svg style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', zIndex:3 }} width="300" height="88%" viewBox="0 0 320 360" preserveAspectRatio="xMidYMax meet" fill="none">
-              <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(245,237,216,0.26)" strokeWidth="1.2"/>
-              <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(245,237,216,0.10)" strokeWidth="0.8"/>
-              <line x1="40" y1="216" x2="167" y2="216" stroke="rgba(245,237,216,0.16)" strokeWidth="0.8"/>
-              <path d="M268 352 L268 228 L280 216 L280 156 L268 142 L255 120 L242 94 L230 64 L223 34 L217 8 L211 34 L204 64 L191 94 L178 120 L166 142 L153 156 L153 216 L166 228 L166 352Z" stroke="rgba(245,237,216,0.26)" strokeWidth="1.2"/>
-              <path d="M256 352 L256 242 L262 230 L262 168 L256 156 L244 132 L232 104 L223 72 L217 44 L211 72 L202 104 L190 132 L178 156 L172 168 L172 230 L178 242 L178 352" stroke="rgba(245,237,216,0.10)" strokeWidth="0.8"/>
-              <line x1="153" y1="216" x2="280" y2="216" stroke="rgba(245,237,216,0.16)" strokeWidth="0.8"/>
-              <line x1="16" y1="352" x2="304" y2="352" stroke="rgba(245,237,216,0.20)" strokeWidth="0.9"/>
-              <circle cx="160" cy="10" r="4.5" stroke="rgba(245,237,216,0.30)" strokeWidth="0.8"/>
-              <text x="160" y="372" textAnchor="middle" fill="rgba(245,237,216,0.18)" fontSize="7.5" fontFamily="Jost,sans-serif" letterSpacing="4">CANDI BENTAR · BALI</text>
+              <path d="M52 352 L52 228 L40 216 L40 156 L52 142 L65 120 L78 94 L90 64 L97 34 L103 8 L109 34 L116 64 L129 94 L142 120 L154 142 L167 156 L167 216 L154 228 L154 352Z" stroke="rgba(242,245,243,0.26)" strokeWidth="1.2"/>
+              <path d="M64 352 L64 242 L58 230 L58 168 L64 156 L76 132 L88 104 L97 72 L103 44 L109 72 L118 104 L130 132 L142 156 L148 168 L148 230 L142 242 L142 352" stroke="rgba(242,245,243,0.10)" strokeWidth="0.8"/>
+              <line x1="40" y1="216" x2="167" y2="216" stroke="rgba(242,245,243,0.16)" strokeWidth="0.8"/>
+              <path d="M268 352 L268 228 L280 216 L280 156 L268 142 L255 120 L242 94 L230 64 L223 34 L217 8 L211 34 L204 64 L191 94 L178 120 L166 142 L153 156 L153 216 L166 228 L166 352Z" stroke="rgba(242,245,243,0.26)" strokeWidth="1.2"/>
+              <path d="M256 352 L256 242 L262 230 L262 168 L256 156 L244 132 L232 104 L223 72 L217 44 L211 72 L202 104 L190 132 L178 156 L172 168 L172 230 L178 242 L178 352" stroke="rgba(242,245,243,0.10)" strokeWidth="0.8"/>
+              <line x1="153" y1="216" x2="280" y2="216" stroke="rgba(242,245,243,0.16)" strokeWidth="0.8"/>
+              <line x1="16" y1="352" x2="304" y2="352" stroke="rgba(242,245,243,0.20)" strokeWidth="0.9"/>
+              <circle cx="160" cy="10" r="4.5" stroke="rgba(242,245,243,0.30)" strokeWidth="0.8"/>
+              <text x="160" y="372" textAnchor="middle" fill="rgba(242,245,243,0.18)" fontSize="7.5" fontFamily="Jost,sans-serif" letterSpacing="4">CANDI BENTAR · BALI</text>
             </svg>
 
             {/* Ground fade + label */}
@@ -1137,7 +1137,7 @@ export function LandingPage() {
                 padding:'clamp(28px,4vw,44px) 0',
                 paddingLeft: i>0?'clamp(14px,3vw,28px)':0,
                 paddingRight: i<3?'clamp(14px,3vw,28px)':0,
-                borderRight: i<3?`1px solid rgba(245,237,216,0.07)`:'none',
+                borderRight: i<3?`1px solid rgba(242,245,243,0.07)`:'none',
               }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18 }}>
                   <span className="display" style={{ fontSize:26, fontWeight:700, color:C.sienna, lineHeight:1 }}>{step.num}</span>
@@ -1191,7 +1191,7 @@ export function LandingPage() {
 
       {/* ── CTA ───────────────────────────────────────────────── */}
       <section className="sec-pad" style={{ background:C.bg, textAlign:'center', position:'relative', overflow:'hidden' }}>
-        <div style={{ position:'absolute', inset:0, background:`radial-gradient(ellipse 55% 70% at 50% 100%, rgba(155,93,63,0.2) 0%, transparent 65%)`, pointerEvents:'none' }} />
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(ellipse 55% 70% at 50% 100%, rgba(42,96,68,0.2) 0%, transparent 65%)`, pointerEvents:'none' }} />
         <div style={{ maxWidth:680, margin:'0 auto', position:'relative', zIndex:1 }}>
           <span className="reveal d1 label" style={{ color:C.sienna, display:'block', marginBottom:24, fontSize:10 }}>Begin the journey</span>
           <h2 className="reveal d2 display" style={{ fontSize:'clamp(40px,7vw,84px)', fontWeight:800, lineHeight:1.0, color:C.cream, marginBottom:24, letterSpacing:'-0.03em' }}>
