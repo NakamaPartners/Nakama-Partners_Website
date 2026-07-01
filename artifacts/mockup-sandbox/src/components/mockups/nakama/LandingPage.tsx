@@ -1270,7 +1270,7 @@ export function LandingPage() {
           {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
             <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => scrollToSection(id)}>{l}</span>
           ))}
-          <span className="nav-link" style={{ cursor:'pointer' }} onClick={() => setShowWork(true)}>See our work</span>
+          <span className="nav-link" style={{ cursor:'pointer' }} onClick={() => setShowWork(true)}>Preview</span>
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
