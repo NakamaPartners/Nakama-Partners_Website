@@ -355,6 +355,8 @@ const CSS = `
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
+    .onboard-left  { height: 180px !important; }
+    .onboard-right { height: 320px !important; }
 
     /* Section headers: single column */
     .sec-header { grid-template-columns: 1fr !important; margin-bottom: 36px !important; }
@@ -1717,7 +1719,7 @@ export function LandingPage() {
           <div className="onboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
 
             {/* Left: text — fixed height on all devices, content cross-fades in absolute overlay */}
-            <div className="onboard-left" style={{ height: 440, overflow: 'hidden', position: 'relative' }}>
+            <div className="onboard-left" style={{ height: 320, overflow: 'hidden', position: 'relative' }}>
               {/* Dot nav always visible at top */}
               <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
                 {ONBOARD.map((_, i) => (
@@ -1756,7 +1758,7 @@ export function LandingPage() {
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
-            <div style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', height: 440 }}>
+            <div className="onboard-right" style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', height: 320 }}>
               {/* Progress bar */}
               <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', position: 'relative', flexShrink: 0 }}>
                 <div style={{
