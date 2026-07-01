@@ -98,7 +98,7 @@ const CSS = `
   .label   { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; }
 
   /* Navigation */
-  .nav-links-center { display:flex; gap:32px; position:absolute; left:50%; transform:translateX(-50%); }
+  .nav-links-center { display:flex; gap:32px; }
   .nav-link { font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em; color:${C.stone}; cursor:pointer; transition:color 0.2s ease; }
   .nav-link:hover { color:${C.sienna} !important; }
 
@@ -1298,7 +1298,7 @@ export function LandingPage() {
         background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
           <NakamaLogo height={36} />
         </div>
         <div className="nav-links-center">
@@ -1307,7 +1307,7 @@ export function LandingPage() {
           ))}
           <span className="nav-link" style={{ cursor:'pointer' }} onClick={() => setShowWork(true)}>Preview</span>
         </div>
-        <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
           <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
           <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>Chat with us</a>
         </div>
