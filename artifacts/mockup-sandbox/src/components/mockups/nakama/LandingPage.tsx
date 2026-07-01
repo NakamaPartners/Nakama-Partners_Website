@@ -98,7 +98,16 @@ const CSS = `
   .label   { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; }
 
   /* Navigation */
-  .nav-links-center { display:flex; gap:32px; white-space:nowrap; }
+  .nav-links-center { display:flex; gap:32px; white-space:nowrap; align-items:center; }
+  .nav-preview-btn {
+    color:${C.sienna} !important;
+    border:1px solid ${C.sienna};
+    padding:5px 14px;
+    font-size:11px !important;
+    letter-spacing:0.12em !important;
+    transition:background 0.2s ease, color 0.2s ease !important;
+  }
+  .nav-preview-btn:hover { background:${C.sienna}; color:#fff !important; }
   .nav-link { font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em; color:${C.stone}; cursor:pointer; transition:color 0.2s ease; }
   .nav-link:hover { color:${C.sienna} !important; }
 
@@ -1305,7 +1314,11 @@ export function LandingPage() {
           {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
             <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => scrollToSection(id)}>{l}</span>
           ))}
-          <span className="nav-link" style={{ cursor:'pointer' }} onClick={() => setShowWork(true)}>Preview</span>
+          <span
+            className="nav-link nav-preview-btn"
+            style={{ cursor:'pointer' }}
+            onClick={() => setShowWork(true)}
+          >Preview</span>
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
           <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
