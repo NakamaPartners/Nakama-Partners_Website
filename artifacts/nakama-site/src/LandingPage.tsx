@@ -355,8 +355,8 @@ const CSS = `
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
-    .onboard-left  { height: 180px !important; }
-    .onboard-right { height: 320px !important; }
+    .onboard-left  { height: 300px !important; }
+    .onboard-right { height: 360px !important; }
 
     /* Section headers: single column */
     .sec-header { grid-template-columns: 1fr !important; margin-bottom: 36px !important; }
@@ -433,26 +433,31 @@ const ONBOARD = [
     label: 'First Call',
     title: "You never have to figure this out alone.",
     desc: "You've built or bought something real. The hard part is done. What comes next is where most owners get stuck. One conversation with us, and you won't have to.",
+    tags: ['Property assessment', 'Revenue projection', 'Platform audit', 'Roadmap walkthrough'],
   },
   {
     label: 'Your Brand',
     title: 'It clicks into place.',
     desc: "A name, a palette, a voice — built around your property's real character. Most clients say this is the moment it stops feeling like an investment and starts feeling like a destination.",
+    tags: ['Name & concept', 'Color palette', 'Typography', 'Brand voice', 'Guest persona'],
   },
   {
     label: 'Goes Live',
     title: 'From nothing to running.',
     desc: "Website live. OTAs active. WhatsApp responding while you sleep. We build it, connect it, test it. You approve the result. That's it.",
+    tags: ['Direct website', 'Airbnb', 'Booking.com', 'Agoda', 'Traveloka', 'WhatsApp setup'],
   },
   {
     label: 'Automated',
     title: 'Works while you sleep.',
     desc: "Guests get answered in seconds. Calendars never double-book. Check-in details go out automatically. Your property runs like a professional operation, without you being on call.",
+    tags: ['Instant guest replies', 'Calendar sync', 'Check-in flow', 'Review requests', 'No-show handling'],
   },
   {
     label: 'First Booking',
     title: 'There it is.',
     desc: "The first booking confirmation lands in your inbox. Revenue starts moving. We're watching the same numbers you are — and already working on getting the next one.",
+    tags: ['Revenue dashboard', 'Occupancy review', 'Rate optimisation', 'Ongoing support'],
   },
 ];
 
@@ -1719,7 +1724,7 @@ export function LandingPage() {
           <div className="onboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
 
             {/* Left: text — fixed height on all devices, content cross-fades in absolute overlay */}
-            <div className="onboard-left" style={{ height: 320, overflow: 'hidden', position: 'relative' }}>
+            <div className="onboard-left" style={{ height: 440, overflow: 'hidden', position: 'relative' }}>
               {/* Dot nav always visible at top */}
               <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
                 {ONBOARD.map((_, i) => (
@@ -1749,16 +1754,29 @@ export function LandingPage() {
                     <h3 className="display" style={{ fontSize: 'clamp(20px,2.5vw,28px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 16 }}>
                       {stage.title}
                     </h3>
-                    <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
+                    <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 24 }}>
                       {stage.desc}
                     </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                      {stage.tags.map((tag, ti) => (
+                        <span key={tag} style={{
+                          padding: '5px 11px',
+                          border: '1px solid rgba(0,0,0,0.13)',
+                          fontSize: 9,
+                          letterSpacing: 1.4,
+                          color: C.stoneL,
+                          fontFamily: "'Jost',sans-serif",
+                          animation: `obUp 0.3s ease ${ti * 0.07}s both`,
+                        }}>{tag.toUpperCase()}</span>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
-            <div className="onboard-right" style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', height: 320 }}>
+            <div className="onboard-right" style={{ border: `1px solid rgba(0,0,0,0.10)`, background: '#0D1710', overflow: 'hidden', position: 'relative', height: 440 }}>
               {/* Progress bar */}
               <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', position: 'relative', flexShrink: 0 }}>
                 <div style={{
