@@ -1,0 +1,1 @@
+- [Nakama Partners landing mockup](nakama-mockup.md) — strict brand rules (no emojis/pills/floating cards/"villa"/em dashes/overclaims; white bg + dark green) for the landing mockup file.

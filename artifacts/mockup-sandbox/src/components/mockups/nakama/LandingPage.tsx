@@ -152,6 +152,27 @@ const CSS = `
   @keyframes svcShine     { from { left:-80%; } to { left:200%; } }
   @keyframes svcTypeFade  { 0%,100% { opacity:0; } 15%,75% { opacity:1; } }
 
+  /* Work showcase modal */
+  @keyframes wkOverlay { from { opacity:0; } to { opacity:1; } }
+  @keyframes wkIn      { from { opacity:0; transform:translateY(34px); } to { opacity:1; transform:none; } }
+  @keyframes wkScale   { from { opacity:0; transform:scale(0.96) translateY(22px); } to { opacity:1; transform:none; } }
+  @keyframes wkBar     { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  @keyframes wkFloat   { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+  @keyframes wkPulse   { 0%,100% { box-shadow:0 0 0 0 rgba(61,138,98,0.35); } 50% { box-shadow:0 0 0 7px rgba(61,138,98,0); } }
+  .wk-overlay { animation: wkOverlay 0.35s ease both; }
+  .wk-body    { animation: wkIn 0.55s cubic-bezier(.22,1,.36,1) 0.08s both; }
+  .wk-close   { transition: transform 0.25s ease, border-color 0.2s ease, color 0.2s ease; }
+  .wk-close:hover { transform: rotate(90deg); border-color: rgba(0,0,0,0.42) !important; color:${C.cream} !important; }
+  .wk-deliverable { opacity:0; transform:translateY(30px); transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1); }
+  .wk-deliverable.on { opacity:1; transform:none; }
+  .wk-grid { display:grid; grid-template-columns:0.85fr 1.15fr; gap:clamp(28px,5vw,64px); align-items:center; }
+  .wk-grid.flip { grid-template-columns:1.15fr 0.85fr; }
+  @media (max-width:820px) {
+    .wk-grid, .wk-grid.flip { grid-template-columns:1fr; gap:28px; }
+    .wk-grid.flip .wk-visual { order:2; }
+    .wk-grid.flip .wk-copy { order:1; }
+  }
+
   /* Section header */
   .sec-header { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,64px); align-items:start; margin-bottom:clamp(48px,7vw,80px); }
   @media (max-width:700px) { .sec-header { grid-template-columns:1fr; } }
@@ -681,9 +702,420 @@ function NakamaLogo({ height = 40 }: { height?: number }) {
   );
 }
 
+/* ─────────────────────────────────────────────────────────
+   WORK SHOWCASE — full-screen modal of deliverables
+   ───────────────────────────────────────────────────────── */
+function WorkShowcase({ onClose }: { onClose: () => void }) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [hbPage, setHbPage] = useState(0);
+  const [emailStep, setEmailStep] = useState(0);
+  const [waKey, setWaKey] = useState(0);
+
+  // Lock body scroll, Escape to close, focus management + focus trap
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const prevFocused = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key === 'Tab') {
+        const root = rootRef.current;
+        if (!root) return;
+        const focusables = Array.from(
+          root.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+        ).filter(el => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+      prevFocused?.focus?.();
+    };
+  }, [onClose]);
+
+  // Reveal deliverables on scroll
+  useEffect(() => {
+    const root = scrollRef.current;
+    if (!root) return;
+    const els = Array.from(root.querySelectorAll('.wk-deliverable'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+    }, { root, threshold: 0.18 });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // Cycling sequences
+  useEffect(() => { const t = setInterval(() => setHbPage(p => (p + 1) % 4), 2800); return () => clearInterval(t); }, []);
+  useEffect(() => { const t = setInterval(() => setEmailStep(s => (s + 1) % 3), 3000); return () => clearInterval(t); }, []);
+  useEffect(() => { const t = setInterval(() => setWaKey(k => k + 1), 8000); return () => clearInterval(t); }, []);
+
+  const HANDBOOK = [
+    { tag: 'Welcome',    title: 'Welcome to Luna House',   lines: ['Your home for the stay', 'Everything in one place', 'No printed folders to lose'] },
+    { tag: 'Access',     title: 'WiFi and check-in',       lines: ['Network: LunaHouse_Guest', 'Door code: 4471', 'Check-in from 2:00 PM'] },
+    { tag: 'The home',   title: 'House guide',             lines: ['Air-con and lighting', 'Kitchen and appliances', 'Pool and outdoor area'] },
+    { tag: 'Around',     title: 'Local recommendations',   lines: ['Cafes within walking distance', 'Best beaches nearby', 'Trusted drivers and tours'] },
+  ];
+
+  const EMAILS = [
+    { when: 'Instantly on booking',    subject: 'Your booking at Luna House is confirmed', preview: 'Hi Sarah, your stay from 12 to 16 August is confirmed. Here is everything you need before you arrive.' },
+    { when: '2 days before arrival',   subject: 'Getting ready for your stay',             preview: 'Directions, the door code, and check-in details, sent automatically so arrival is effortless.' },
+    { when: 'Morning after check-out', subject: 'Thank you for staying with us',           preview: 'We hope you loved Luna House. A quick review helps future guests find us. We would love to host you again.' },
+  ];
+
+  const Label = ({ n, text }: { n: string; text: string }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+      <span className="display" style={{ fontSize: 15, fontWeight: 700, color: C.siennaL }}>{n}</span>
+      <span className="label" style={{ color: C.stoneL, fontSize: 9 }}>{text}</span>
+    </div>
+  );
+
+  return (
+    <div ref={rootRef} className="wk-overlay" role="dialog" aria-modal="true" aria-labelledby="wk-title" style={{
+      position: 'fixed', inset: 0, zIndex: 300, background: C.bg,
+      display: 'flex', flexDirection: 'column',
+    }}>
+      {/* Header */}
+      <div style={{
+        flexShrink: 0, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 clamp(20px,5vw,56px)', borderBottom: '1px solid rgba(0,0,0,0.08)', background: 'rgba(255,255,255,0.96)',
+        backdropFilter: 'blur(12px)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <NakamaLogo height={30} />
+          <span style={{ width: 1, height: 22, background: 'rgba(0,0,0,0.12)' }} />
+          <span className="label" style={{ color: C.stone, fontSize: 10 }}>Our work</span>
+        </div>
+        <button
+          ref={closeBtnRef}
+          className="wk-close"
+          onClick={onClose}
+          aria-label="Close showcase"
+          style={{
+            width: 40, height: 40, border: '1px solid rgba(0,0,0,0.16)', background: 'transparent',
+            color: C.stone, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+        </button>
+      </div>
+
+      {/* Scroll body */}
+      <div ref={scrollRef} className="wk-body" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <div style={{ maxWidth: 1080, margin: '0 auto', padding: 'clamp(48px,7vw,88px) clamp(22px,5vw,56px) clamp(64px,9vw,120px)' }}>
+
+          {/* Intro */}
+          <div style={{ maxWidth: 640, marginBottom: 'clamp(56px,8vw,96px)' }}>
+            <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 18 }}>What you actually get</span>
+            <h2 id="wk-title" className="display" style={{ fontSize: 'clamp(30px,5vw,56px)', fontWeight: 800, lineHeight: 1.05, color: C.cream, letterSpacing: '-0.02em', marginBottom: 22 }}>
+              Not slides.<br />The real thing.
+            </h2>
+            <p style={{ fontSize: 'clamp(14px,1.8vw,16px)', color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
+              Every property leaves with a complete presence. A website guests trust, a digital handbook they rely on, and guest systems that answer instantly, day or night. Here is what that looks like.
+            </p>
+          </div>
+
+          {/* ── 1. WEBSITE ── */}
+          <div className="wk-deliverable" style={{ marginBottom: 'clamp(72px,10vw,120px)' }}>
+            <div className="wk-grid">
+              <div className="wk-copy">
+                <Label n="01" text="Custom website" />
+                <h3 className="display" style={{ fontSize: 'clamp(22px,3vw,32px)', fontWeight: 700, color: C.cream, lineHeight: 1.15, marginBottom: 16 }}>A booking site that earns trust</h3>
+                <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 20 }}>
+                  Your own branded website, built to convert. Direct bookings with no platform fees, on every screen size, loading fast and looking the part.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {['Direct booking, zero commission', 'Fully responsive on mobile', 'Search-optimised and fast'].map(t => (
+                    <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7.5 L5.5 11 L12 3" stroke={C.siennaL} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>{t}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Visual: browser + phone */}
+              <div className="wk-visual" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 18, flexWrap: 'wrap' }}>
+                {/* Browser */}
+                <div style={{ flex: '1 1 340px', maxWidth: 460, border: '1px solid rgba(0,0,0,0.12)', overflow: 'hidden', boxShadow: '0 24px 60px rgba(0,0,0,0.12)', background: '#fff' }}>
+                  <div style={{ background: '#EEF2F0', padding: '8px 11px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+                    <div style={{ display: 'flex', gap: 5 }}>{[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(0,0,0,0.14)' }} />)}</div>
+                    <div style={{ flex: 1, background: '#fff', padding: '4px 10px', fontSize: 9.5, color: C.stone, textAlign: 'center', border: '1px solid rgba(0,0,0,0.07)', fontFamily: "'Jost',sans-serif" }}>lunahouse.com</div>
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 15px' }}>
+                      <span className="display" style={{ fontWeight: 700, fontSize: 12, color: C.cream, letterSpacing: 1 }}>LUNA HOUSE</span>
+                      <div style={{ display: 'flex', gap: 12, fontSize: 8.5, color: C.stone, fontFamily: "'Jost',sans-serif" }}><span>Rooms</span><span>Gallery</span><span>Contact</span></div>
+                    </div>
+                    <div style={{ height: 176, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 16 }}>
+                      <img src={propertyHero} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,26,20,0.72) 8%, rgba(13,26,20,0.12) 60%)' }} />
+                      <div style={{ position: 'relative' }}>
+                        <div className="display" style={{ fontSize: 20, fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: 8, letterSpacing: '-0.01em' }}>Your stay in Canggu</div>
+                        <div style={{ display: 'inline-block', background: C.sienna, color: '#fff', fontSize: 9, fontFamily: "'Jost',sans-serif", letterSpacing: 1, padding: '7px 16px' }}>BOOK DIRECT</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 7, padding: 14 }}>
+                      {[propertyAbout, propertyHero, propertyAbout].map((img, i) => (
+                        <div key={i}>
+                          <div style={{ height: 46, backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                          <div style={{ height: 5, width: '70%', background: 'rgba(0,0,0,0.10)', marginTop: 6 }} />
+                          <div style={{ height: 4, width: '45%', background: 'rgba(0,0,0,0.06)', marginTop: 4 }} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div style={{ flexShrink: 0, width: 132, border: '5px solid #14261C', borderRadius: 20, overflow: 'hidden', boxShadow: '0 18px 44px rgba(0,0,0,0.18)', background: '#fff', animation: 'wkFloat 5s ease-in-out infinite' }}>
+                  <div style={{ height: 96, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 9 }}>
+                    <img src={propertyHero} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,26,20,0.75), transparent 65%)' }} />
+                    <div className="display" style={{ position: 'relative', fontSize: 11, fontWeight: 800, color: '#fff', lineHeight: 1.05 }}>Luna House</div>
+                  </div>
+                  <div style={{ padding: 9 }}>
+                    <div style={{ height: 5, width: '80%', background: 'rgba(0,0,0,0.10)', marginBottom: 5 }} />
+                    <div style={{ height: 4, width: '55%', background: 'rgba(0,0,0,0.07)', marginBottom: 10 }} />
+                    <div style={{ background: C.sienna, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ fontSize: 7, color: '#fff', fontFamily: "'Jost',sans-serif", letterSpacing: 1 }}>BOOK DIRECT</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 2. DIGITAL HANDBOOK ── */}
+          <div className="wk-deliverable" style={{ marginBottom: 'clamp(72px,10vw,120px)' }}>
+            <div className="wk-grid flip">
+              {/* Visual: tablet with cycling pages */}
+              <div className="wk-visual" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ width: 'min(340px,100%)', border: '1px solid rgba(0,0,0,0.12)', background: C.siennaD, boxShadow: '0 24px 60px rgba(0,0,0,0.16)', overflow: 'hidden' }}>
+                  <div style={{ padding: '14px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span className="display" style={{ fontSize: 12, fontWeight: 700, color: '#F2F5F3', letterSpacing: 1 }}>GUEST HANDBOOK</span>
+                    <span style={{ fontSize: 9, color: C.stoneL, fontFamily: "'Jost',sans-serif" }}>Luna House</span>
+                  </div>
+                  <div style={{ position: 'relative', height: 268 }}>
+                    {HANDBOOK.map((pg, i) => (
+                      <div key={i} style={{
+                        position: 'absolute', inset: 0, padding: '22px 22px',
+                        opacity: hbPage === i ? 1 : 0, transform: hbPage === i ? 'translateY(0)' : 'translateY(10px)',
+                        transition: 'opacity 0.6s ease, transform 0.6s ease', pointerEvents: 'none',
+                      }}>
+                        <span className="label" style={{ color: C.siennaL, fontSize: 8.5 }}>{`0${i + 1} · ${pg.tag}`}</span>
+                        <h4 className="display" style={{ fontSize: 20, fontWeight: 700, color: '#F2F5F3', lineHeight: 1.2, margin: '12px 0 20px' }}>{pg.title}</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+                          {pg.lines.map(l => (
+                            <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
+                              <span style={{ width: 6, height: 6, background: C.siennaL, flexShrink: 0 }} />
+                              <span style={{ fontSize: 12.5, color: 'rgba(242,245,243,0.72)', fontFamily: "'Jost',sans-serif", fontWeight: 300 }}>{l}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, padding: '0 22px 18px' }}>
+                    {HANDBOOK.map((_, i) => (
+                      <span key={i} style={{ width: hbPage === i ? 18 : 6, height: 4, background: hbPage === i ? C.siennaL : 'rgba(255,255,255,0.18)', transition: 'all 0.4s ease' }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="wk-copy">
+                <Label n="02" text="Digital handbook" />
+                <h3 className="display" style={{ fontSize: 'clamp(22px,3vw,32px)', fontWeight: 700, color: C.cream, lineHeight: 1.15, marginBottom: 16 }}>Everything a guest needs, in their pocket</h3>
+                <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 20 }}>
+                  A branded digital guide guests open on their phone. WiFi, check-in, house instructions, and local recommendations, all in one place. Fewer questions for you, a smoother stay for them.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {['Access, WiFi and house rules', 'Curated local guide', 'Update it any time, instantly'].map(t => (
+                    <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7.5 L5.5 11 L12 3" stroke={C.siennaL} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>{t}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 3. WHATSAPP BOT ── */}
+          <div className="wk-deliverable" style={{ marginBottom: 'clamp(72px,10vw,120px)' }}>
+            <div className="wk-grid">
+              <div className="wk-copy">
+                <Label n="03" text="WhatsApp automation" />
+                <h3 className="display" style={{ fontSize: 'clamp(22px,3vw,32px)', fontWeight: 700, color: C.cream, lineHeight: 1.15, marginBottom: 16 }}>Guests answered in seconds, around the clock</h3>
+                <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 20 }}>
+                  An automated WhatsApp assistant that handles inquiries, confirms details, and shares check-in information instantly. No missed messages at midnight, no guest left waiting.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {['Replies day and night', 'Bilingual, English and Bahasa', 'Escalates to you when needed'].map(t => (
+                    <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7.5 L5.5 11 L12 3" stroke={C.siennaL} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>{t}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Visual: chat conversation (loops via waKey remount) */}
+              <div className="wk-visual" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div key={waKey} style={{ width: 'min(320px,100%)', overflow: 'hidden', boxShadow: '0 20px 52px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)' }}>
+                  <div style={{ background: C.sienna, padding: '11px 15px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="6" r="3.5" fill="white" /><path d="M2 14.5C2 11 4.5 9 8 9C11.5 9 14 11 14 14.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 11.5, color: 'white', fontFamily: "'Jost',sans-serif", fontWeight: 600 }}>Guest Inquiry</div>
+                      <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.55)', fontFamily: "'Jost',sans-serif" }}>online</div>
+                    </div>
+                  </div>
+                  <div style={{ background: '#ECE5DD', padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 5, minHeight: 250 }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start', animation: 'svcMsgIn 0.45s ease 0.3s both', opacity: 0 }}>
+                      <div style={{ background: 'white', borderRadius: '3px 10px 10px 10px', padding: '7px 10px', maxWidth: '82%', boxShadow: '0 1px 2px rgba(0,0,0,0.07)' }}>
+                        <div style={{ fontSize: 11, color: '#2C3333', fontFamily: "'Jost',sans-serif", lineHeight: 1.45 }}>Hi! Is the property available 12 to 16 Aug?</div>
+                        <div style={{ fontSize: 8, color: '#C0C0C0', fontFamily: "'Jost',sans-serif", marginTop: 3, textAlign: 'right' }}>02:11</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', animation: 'svcMsgIn 0.45s ease 1.1s both', opacity: 0 }}>
+                      <div style={{ background: C.sienna, borderRadius: '10px 3px 10px 10px', padding: '7px 10px', maxWidth: '86%', boxShadow: '0 1px 2px rgba(0,0,0,0.09)' }}>
+                        <div style={{ fontSize: 11, color: 'white', fontFamily: "'Jost',sans-serif", lineHeight: 1.45 }}>Yes, those dates are open. Direct rate is 15% below the platforms. Shall I hold it for you?</div>
+                        <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.5)', fontFamily: "'Jost',sans-serif", marginTop: 3, textAlign: 'right' }}>02:11 · sent in 3s</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start', animation: 'svcMsgIn 0.45s ease 2.1s both', opacity: 0 }}>
+                      <div style={{ background: 'white', borderRadius: '3px 10px 10px 10px', padding: '7px 10px', maxWidth: '82%', boxShadow: '0 1px 2px rgba(0,0,0,0.07)' }}>
+                        <div style={{ fontSize: 11, color: '#2C3333', fontFamily: "'Jost',sans-serif", lineHeight: 1.45 }}>Yes please. And what time is check-in?</div>
+                        <div style={{ fontSize: 8, color: '#C0C0C0', fontFamily: "'Jost',sans-serif", marginTop: 3, textAlign: 'right' }}>02:12</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', animation: 'svcMsgIn 0.45s ease 3.1s both', opacity: 0 }}>
+                      <div style={{ background: C.sienna, borderRadius: '10px 3px 10px 10px', padding: '7px 10px', maxWidth: '86%', boxShadow: '0 1px 2px rgba(0,0,0,0.09)' }}>
+                        <div style={{ fontSize: 11, color: 'white', fontFamily: "'Jost',sans-serif", lineHeight: 1.45 }}>Held. Check-in is from 2 PM, full details will arrive by email. See you in August!</div>
+                        <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.5)', fontFamily: "'Jost',sans-serif", marginTop: 3, textAlign: 'right' }}>02:12 · sent in 2s</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ background: 'white', borderTop: '1px solid rgba(0,0,0,0.05)', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: C.siennaL }} />
+                    <span style={{ fontSize: 8.5, fontFamily: "'Jost',sans-serif", color: C.stone, letterSpacing: 0.4 }}>Automated by Nakama</span>
+                    <span style={{ marginLeft: 'auto', fontSize: 8, color: C.stoneL, fontFamily: "'Jost',sans-serif" }}>avg 4s</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 4. AUTOMATED EMAIL ── */}
+          <div className="wk-deliverable">
+            <div className="wk-grid flip">
+              {/* Visual: automated email sequence */}
+              <div className="wk-visual" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ width: 'min(400px,100%)', border: '1px solid rgba(0,0,0,0.12)', background: '#fff', boxShadow: '0 24px 60px rgba(0,0,0,0.12)', overflow: 'hidden' }}>
+                  <div style={{ background: C.bgMid, padding: '11px 16px', borderBottom: '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <svg width="15" height="15" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="10" rx="1.5" stroke={C.sienna} strokeWidth="1.3" fill="none" /><path d="M1.5 4 L8 8.5 L14.5 4" stroke={C.sienna} strokeWidth="1.3" fill="none" strokeLinecap="round" /></svg>
+                    <span style={{ fontSize: 11, fontFamily: "'Jost',sans-serif", color: C.cream, fontWeight: 500 }}>Automated guest emails</span>
+                    <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.siennaL, animation: 'wkPulse 2s ease infinite' }} />
+                      <span style={{ fontSize: 8.5, fontFamily: "'Jost',sans-serif", color: C.stone, letterSpacing: 0.5 }}>Live</span>
+                    </span>
+                  </div>
+                  {/* Timeline */}
+                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                    {EMAILS.map((em, i) => (
+                      <div key={i} style={{
+                        flex: 1, padding: '9px 8px', textAlign: 'center', cursor: 'default',
+                        background: emailStep === i ? 'rgba(42,96,68,0.07)' : 'transparent',
+                        borderBottom: emailStep === i ? `2px solid ${C.sienna}` : '2px solid transparent',
+                        transition: 'all 0.4s ease',
+                      }}>
+                        <div style={{ fontSize: 8, fontFamily: "'Jost',sans-serif", color: emailStep === i ? C.sienna : C.stoneL, letterSpacing: 0.4, lineHeight: 1.4 }}>{em.when}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Active email */}
+                  <div style={{ position: 'relative', minHeight: 190 }}>
+                    {EMAILS.map((em, i) => (
+                      <div key={i} style={{
+                        position: emailStep === i ? 'relative' : 'absolute', inset: emailStep === i ? undefined : 0,
+                        padding: '16px 18px', opacity: emailStep === i ? 1 : 0,
+                        transition: 'opacity 0.5s ease', pointerEvents: 'none',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                          <div style={{ width: 30, height: 30, borderRadius: '50%', background: C.sienna, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <span className="display" style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>L</span>
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 11, fontFamily: "'Jost',sans-serif", color: C.cream, fontWeight: 500 }}>Luna House</div>
+                            <div style={{ fontSize: 9, fontFamily: "'Jost',sans-serif", color: C.stoneL }}>to Sarah · via Nakama</div>
+                          </div>
+                          <span style={{ fontSize: 8, fontFamily: "'Jost',sans-serif", color: C.siennaL, border: `1px solid rgba(61,138,98,0.4)`, padding: '3px 8px', letterSpacing: 0.5 }}>SENT</span>
+                        </div>
+                        <div className="display" style={{ fontSize: 15, fontWeight: 700, color: C.cream, lineHeight: 1.3, marginBottom: 10 }}>{em.subject}</div>
+                        <p style={{ fontSize: 12, color: C.stone, lineHeight: 1.75, fontWeight: 300, marginBottom: 16 }}>{em.preview}</p>
+                        <div style={{ height: 3, background: 'rgba(42,96,68,0.12)', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', background: C.sienna, transformOrigin: 'left', animation: 'wkBar 3s linear both' }} />
+                        </div>
+                        <div style={{ fontSize: 8.5, fontFamily: "'Jost',sans-serif", color: C.stoneL, marginTop: 8, letterSpacing: 0.4 }}>Sent automatically, no action needed</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="wk-copy">
+                <Label n="04" text="Automated email" />
+                <h3 className="display" style={{ fontSize: 'clamp(22px,3vw,32px)', fontWeight: 700, color: C.cream, lineHeight: 1.15, marginBottom: 16 }}>The right message, at the right moment</h3>
+                <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 20 }}>
+                  A complete email sequence that runs on its own. Confirmation the moment a guest books, arrival details before they land, and a review request after they leave. Branded, timed, and automatic.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {['Triggered by each booking', 'Consistent, on-brand every time', 'More reviews, less admin'].map(t => (
+                    <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7.5 L5.5 11 L12 3" stroke={C.siennaL} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>{t}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Closing CTA */}
+          <div style={{ marginTop: 'clamp(72px,10vw,120px)', padding: 'clamp(40px,6vw,64px)', background: C.siennaD, textAlign: 'center' }}>
+            <h3 className="display" style={{ fontSize: 'clamp(22px,3.5vw,36px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1.1, marginBottom: 16, letterSpacing: '-0.01em' }}>This could be your property.</h3>
+            <p style={{ fontSize: 15, color: 'rgba(242,245,243,0.6)', lineHeight: 1.8, fontWeight: 300, maxWidth: 460, margin: '0 auto 28px' }}>
+              Every deliverable here is built for a single property in about three weeks. Let us show you what yours could become.
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" style={{ background: '#F2F5F3', color: C.siennaD, padding: '13px 30px', fontFamily: "'Jost',sans-serif", fontSize: 12, letterSpacing: '0.08em', textDecoration: 'none' }}>Start your property</a>
+              <button onClick={onClose} className="btn-outline-cream" style={{ color: '#F2F5F3', borderColor: 'rgba(255,255,255,0.3)' }}>Back to site</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function LandingPage() {
   const [onstage, setOnstage] = useState(0);
   const [svcOpen, setSvcOpen] = useState(0);
+  const [showWork, setShowWork] = useState(false);
 
   const particleRefs = useRef<(SVGCircleElement | null)[]>(Array(PARTICLES.length).fill(null));
   const obsRef       = useRef<IntersectionObserver | null>(null);
@@ -773,8 +1205,8 @@ export function LandingPage() {
           ))}
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>Chat with us</a>
-          <button className="btn-primary" style={{ padding: '9px 20px', fontSize: 12 }}>Grow with Nakama</button>
+          <button className="btn-ghost nav-chat-btn" onClick={() => setShowWork(true)} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>See our work</button>
+          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-primary" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Chat with us</a>
         </div>
       </nav>
 
@@ -827,7 +1259,7 @@ export function LandingPage() {
             <div className="h-cta">
               <div className="cta-row">
                 <button className="btn-primary">Grow with Nakama</button>
-                <button className="btn-ghost">See our work</button>
+                <button className="btn-ghost" onClick={() => setShowWork(true)}>See our work</button>
               </div>
             </div>
           </div>
@@ -1657,6 +2089,8 @@ export function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {showWork && <WorkShowcase onClose={() => setShowWork(false)} />}
     </div>
   );
 }
