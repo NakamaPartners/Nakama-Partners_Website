@@ -152,6 +152,8 @@ const CSS = `
   @keyframes svcShine     { from { left:-80%; } to { left:200%; } }
   @keyframes svcTypeFade  { 0%,100% { opacity:0; } 15%,75% { opacity:1; } }
 
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* Work showcase modal */
   @keyframes wkOverlay { from { opacity:0; } to { opacity:1; } }
   @keyframes wkIn      { from { opacity:0; transform:translateY(34px); } to { opacity:1; transform:none; } }
@@ -248,6 +250,23 @@ const CSS = `
   /* Footer links */
   .foot-link { font-family:'Jost',sans-serif; font-size:13px; color:${C.stone}; cursor:pointer; font-weight:300; transition:color 0.2s ease; display:block; margin-bottom:10px; }
   .foot-link:hover { color:${C.cream}; }
+
+  /* Contact form */
+  .form-field {
+    width:100%; padding:14px 16px; box-sizing:border-box;
+    border:1px solid rgba(0,0,0,0.16); background:${C.bg};
+    font-family:'Jost',sans-serif; font-size:14px; color:${C.cream};
+    outline:none; transition:border-color 0.25s ease, box-shadow 0.25s ease;
+    appearance:none; -webkit-appearance:none; border-radius:0;
+  }
+  .form-field::placeholder { color:${C.stoneL}; font-weight:300; }
+  .form-field:focus { border-color:${C.sienna}; box-shadow:0 0 0 3px rgba(42,96,68,0.08); }
+  .form-field.err { border-color:#c0392b; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:640px) { .form-row { grid-template-columns:1fr; } }
+  select.form-field { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4 L6 8 L10 4' stroke='%235A7A68' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 16px center; padding-right:40px; cursor:pointer; }
+  .char-count { font-family:'Jost',sans-serif; font-size:11px; color:${C.stoneL}; text-align:right; margin-top:5px; transition:color 0.2s ease; }
+  .char-count.warn { color:#c0392b; }
 
   @media (max-width: 600px) { .scroll-hint { display: none !important; } }
 
@@ -1112,10 +1131,58 @@ function WorkShowcase({ onClose }: { onClose: () => void }) {
   );
 }
 
+const NAV_H = 72;
+function scrollToSection(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - NAV_H;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
 export function LandingPage() {
   const [onstage, setOnstage] = useState(0);
   const [svcOpen, setSvcOpen] = useState(0);
   const [showWork, setShowWork] = useState(false);
+
+  const [form, setForm] = useState({ name: '', phone: '', email: '', needs: '', message: '' });
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const MSG_MAX = 400;
+
+  const setField = (field: string, value: string) =>
+    setForm(f => ({ ...f, [field]: value }));
+  const touch = (field: string) =>
+    setTouched(t => ({ ...t, [field]: true }));
+
+  const errors = {
+    name:  !form.name.trim()             ? 'Required' : '',
+    email: !form.email.includes('@')     ? 'Valid email required' : '',
+    needs: !form.needs                   ? 'Required' : '',
+  };
+  const isValid = !errors.name && !errors.email && !errors.needs;
+
+  const handleInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTouched({ name: true, email: true, needs: true });
+    if (!isValid) return;
+    setFormStatus('sending');
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setFormStatus('success');
+        setForm({ name: '', phone: '', email: '', needs: '', message: '' });
+        setTouched({});
+      } else {
+        setFormStatus('error');
+      }
+    } catch {
+      setFormStatus('error');
+    }
+  };
 
   const particleRefs = useRef<(SVGCircleElement | null)[]>(Array(PARTICLES.length).fill(null));
   const obsRef       = useRef<IntersectionObserver | null>(null);
@@ -1201,7 +1268,7 @@ export function LandingPage() {
         </div>
         <div className="nav-links-center">
           {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
-            <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })}>{l}</span>
+            <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => scrollToSection(id)}>{l}</span>
           ))}
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -2058,6 +2125,144 @@ export function LandingPage() {
             {['Response within 24h', 'No lock-in contracts', 'Bilingual support', 'Bali market specialists'].map((item, i, arr) => (
               <span key={item} className="trust-item" style={{ borderRight: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.08)' : 'none' }}>{item}</span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT FORM */}
+      <section id="contact" className="sec-pad" style={{ background: C.bgMid, borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: 1080, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'clamp(280px,38%,400px) 1fr', gap: 'clamp(40px,7vw,96px)', alignItems: 'start' }}>
+
+            {/* Left: headline */}
+            <div className="reveal d1">
+              <span className="label" style={{ color: C.sienna, display: 'block', marginBottom: 20 }}>Get in touch</span>
+              <h2 className="display" style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 800, lineHeight: 1.07, color: C.cream, letterSpacing: '-0.02em', marginBottom: 22 }}>
+                Tell us about<br />your property.
+              </h2>
+              <p style={{ fontSize: 14, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 28 }}>
+                Leave your details and we will come back to you within 24 hours. No commitment needed for a first conversation.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {[
+                  { icon: 'M2 2 L7 7 L12 2', label: 'contact@nakama.partners' },
+                  { icon: 'M1 3.5 Q6 0 8 3.5 Q10 7 14.5 4.5', label: 'WhatsApp: +62 851 1080 8158' },
+                ].map(({ icon, label }) => (
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{ width: 7, height: 7, background: C.siennaL, flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, color: C.stone, fontWeight: 300 }}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: form */}
+            <div className="reveal d2">
+              {formStatus === 'success' ? (
+                <div style={{ padding: 'clamp(36px,5vw,56px)', background: C.siennaD, textAlign: 'center' }}>
+                  <svg width="44" height="44" viewBox="0 0 44 44" style={{ margin: '0 auto 20px', display: 'block' }}>
+                    <circle cx="22" cy="22" r="20" stroke={C.siennaL} strokeWidth="1.5" fill="none" />
+                    <path d="M12 22 L19 29 L32 15" stroke="#F2F5F3" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <h3 className="display" style={{ fontSize: 22, fontWeight: 700, color: '#F2F5F3', marginBottom: 10 }}>Message received.</h3>
+                  <p style={{ fontSize: 14, color: 'rgba(242,245,243,0.65)', fontWeight: 300, lineHeight: 1.75, maxWidth: 320, margin: '0 auto 24px' }}>
+                    We will be in touch within 24 hours. In the meantime, feel free to reach us on WhatsApp.
+                  </p>
+                  <button className="btn-outline-cream" style={{ color: '#F2F5F3', borderColor: 'rgba(255,255,255,0.28)', fontSize: 12 }} onClick={() => setFormStatus('idle')}>Send another</button>
+                </div>
+              ) : (
+                <form onSubmit={handleInquiry} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div className="form-row">
+                    <div>
+                      <label className="label" style={{ display: 'block', fontSize: 9, color: C.stone, marginBottom: 7 }}>Name *</label>
+                      <input
+                        className={`form-field${touched.name && errors.name ? ' err' : ''}`}
+                        type="text" placeholder="Your name"
+                        value={form.name}
+                        onChange={e => setField('name', e.target.value)}
+                        onBlur={() => touch('name')}
+                      />
+                      {touched.name && errors.name && <p style={{ fontSize: 11, color: '#c0392b', marginTop: 5, fontFamily: "'Jost',sans-serif" }}>{errors.name}</p>}
+                    </div>
+                    <div>
+                      <label className="label" style={{ display: 'block', fontSize: 9, color: C.stone, marginBottom: 7 }}>Phone</label>
+                      <input
+                        className="form-field"
+                        type="tel" placeholder="+62 8xx xxxx xxxx"
+                        value={form.phone}
+                        onChange={e => setField('phone', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="label" style={{ display: 'block', fontSize: 9, color: C.stone, marginBottom: 7 }}>Email *</label>
+                    <input
+                      className={`form-field${touched.email && errors.email ? ' err' : ''}`}
+                      type="email" placeholder="you@example.com"
+                      value={form.email}
+                      onChange={e => setField('email', e.target.value)}
+                      onBlur={() => touch('email')}
+                    />
+                    {touched.email && errors.email && <p style={{ fontSize: 11, color: '#c0392b', marginTop: 5, fontFamily: "'Jost',sans-serif" }}>{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label className="label" style={{ display: 'block', fontSize: 9, color: C.stone, marginBottom: 7 }}>What do you need? *</label>
+                    <select
+                      className={`form-field${touched.needs && errors.needs ? ' err' : ''}`}
+                      value={form.needs}
+                      onChange={e => { setField('needs', e.target.value); touch('needs'); }}
+                      onBlur={() => touch('needs')}
+                    >
+                      <option value="">Select one</option>
+                      <option value="Website for my property">Website for my property</option>
+                      <option value="Digital guest handbook">Digital guest handbook</option>
+                      <option value="Full suite — website, handbook, WhatsApp and email">Full suite — website, handbook, WhatsApp and email</option>
+                      <option value="Brand strategy and positioning">Brand strategy and positioning</option>
+                      <option value="Not sure yet, let's talk">Not sure yet, let's talk</option>
+                    </select>
+                    {touched.needs && errors.needs && <p style={{ fontSize: 11, color: '#c0392b', marginTop: 5, fontFamily: "'Jost',sans-serif" }}>{errors.needs}</p>}
+                  </div>
+
+                  <div>
+                    <label className="label" style={{ display: 'block', fontSize: 9, color: C.stone, marginBottom: 7 }}>Anything else you want to share?</label>
+                    <textarea
+                      className="form-field"
+                      rows={4} placeholder="Tell us about your property, your current situation, or anything useful..."
+                      value={form.message}
+                      onChange={e => setField('message', e.target.value.slice(0, MSG_MAX))}
+                      style={{ resize: 'none' }}
+                    />
+                    <p className={`char-count${form.message.length > MSG_MAX * 0.9 ? ' warn' : ''}`}>
+                      {form.message.length} / {MSG_MAX}
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 4 }}>
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      disabled={formStatus === 'sending'}
+                      style={{ opacity: formStatus === 'sending' ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 10, cursor: formStatus === 'sending' ? 'default' : 'pointer' }}
+                    >
+                      {formStatus === 'sending' ? (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 14 14" style={{ animation: 'spin 1s linear infinite' }}><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" fill="none" /><path d="M7 1.5 A5.5 5.5 0 0 1 12.5 7" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+                          Sending...
+                        </>
+                      ) : 'Send inquiry'}
+                    </button>
+                    {formStatus === 'error' && (
+                      <p style={{ fontSize: 12, color: '#c0392b', fontFamily: "'Jost',sans-serif", fontWeight: 300 }}>
+                        Something went wrong. Try WhatsApp instead.
+                      </p>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 11, color: C.stoneL, fontFamily: "'Jost',sans-serif", fontWeight: 300 }}>We respond within 24 hours. No spam, no commitment.</p>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>

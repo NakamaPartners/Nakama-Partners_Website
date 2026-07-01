@@ -19,6 +19,13 @@ Preview: `/preview/nakama/LandingPage` (real URL `/__mockup/preview/nakama/Landi
 
 **Why:** these were explicit, repeated user constraints for this mockup; violating them means rework.
 
+## Contact form + email
+- Form section (`id="contact"`) is before the footer — Name, Phone, Email, Needs (select), Message (400 char).
+- POSTs to `POST /api/inquiry` on the api-server (route: `artifacts/api-server/src/routes/inquiry.ts`).
+- Sends email via Resend HTTP API. Requires `RESEND_API_KEY` env var. Without it, inquiry is logged only (graceful fallback).
+- Recipients: `contact@nakama.partners`, CC: `kevinasuteja@gmail.com`, `renaldoliao@gmail.com`.
+- **Why:** Resend requires a verified sending domain. From address must match a domain verified in Resend dashboard. If delivery fails, check domain verification first.
+
 ## Conventions
 - Color constants + CSS-in-JS string live near top of file (~line 19-30 constants, CSS string follows).
 - Typography classes: `.display` (Sora), `.label` (Jost uppercase tracked). Fonts Sora + Jost.
