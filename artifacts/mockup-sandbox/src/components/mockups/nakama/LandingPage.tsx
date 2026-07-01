@@ -463,7 +463,7 @@ function ServiceVisual({ active }: { active: number }) {
   ];
 
   return (
-    <div style={{ position:'sticky', top:120, borderRadius:4, overflow:'hidden', background:'#0D1A12', height:420 }}>
+    <div style={{ position:'sticky', top:120, borderRadius:4, overflow:'hidden', backgroundImage:`radial-gradient(circle, rgba(42,96,68,0.16) 1.5px, transparent 1.5px)`, backgroundSize:'20px 20px', backgroundColor:'#EDF3EE', height:420 }}>
 
       {/* ── Scene 0: OTA platform network ── */}
       <div style={pane(0)}>
@@ -532,7 +532,7 @@ function ServiceVisual({ active }: { active: number }) {
           {/* Caption */}
           <text x={propX} y={280} textAnchor="middle"
             fontFamily="'Jost',sans-serif" fontSize="9" letterSpacing="2.5"
-            fill="#9BBFA4" opacity="0.7">LIVE ON 4 PLATFORMS</text>
+            fill={C.stone} opacity="0.8">LIVE ON 4 PLATFORMS</text>
         </svg>
       </div>
 
@@ -590,7 +590,7 @@ function ServiceVisual({ active }: { active: number }) {
 
       {/* ── Scene 2: WhatsApp Automation ── */}
       <div style={pane(2)}>
-        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)` }}>
+        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 8px 36px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.07)` }}>
 
           {/* Header */}
           <div style={{ background:C.sienna, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}>
@@ -1018,7 +1018,7 @@ export function LandingPage() {
           {/* 2-col: accordion left · animated visual right */}
           <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
-            <div className="reveal d2">
+            <div className="reveal d2" style={{ minHeight: 520 }}>
               {SERVICES_ACC.map((svc, i) => (
                 <div
                   key={i}
