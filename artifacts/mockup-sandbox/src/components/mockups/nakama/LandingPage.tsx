@@ -99,15 +99,30 @@ const CSS = `
 
   /* Navigation */
   .nav-links-center { display:flex; gap:32px; white-space:nowrap; align-items:center; }
+  @keyframes previewGlow {
+    0%,100% { box-shadow: 0 0 0 0 rgba(42,96,68,0); }
+    50%      { box-shadow: 0 0 0 4px rgba(42,96,68,0.18); }
+  }
+  @keyframes previewArrow {
+    0%,100% { transform: translateX(0); }
+    50%      { transform: translateX(3px); }
+  }
   .nav-preview-btn {
     color:${C.sienna} !important;
     border:1px solid ${C.sienna};
     padding:5px 14px;
     font-size:11px !important;
     letter-spacing:0.12em !important;
-    transition:background 0.2s ease, color 0.2s ease !important;
+    transition:background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+    animation: previewGlow 2.4s ease-in-out infinite;
+    display:inline-flex; align-items:center; gap:5px;
   }
-  .nav-preview-btn:hover { background:${C.sienna}; color:#fff !important; }
+  .nav-preview-btn:hover {
+    background:${C.sienna}; color:#fff !important;
+    animation:none; box-shadow: 0 4px 18px rgba(42,96,68,0.28) !important;
+  }
+  .nav-preview-btn .arrow { display:inline-block; animation: previewArrow 1.2s ease-in-out infinite; }
+  .nav-preview-btn:hover .arrow { animation:none; }
   .nav-link { font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em; color:${C.stone}; cursor:pointer; transition:color 0.2s ease; }
   .nav-link:hover { color:${C.sienna} !important; }
 
@@ -1318,7 +1333,7 @@ export function LandingPage() {
             className="nav-link nav-preview-btn"
             style={{ cursor:'pointer' }}
             onClick={() => setShowWork(true)}
-          >Preview</span>
+          >Preview <span className="arrow">→</span></span>
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
           <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
