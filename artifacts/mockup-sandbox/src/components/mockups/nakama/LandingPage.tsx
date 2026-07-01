@@ -950,7 +950,16 @@ function WorkShowcase({ onClose }: { onClose: () => void }) {
                     <span className="display" style={{ fontSize: 12, fontWeight: 700, color: '#F2F5F3', letterSpacing: 1 }}>GUEST HANDBOOK</span>
                     <span style={{ fontSize: 9, color: C.stoneL, fontFamily: "'Jost',sans-serif" }}>Luna House</span>
                   </div>
-                  <div style={{ position: 'relative', height: 268 }}>
+                  {/* Cover photo strip */}
+                  <div style={{ position: 'relative', height: 110, overflow: 'hidden' }}>
+                    <img src={nakamaSunset} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 60%' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(30,69,51,0.18), rgba(30,69,51,0.52))' }} />
+                    <div style={{ position: 'absolute', bottom: 12, left: 18 }}>
+                      <div style={{ fontSize: 8, fontFamily: "'Jost',sans-serif", color: 'rgba(255,255,255,0.72)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Welcome to</div>
+                      <div className="display" style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: 1 }}>Luna House</div>
+                    </div>
+                  </div>
+                  <div style={{ position: 'relative', height: 220 }}>
                     {HANDBOOK.map((pg, i) => (
                       <div key={i} style={{
                         position: 'absolute', inset: 0, padding: '22px 22px',
