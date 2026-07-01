@@ -261,6 +261,7 @@ const CSS = `
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
+    .onboard-left { height: auto !important; overflow: visible !important; }
 
     /* Section headers: single column */
     .sec-header { grid-template-columns: 1fr !important; margin-bottom: 36px !important; }
@@ -463,7 +464,7 @@ function ServiceVisual({ active }: { active: number }) {
   ];
 
   return (
-    <div style={{ position:'sticky', top:120, borderRadius:4, overflow:'hidden', backgroundImage:`radial-gradient(circle, rgba(42,96,68,0.16) 1.5px, transparent 1.5px)`, backgroundSize:'20px 20px', backgroundColor:'#EDF3EE', height:420 }}>
+    <div style={{ position:'sticky', top:120, borderRadius:4, overflow:'hidden', backgroundColor:'#F7FAF8', backgroundImage:[`radial-gradient(ellipse 70% 55% at 12% 88%, rgba(42,96,68,0.22) 0%, transparent 60%)`,`radial-gradient(ellipse 55% 45% at 90% 10%, rgba(61,138,98,0.14) 0%, transparent 58%)`,`radial-gradient(ellipse 48% 38% at 58% 52%, rgba(144,175,164,0.13) 0%, transparent 55%)`,`radial-gradient(ellipse 90% 28% at 50% 100%, rgba(30,69,51,0.12) 0%, transparent 65%)`].join(','), height:420 }}>
 
       {/* ── Scene 0: OTA platform network ── */}
       <div style={pane(0)}>
@@ -1094,6 +1095,7 @@ export function LandingPage() {
           <div className="onboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
 
             {/* Left: text */}
+            <div className="onboard-left" style={{ height: 440, overflow: 'hidden' }}>
             <div key={`txt-${onstage}`} style={{ animation: 'obUp 0.4s ease both' }}>
               <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
                 {ONBOARD.map((_, i) => (
@@ -1116,6 +1118,7 @@ export function LandingPage() {
               <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
                 {ONBOARD[onstage].desc}
               </p>
+            </div>
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
