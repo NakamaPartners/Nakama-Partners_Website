@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import nakamaLogo    from '@/assets/nakama-logo-official.jpeg';
 import propertyHero  from '@/assets/property-hero.png';
 import propertyAbout from '@/assets/property-about2.png';
+import nakamaPool     from '@/assets/nakama-pool.png';
+import nakamaBedroom  from '@/assets/nakama-bedroom.png';
+import nakamaLiving   from '@/assets/nakama-living.png';
+import nakamaSunset   from '@/assets/nakama-sunset.png';
 import ctaBg         from '@/assets/cta-bg.png';
 import airbnbLogo    from '@/assets/ota-airbnb.png';
 import bookingLogo   from '@/assets/ota-booking.png';
@@ -898,7 +902,7 @@ function WorkShowcase({ onClose }: { onClose: () => void }) {
                       <div style={{ display: 'flex', gap: 12, fontSize: 8.5, color: C.stone, fontFamily: "'Jost',sans-serif" }}><span>Rooms</span><span>Gallery</span><span>Contact</span></div>
                     </div>
                     <div style={{ height: 176, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 16 }}>
-                      <img src={propertyHero} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={nakamaSunset} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,26,20,0.72) 8%, rgba(13,26,20,0.12) 60%)' }} />
                       <div style={{ position: 'relative' }}>
                         <div className="display" style={{ fontSize: 20, fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: 8, letterSpacing: '-0.01em' }}>Your stay in Canggu</div>
@@ -906,7 +910,7 @@ function WorkShowcase({ onClose }: { onClose: () => void }) {
                       </div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 7, padding: 14 }}>
-                      {[propertyAbout, propertyHero, propertyAbout].map((img, i) => (
+                      {[nakamaBedroom, nakamaLiving, nakamaPool].map((img, i) => (
                         <div key={i}>
                           <div style={{ height: 46, backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                           <div style={{ height: 5, width: '70%', background: 'rgba(0,0,0,0.10)', marginTop: 6 }} />
@@ -920,7 +924,7 @@ function WorkShowcase({ onClose }: { onClose: () => void }) {
                 {/* Phone */}
                 <div style={{ flexShrink: 0, width: 132, border: '5px solid #14261C', borderRadius: 20, overflow: 'hidden', boxShadow: '0 18px 44px rgba(0,0,0,0.18)', background: '#fff', animation: 'wkFloat 5s ease-in-out infinite' }}>
                   <div style={{ height: 96, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 9 }}>
-                    <img src={propertyHero} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={nakamaPool} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,26,20,0.75), transparent 65%)' }} />
                     <div className="display" style={{ position: 'relative', fontSize: 11, fontWeight: 800, color: '#fff', lineHeight: 1.05 }}>Luna House</div>
                   </div>
