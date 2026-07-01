@@ -296,7 +296,7 @@ const CSS = `
   .trust-item { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; font-weight:300; padding:6px 24px; letter-spacing:0.04em; }
 
   /* Footer links */
-  .foot-link { font-family:'Jost',sans-serif; font-size:13px; color:${C.stone}; cursor:pointer; font-weight:300; transition:color 0.2s ease; display:block; margin-bottom:10px; }
+  .foot-link { font-family:'Jost',sans-serif; font-size:13px; color:${C.stone}; cursor:pointer; font-weight:300; transition:color 0.2s ease; display:block; margin-bottom:10px; text-decoration:none; }
   .foot-link:hover { color:${C.cream}; }
 
   /* Contact form */
@@ -2423,14 +2423,33 @@ export function LandingPage() {
               </div>
               <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.75, fontWeight: 300, maxWidth: 210 }}>Property onboarding and branding. We help investors turn their properties into earning, well-branded destinations and grow alongside them.</p>
             </div>
-            {[
+            {([
               { head: 'Services', links: ['Property Websites', 'WhatsApp Automation', 'OTA Integration', 'Brand Strategy'] },
               { head: 'Company', links: ['About', 'Process', 'Our Work', 'Contact'] },
-              { head: 'Connect', links: ['contact@nakama.partners', 'WhatsApp us', 'LinkedIn', '@nakamapartners.id'] },
-            ].map(col => (
+              { head: 'Connect', links: [
+                { label: 'contact@nakama.partners', href: 'mailto:contact@nakama.partners' },
+                { label: 'WhatsApp us', href: 'https://wa.me/6285110808158', external: true },
+                { label: 'LinkedIn' },
+                { label: '@nakamapartners.id', href: 'https://instagram.com/nakamapartners.id', external: true },
+              ] },
+            ] as { head: string; links: (string | { label: string; href?: string; external?: boolean })[] }[]).map(col => (
               <div key={col.head}>
                 <div className="label" style={{ color: C.sienna, marginBottom: 16, fontSize: 9 }}>{col.head}</div>
-                {col.links.map(l => <span key={l} className="foot-link">{l}</span>)}
+                {col.links.map(l => {
+                  const link = typeof l === 'string' ? { label: l } as { label: string; href?: string; external?: boolean } : l;
+                  return link.href ? (
+                    <a
+                      key={link.label}
+                      className="foot-link"
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <span key={link.label} className="foot-link" style={{ cursor: 'default' }}>{link.label}</span>
+                  );
+                })}
               </div>
             ))}
           </div>
