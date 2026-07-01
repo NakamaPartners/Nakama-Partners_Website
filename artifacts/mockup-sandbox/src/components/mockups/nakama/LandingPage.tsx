@@ -241,6 +241,7 @@ const CSS = `
     /* Services: single column, show visual inline below accordion */
     .svc-grid       { grid-template-columns: 1fr !important; }
     .svc-visual-col { display: block !important; margin-top: 8px !important; }
+    .svc-acc-col    { height: auto !important; overflow: visible !important; }
     .svc-visual-col > div {
       position: relative !important;
       top: auto !important;
@@ -539,51 +540,59 @@ function ServiceVisual({ active }: { active: number }) {
 
       {/* ── Scene 1: Brand Transformation ── */}
       <div style={pane(1)}>
-        <div style={{ display:'flex', alignItems:'center', gap:16, padding:'0 28px', width:'100%' }}>
+        <div style={{ display:'flex', alignItems:'stretch', gap:12, padding:'28px 24px', width:'100%', boxSizing:'border-box' }}>
 
-          {/* Before */}
-          <div style={{ flex:1, background:'#1A2820', border:`1px solid rgba(255,255,255,0.07)`, borderRadius:6, overflow:'hidden', opacity:0.8 }}>
-            <div style={{ height:88, background:'#2A3530', display:'flex', alignItems:'center', justifyContent:'center' }}>
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect x="3" y="8" width="30" height="22" rx="2" fill="#3D4E45"/>
-                <circle cx="12" cy="17" r="5" fill="#2E3D35"/>
-                <polygon points="6,30 15,20 23,28 28,22 33,30" fill="#354840"/>
+          {/* Before — unbranded */}
+          <div style={{ flex:1, background:'#F3F3EF', border:`1px solid rgba(0,0,0,0.09)`, borderRadius:10, overflow:'hidden', display:'flex', flexDirection:'column' }}>
+            <div style={{ padding:'7px 11px 6px', borderBottom:'1px solid rgba(0,0,0,0.07)' }}>
+              <span style={{ fontSize:8, fontFamily:"'Jost',sans-serif", color:'rgba(0,0,0,0.36)', letterSpacing:1.8 }}>BEFORE</span>
+            </div>
+            <div style={{ height:110, background:'#E2E2DC', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" opacity="0.35">
+                <rect x="2" y="6" width="32" height="22" rx="2" fill="#999"/>
+                <circle cx="11" cy="15" r="4.5" fill="#777"/>
+                <polygon points="2,28 12,17 21,24 27,18 34,28" fill="#888"/>
               </svg>
             </div>
-            <div style={{ padding:'10px 13px 13px' }}>
-              <div style={{ fontSize:10, fontFamily:"'Jost',sans-serif", fontWeight:500, color:'rgba(255,255,255,0.28)', marginBottom:5, letterSpacing:0.5 }}>PROPERTY 12</div>
-              <div style={{ display:'flex', gap:2, marginBottom:5 }}>
-                {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:11, color: s<=3 ? '#F59E0B' : '#2E3D35' }}>★</span>)}
+            <div style={{ padding:'11px 13px 14px', flex:1 }}>
+              <div style={{ fontSize:10, fontFamily:"'Jost',sans-serif", fontWeight:600, color:'rgba(0,0,0,0.40)', marginBottom:6, letterSpacing:0.5 }}>PROPERTY 12</div>
+              <div style={{ display:'flex', gap:1.5, marginBottom:6 }}>
+                {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:12, color: s<=3 ? '#F59E0B' : '#CCC' }}>★</span>)}
               </div>
-              <div style={{ fontSize:9, color:'rgba(255,255,255,0.2)', fontFamily:"'Jost',sans-serif" }}>1 platform only</div>
+              <div style={{ fontSize:9, color:'rgba(0,0,0,0.28)', fontFamily:"'Jost',sans-serif", letterSpacing:0.3 }}>1 platform only</div>
+              <div style={{ fontSize:9, color:'rgba(0,0,0,0.22)', fontFamily:"'Jost',sans-serif", marginTop:3 }}>No website · No brand</div>
             </div>
           </div>
 
           {/* Arrow */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, flexShrink:0 }}>
-            <svg width="34" height="22" viewBox="0 0 34 22">
-              <path d="M1 11 L26 11 M20 4 L28 11 L20 18" stroke={C.siennaL} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, flexShrink:0 }}>
+            <svg width="26" height="18" viewBox="0 0 26 18">
+              <path d="M0 9 L18 9 M12 2 L20 9 L12 16" stroke={C.sienna} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span style={{ fontSize:7.5, fontFamily:"'Jost',sans-serif", color:C.siennaL, letterSpacing:2 }}>BRAND</span>
+            <span style={{ fontSize:7, fontFamily:"'Jost',sans-serif", color:C.sienna, letterSpacing:2 }}>BRAND</span>
           </div>
 
-          {/* After */}
-          <div style={{ flex:1, background:'#0F2418', border:`1px solid rgba(61,138,98,0.4)`, borderRadius:6, overflow:'hidden', boxShadow:`0 0 40px rgba(42,96,68,0.35)` }}>
-            <div style={{ height:88, background:C.sienna, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
-              <div style={{ position:'absolute', top:0, width:'55%', height:'100%', background:'rgba(255,255,255,0.07)', transform:'skewX(-18deg)', animation:'svcShine 4s ease 0.8s infinite' }}/>
-              <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
-                <polygon points="16,3 29,19 3,19" fill="white" opacity="0.75"/>
-                <rect x="10" y="19" width="12" height="10" rx="1" fill="white" opacity="0.75"/>
+          {/* After — fully branded */}
+          <div style={{ flex:1, background:'#0D201A', border:`1px solid rgba(61,138,98,0.45)`, borderRadius:10, overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:`0 8px 32px rgba(42,96,68,0.28)` }}>
+            <div style={{ padding:'7px 11px 6px', borderBottom:'1px solid rgba(61,138,98,0.22)', background:'rgba(61,138,98,0.15)' }}>
+              <span style={{ fontSize:8, fontFamily:"'Jost',sans-serif", color:C.siennaL, letterSpacing:1.8 }}>AFTER</span>
+            </div>
+            <div style={{ height:110, background:C.sienna, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', flexShrink:0 }}>
+              <div style={{ position:'absolute', top:0, left:'-20%', width:'55%', height:'100%', background:'rgba(255,255,255,0.08)', transform:'skewX(-18deg)', animation:'svcShine 4s ease 0.8s infinite' }}/>
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                <polygon points="16,3 29,19 3,19" fill="white" opacity="0.9"/>
+                <rect x="10" y="19" width="12" height="10" rx="1.5" fill="white" opacity="0.9"/>
               </svg>
             </div>
-            <div style={{ padding:'10px 13px 13px' }}>
-              <div style={{ fontSize:10, fontFamily:"'Sora',sans-serif", fontWeight:700, color:C.cream, marginBottom:5, letterSpacing:0.8 }}>LUNA HOUSE</div>
-              <div style={{ display:'flex', gap:2, marginBottom:5 }}>
+            <div style={{ padding:'11px 13px 14px', flex:1 }}>
+              <div style={{ fontSize:11, fontFamily:"'Sora',sans-serif", fontWeight:700, color:'#F2F5F3', marginBottom:6, letterSpacing:0.8 }}>LUNA HOUSE</div>
+              <div style={{ display:'flex', gap:1.5, marginBottom:6 }}>
                 {[1,2,3,4,5].map(s => (
-                  <span key={s} style={{ fontSize:11, color:'#F59E0B', animation:`svcStarPop 0.35s cubic-bezier(.22,1,.36,1) ${0.5 + s * 0.1}s both` }}>★</span>
+                  <span key={s} style={{ fontSize:12, color:'#F59E0B', animation:`svcStarPop 0.35s cubic-bezier(.22,1,.36,1) ${0.5+s*0.1}s both` }}>★</span>
                 ))}
               </div>
-              <div style={{ fontSize:9, color:C.siennaL, fontFamily:"'Jost',sans-serif" }}>4 platforms · direct booking</div>
+              <div style={{ fontSize:9, color:C.siennaL, fontFamily:"'Jost',sans-serif", letterSpacing:0.3 }}>4 platforms · direct booking</div>
+              <div style={{ fontSize:9, color:'rgba(61,138,98,0.55)', fontFamily:"'Jost',sans-serif", marginTop:3 }}>Custom website · Full brand</div>
             </div>
           </div>
         </div>
@@ -591,57 +600,73 @@ function ServiceVisual({ active }: { active: number }) {
 
       {/* ── Scene 2: WhatsApp Automation ── */}
       <div style={pane(2)}>
-        <div style={{ width:270, background:'white', borderRadius:12, overflow:'hidden', boxShadow:`0 8px 36px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.07)` }}>
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12 }}>
 
-          {/* Header */}
-          <div style={{ background:C.sienna, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}>
-            <div style={{ width:32, height:32, borderRadius:'50%', background:'rgba(255,255,255,0.18)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-              <svg width="16" height="16" viewBox="0 0 16 16">
-                <circle cx="8" cy="6" r="3.5" fill="white"/>
-                <path d="M2 14.5C2 11 4.5 9 8 9C11.5 9 14 11 14 14.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-              </svg>
+          {/* Phone device frame */}
+          <div style={{ width:256, borderRadius:30, border:`2.5px solid #1C3528`, overflow:'hidden', boxShadow:`0 20px 56px rgba(0,0,0,0.26), 0 4px 16px rgba(0,0,0,0.14), inset 0 0 0 1px rgba(255,255,255,0.04)` }}>
+
+            {/* Phone top notch bar */}
+            <div style={{ background:'#1C3528', height:26, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <div style={{ width:52, height:5, background:'#0D1F16', borderRadius:8 }}/>
             </div>
-            <div>
-              <div style={{ fontSize:11, color:'white', fontFamily:"'Jost',sans-serif", fontWeight:500 }}>Guest Inquiry</div>
-              <div style={{ fontSize:8.5, color:'rgba(255,255,255,0.6)', fontFamily:"'Jost',sans-serif" }}>02:47 AM</div>
-            </div>
-          </div>
 
-          {/* Chat body */}
-          <div style={{ background:'#ECE5DD', padding:'14px 12px', display:'flex', flexDirection:'column', gap:10, minHeight:196 }}>
-
-            {/* Guest message */}
-            <div style={{ display:'flex', justifyContent:'flex-start', animation:'svcMsgIn 0.5s ease 0.3s both', opacity:0 }}>
-              <div style={{ background:'white', borderRadius:'3px 12px 12px 12px', padding:'8px 11px', maxWidth:'82%', boxShadow:'0 1px 2px rgba(0,0,0,0.09)' }}>
-                <div style={{ fontSize:11, color:'#2C3333', fontFamily:"'Jost',sans-serif", lineHeight:1.55 }}>Hi, can I check in early? Around 12pm?</div>
-                <div style={{ fontSize:8.5, color:'#AAA', fontFamily:"'Jost',sans-serif", marginTop:3, textAlign:'right' }}>02:47</div>
+            {/* WhatsApp header */}
+            <div style={{ background:C.sienna, padding:'9px 14px', display:'flex', alignItems:'center', gap:10 }}>
+              <div style={{ width:30, height:30, borderRadius:'50%', background:'rgba(255,255,255,0.18)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                <svg width="14" height="14" viewBox="0 0 16 16">
+                  <circle cx="8" cy="6" r="3.5" fill="white"/>
+                  <path d="M2 14.5C2 11 4.5 9 8 9C11.5 9 14 11 14 14.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:11, color:'white', fontFamily:"'Jost',sans-serif", fontWeight:600 }}>Guest Inquiry</div>
+                <div style={{ fontSize:8, color:'rgba(255,255,255,0.55)', fontFamily:"'Jost',sans-serif" }}>online</div>
+              </div>
+              <div style={{ display:'flex', gap:10 }}>
+                {[0,1].map(i => <div key={i} style={{ width:3.5, height:3.5, borderRadius:'50%', background:'rgba(255,255,255,0.4)' }}/>)}
               </div>
             </div>
 
-            {/* Typing indicator — appears briefly then fades */}
-            <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcTypeFade 2.8s ease 1.1s both' }}>
-              <div style={{ background:C.sienna, borderRadius:'12px 3px 12px 12px', padding:'10px 14px' }}>
-                <div style={{ display:'flex', gap:4, alignItems:'center', height:14 }}>
-                  {[0, 0.18, 0.36].map((d, i) => (
-                    <div key={i} style={{ width:5, height:5, borderRadius:'50%', background:'rgba(255,255,255,0.7)', animation:`svcDotBlink 0.9s ease ${d}s infinite` }}/>
-                  ))}
+            {/* Chat body */}
+            <div style={{ background:'#ECE5DD', padding:'12px 10px', display:'flex', flexDirection:'column', gap:9 }}>
+              <div style={{ display:'flex', justifyContent:'flex-start', animation:'svcMsgIn 0.5s ease 0.3s both', opacity:0 }}>
+                <div style={{ background:'white', borderRadius:'3px 10px 10px 10px', padding:'7px 10px', maxWidth:'80%', boxShadow:'0 1px 2px rgba(0,0,0,0.08)' }}>
+                  <div style={{ fontSize:10.5, color:'#2C3333', fontFamily:"'Jost',sans-serif", lineHeight:1.5 }}>Hi, can I check in early? Around 12pm?</div>
+                  <div style={{ fontSize:8, color:'#BBB', fontFamily:"'Jost',sans-serif", marginTop:2, textAlign:'right' }}>02:47</div>
+                </div>
+              </div>
+              <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcTypeFade 2.8s ease 1.1s both' }}>
+                <div style={{ background:C.sienna, borderRadius:'10px 3px 10px 10px', padding:'9px 12px' }}>
+                  <div style={{ display:'flex', gap:3.5, alignItems:'center', height:12 }}>
+                    {[0, 0.18, 0.36].map((d, i) => (
+                      <div key={i} style={{ width:4, height:4, borderRadius:'50%', background:'rgba(255,255,255,0.7)', animation:`svcDotBlink 0.9s ease ${d}s infinite` }}/>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcMsgIn 0.5s ease 2.1s both', opacity:0 }}>
+                <div style={{ background:C.sienna, borderRadius:'10px 3px 10px 10px', padding:'7px 10px', maxWidth:'84%', boxShadow:'0 1px 2px rgba(0,0,0,0.09)' }}>
+                  <div style={{ fontSize:10.5, color:'white', fontFamily:"'Jost',sans-serif", lineHeight:1.5 }}>Hi! Early check-in at 12pm is confirmed. WiFi: NakamaCanggu. See you soon!</div>
+                  <div style={{ fontSize:8, color:'rgba(255,255,255,0.5)', fontFamily:"'Jost',sans-serif", marginTop:2, textAlign:'right' }}>02:47 · sent in 4s</div>
                 </div>
               </div>
             </div>
 
-            {/* Auto-reply */}
-            <div style={{ display:'flex', justifyContent:'flex-end', animation:'svcMsgIn 0.5s ease 2.1s both', opacity:0 }}>
-              <div style={{ background:C.sienna, borderRadius:'12px 3px 12px 12px', padding:'8px 11px', maxWidth:'86%', boxShadow:'0 1px 2px rgba(0,0,0,0.09)' }}>
-                <div style={{ fontSize:11, color:'white', fontFamily:"'Jost',sans-serif", lineHeight:1.55 }}>Hi! Early check-in at 12pm is confirmed. WiFi: NakamaCanggu. See you soon!</div>
-                <div style={{ fontSize:8.5, color:'rgba(255,255,255,0.5)', fontFamily:"'Jost',sans-serif", marginTop:3, textAlign:'right' }}>02:47 · sent in 4s</div>
-              </div>
+            {/* Phone bottom home bar */}
+            <div style={{ background:'white', borderTop:'1px solid rgba(0,0,0,0.06)', padding:'7px 14px', display:'flex', alignItems:'center', gap:7 }}>
+              <div style={{ width:5, height:5, borderRadius:'50%', background:C.siennaL, flexShrink:0 }}/>
+              <span style={{ fontSize:8.5, fontFamily:"'Jost',sans-serif", color:C.stone, letterSpacing:0.6 }}>Automated by Nakama</span>
+            </div>
+
+            <div style={{ background:'#1C3528', height:16, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <div style={{ width:64, height:3, background:'rgba(255,255,255,0.28)', borderRadius:8 }}/>
             </div>
           </div>
 
-          {/* Badge */}
-          <div style={{ padding:'7px 14px', borderTop:`1px solid rgba(0,0,0,0.06)`, display:'flex', alignItems:'center', gap:7 }}>
-            <div style={{ width:6, height:6, borderRadius:'50%', background:C.siennaL, flexShrink:0 }}/>
-            <span style={{ fontSize:9, fontFamily:"'Jost',sans-serif", color:C.stone, letterSpacing:0.8 }}>Automated by Nakama</span>
+          {/* Stat chip */}
+          <div style={{ display:'flex', alignItems:'center', gap:6, background:'rgba(42,96,68,0.09)', border:`1px solid rgba(42,96,68,0.20)`, borderRadius:20, padding:'5px 14px' }}>
+            <div style={{ width:5, height:5, borderRadius:'50%', background:C.siennaL }}/>
+            <span style={{ fontSize:9, fontFamily:"'Jost',sans-serif", color:C.stone, letterSpacing:0.5 }}>Average response: 4 seconds</span>
           </div>
         </div>
       </div>
@@ -747,10 +772,12 @@ export function LandingPage() {
           <NakamaLogo height={36} />
         </div>
         <div className="nav-links-center">
-          {['Services','Process','About','Stories'].map(l => <span key={l} className="nav-link">{l}</span>)}
+          {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
+            <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })}>{l}</span>
+          ))}
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12 }}>Chat with us</button>
+          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>Chat with us</a>
           <button className="btn-primary" style={{ padding: '9px 20px', fontSize: 12 }}>Grow with Nakama</button>
         </div>
       </nav>
@@ -1019,7 +1046,7 @@ export function LandingPage() {
           {/* 2-col: accordion left · animated visual right */}
           <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
-            <div className="reveal d2" style={{ minHeight: 520 }}>
+            <div className="svc-acc-col reveal d2" style={{ height: 480, overflow: 'hidden' }}>
               {SERVICES_ACC.map((svc, i) => (
                 <div
                   key={i}
