@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Nakama Partners"
+version = "1.0.0"
+id = "artifacts/nakama-site"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23165
+
+[services.development]
+run = "pnpm --filter @workspace/nakama-site run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nakama-site", "run", "build" ]
+publicDir = "artifacts/nakama-site/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23165"
+BASE_PATH = "/"

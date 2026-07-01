@@ -1,6 +1,6 @@
-# [Project name]
+# Nakama Partners
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A static marketing website for Nakama Partners, a Bali property onboarding and branding studio. Single-page landing site (hero, problem, services, process, stories, contact) with a WhatsApp-based inquiry form — no backend required.
 
 ## Run & Operate
 
@@ -22,15 +22,22 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/nakama-site/` — the live website (React + Vite, static build).
+- `artifacts/nakama-site/src/LandingPage.tsx` — the entire single-page site (design, copy, CSS-in-JS, form). This is the source of truth for the design.
+- `artifacts/nakama-site/src/assets/` — all images.
+- `artifacts/nakama-site/index.html` — loads Sora + Jost fonts, sets meta/SEO tags.
+- Original design mockup (reference only): `artifacts/mockup-sandbox/src/components/mockups/nakama/LandingPage.tsx`.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The site is a pixel-perfect port of the approved canvas mockup — do not redesign; keep design exactly as-is.
+- Fully static: no API/DB. The contact form opens WhatsApp (`wa.me/6285110808158`) with the form fields prefilled instead of POSTing to a server.
+- The component uses inline styles + one injected `<style>` CSS-in-JS string. Responsive behavior comes from media queries in that string overriding inline grids with `!important` — any new responsive grid needs a class + a matching media rule (inline styles alone can't collapse on mobile).
+- `index.css` is a minimal reset only; the scaffold's Tailwind theme is unused by the design.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Single-page marketing site presenting Nakama Partners' services for Bali property owners: property onboarding, branding, direct-booking websites, and guest management. Visitors submit an inquiry that hands off to WhatsApp.
 
 ## User preferences
 
