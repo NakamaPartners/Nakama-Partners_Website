@@ -1430,8 +1430,8 @@ export function LandingPage() {
                   <span className="display" style={{ fontSize: 18, fontWeight: 700, color: s.highlight ? C.siennaL : C.sienna }}>{s.num}</span>
                   <span className="label" style={{ color: C.stoneL, fontSize: 9 }}>{s.label}</span>
                 </div>
-                <div className="display" style={{ fontSize: 'clamp(15px,1.8vw,18px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 10 }}>{s.title}</div>
-                <p style={{ fontSize: 13, color: C.stone, lineHeight: 1.8, fontWeight: 300, marginBottom: 16 }}>{s.body}</p>
+                <div className="display" style={{ fontSize: 'clamp(15px,1.8vw,18px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 10, minHeight: '2.5em' }}>{s.title}</div>
+                <p className="svc-tag-body" style={{ fontSize: 13, color: C.stone, lineHeight: 1.8, fontWeight: 300, marginBottom: 16, minHeight: '7.2em' }}>{s.body}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 'auto', paddingTop: 16 }}>
                   {s.tags.map(t => (
                     <span key={t} style={{
@@ -1529,12 +1529,12 @@ export function LandingPage() {
             <div key={unit} className={`reveal d${i + 1}`} style={{
               background: C.siennaD,
               padding: 'clamp(28px,4vw,48px) clamp(20px,3vw,36px)',
-              display: 'flex', flexDirection: 'column',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
               minHeight: 240,
             }}>
-              <div className="display" style={{ fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 8 }}>{num}</div>
-              <div className="label" style={{ color: C.siennaL, fontSize: 9, marginBottom: 'auto' }}>{unit}</div>
-              <p style={{ fontSize: 11, color: 'rgba(242,245,243,0.36)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 14, marginTop: 20 }}>{sub}</p>
+              <div className="display" style={{ fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 10 }}>{num}</div>
+              <div className="label" style={{ color: '#7FB89A', fontSize: 9, marginBottom: 'auto' }}>{unit}</div>
+              <p style={{ fontSize: 11.5, color: 'rgba(242,245,243,0.7)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: 14, marginTop: 20, width: '100%' }}>{sub}</p>
             </div>
           ))}
         </div>
