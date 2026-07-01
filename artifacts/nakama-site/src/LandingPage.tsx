@@ -433,30 +433,35 @@ const ONBOARD = [
     label: 'First Call',
     title: "You never have to figure this out alone.",
     desc: "You've built or bought something real. The hard part is done. What comes next is where most owners get stuck. One conversation with us, and you won't have to.",
+    stat: { value: '30 min', label: 'Average duration of a first call' },
     tags: ['Property assessment', 'Revenue projection', 'Platform audit', 'Roadmap walkthrough'],
   },
   {
     label: 'Your Brand',
     title: 'It clicks into place.',
     desc: "A name, a palette, a voice — built around your property's real character. Most clients say this is the moment it stops feeling like an investment and starts feeling like a destination.",
+    stat: { value: '2–3 wks', label: 'From brief to full brand reveal' },
     tags: ['Name & concept', 'Color palette', 'Typography', 'Brand voice', 'Guest persona'],
   },
   {
     label: 'Goes Live',
     title: 'From nothing to running.',
     desc: "Website live. OTAs active. WhatsApp responding while you sleep. We build it, connect it, test it. You approve the result. That's it.",
+    stat: { value: '4 platforms', label: 'All live before we hand over' },
     tags: ['Direct website', 'Airbnb', 'Booking.com', 'Agoda', 'Traveloka', 'WhatsApp setup'],
   },
   {
     label: 'Automated',
     title: 'Works while you sleep.',
     desc: "Guests get answered in seconds. Calendars never double-book. Check-in details go out automatically. Your property runs like a professional operation, without you being on call.",
+    stat: { value: '< 2 min', label: 'Average guest response time, around the clock' },
     tags: ['Instant guest replies', 'Calendar sync', 'Check-in flow', 'Review requests', 'No-show handling'],
   },
   {
     label: 'First Booking',
     title: 'There it is.',
     desc: "The first booking confirmation lands in your inbox. Revenue starts moving. We're watching the same numbers you are — and already working on getting the next one.",
+    stat: { value: '18 days', label: 'Average time to a first confirmed booking' },
     tags: ['Revenue dashboard', 'Occupancy review', 'Rate optimisation', 'Ongoing support'],
   },
 ];
@@ -1757,6 +1762,33 @@ export function LandingPage() {
                     <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300, marginBottom: 24 }}>
                       {stage.desc}
                     </p>
+                    {/* Stat callout */}
+                    <div style={{
+                      borderTop: `1px solid rgba(0,0,0,0.09)`,
+                      paddingTop: 20,
+                      marginBottom: 20,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 20,
+                      animation: 'obUp 0.4s ease 0.2s both',
+                    }}>
+                      <div style={{
+                        fontFamily: "'Sora',sans-serif",
+                        fontSize: 'clamp(22px,2.4vw,28px)',
+                        fontWeight: 800,
+                        color: C.sienna,
+                        lineHeight: 1,
+                        whiteSpace: 'nowrap',
+                      }}>{stage.stat.value}</div>
+                      <div style={{
+                        fontSize: 11,
+                        color: C.stoneL,
+                        lineHeight: 1.5,
+                        fontWeight: 300,
+                        borderLeft: `2px solid ${C.sienna}`,
+                        paddingLeft: 14,
+                      }}>{stage.stat.label}</div>
+                    </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                       {stage.tags.map((tag, ti) => (
                         <span key={tag} style={{
