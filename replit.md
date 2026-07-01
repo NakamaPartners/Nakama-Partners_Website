@@ -41,7 +41,8 @@ Single-page marketing site presenting Nakama Partners' services for Bali propert
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Production hosting: **Vercel**, deployed from the GitHub repo `NakamaPartners/Nakama-Partners_Website`.
+- Canonical domain: **`nakama.partners`** (apex, **no `www`**). `www.nakama.partners` must 301-redirect to the apex. Configured via `vercel.json` redirect + the Vercel dashboard Domains setting (apex set as primary).
 
 ## Gotchas
 

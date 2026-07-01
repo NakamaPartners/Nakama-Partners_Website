@@ -4,5 +4,13 @@
   "buildCommand": "pnpm --filter @workspace/nakama-site run build",
   "outputDirectory": "artifacts/nakama-site/dist/public",
   "framework": null,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.nakama.partners" }],
+      "destination": "https://nakama.partners/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
