@@ -59,9 +59,9 @@ router.post("/inquiry", async (req, res) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Nakama Website <contact@nakama.partners>",
+        from: "Nakama Partners <onboarding@resend.dev>",
         to: ["contact@nakama.partners"],
-        cc: ["kevinasuteja@gmail.com", "renaldoliao@gmail.com"],
+        // cc to gmail addresses requires a verified domain — add back after verifying nakama.partners in resend.com/domains
         reply_to: safeEmail,
         subject: `New inquiry from ${safeName} — ${safeNeeds}`,
         html,
