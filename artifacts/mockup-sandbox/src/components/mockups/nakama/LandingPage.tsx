@@ -129,6 +129,25 @@ const CSS = `
   .btn-outline-cream:hover { border-color:rgba(13,26,20,0.50); }
   .nav-chat-btn { background:transparent !important; border:1px solid rgba(0,0,0,0.15) !important; }
 
+  /* Mobile nav burger + panel */
+  .nav-burger { display:none; flex-direction:column; justify-content:center; gap:5px; width:40px; height:40px; padding:8px; background:transparent; border:none; cursor:pointer; }
+  .nav-burger-line { display:block; width:22px; height:2px; background:${C.cream}; transition:transform 0.28s ease, opacity 0.2s ease; }
+  .nav-burger-line.x1 { transform:translateY(7px) rotate(45deg); }
+  .nav-burger-line.x2 { opacity:0; }
+  .nav-burger-line.x3 { transform:translateY(-7px) rotate(-45deg); }
+  .nav-mobile-panel {
+    display:none; position:fixed; top:58px; left:0; right:0; z-index:99;
+    background:rgba(255,255,255,0.98); backdrop-filter:blur(20px);
+    border-bottom:0 solid rgba(0,0,0,0.07);
+    flex-direction:column; padding:0 20px;
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height 0.35s ease, opacity 0.28s ease, padding 0.35s ease, border-width 0.35s ease;
+  }
+  .nav-mobile-panel.open { max-height:80vh; opacity:1; padding:8px 20px 24px; border-bottom-width:1px; }
+  .nav-mobile-link { font-family:'Jost',sans-serif; font-size:15px; letter-spacing:0.04em; color:${C.cream}; cursor:pointer; padding:15px 4px; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .nav-mobile-link:active { color:${C.sienna}; }
+  .nav-mobile-cta { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+
   /* Section padding */
   .sec-pad    { padding: clamp(64px,10vw,120px) clamp(22px,5vw,64px); }
   .sec-pad-sm { padding: clamp(40px,6vw,72px)  clamp(22px,5vw,64px); }
@@ -272,9 +291,11 @@ const CSS = `
 
   /* ── Mobile responsive ── */
   @media (max-width: 768px) {
-    /* Nav: collapse links and ghost button */
+    /* Nav: collapse links and ghost button, show burger + mobile panel */
     .nav-links-center  { display: none !important; }
     .nav-desktop-only  { display: none !important; }
+    .nav-burger        { display: flex !important; }
+    .nav-mobile-panel  { display: flex !important; }
 
     /* Reduce nav height */
     nav { height: 58px !important; }
@@ -1143,6 +1164,7 @@ export function LandingPage() {
   const [onstage, setOnstage] = useState(0);
   const [svcOpen, setSvcOpen] = useState(0);
   const [showWork, setShowWork] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   const [form, setForm] = useState({ name: '', phone: '', email: '', needs: '', message: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -1276,7 +1298,29 @@ export function LandingPage() {
           <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
           <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>Chat with us</a>
         </div>
+        <button
+          className="nav-burger"
+          aria-label={mobileMenu ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileMenu}
+          onClick={() => setMobileMenu(v => !v)}
+        >
+          <span className={`nav-burger-line${mobileMenu ? ' x1' : ''}`} />
+          <span className={`nav-burger-line${mobileMenu ? ' x2' : ''}`} />
+          <span className={`nav-burger-line${mobileMenu ? ' x3' : ''}`} />
+        </button>
       </nav>
+
+      {/* Mobile menu panel */}
+      <div className={`nav-mobile-panel${mobileMenu ? ' open' : ''}`}>
+        {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
+          <span key={l} className="nav-mobile-link" onClick={() => { scrollToSection(id); setMobileMenu(false); }}>{l}</span>
+        ))}
+        <span className="nav-mobile-link" onClick={() => { setShowWork(true); setMobileMenu(false); }}>Preview</span>
+        <div className="nav-mobile-cta">
+          <button className="btn-primary" style={{ width: '100%', textAlign: 'center' }} onClick={() => { scrollToSection('contact'); setMobileMenu(false); }}>Grow with Nakama</button>
+          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ width: '100%', textAlign: 'center', textDecoration: 'none', display: 'inline-block', boxSizing: 'border-box' }} onClick={() => setMobileMenu(false)}>Chat with us</a>
+        </div>
+      </div>
 
       {/* HERO */}
       <section style={{
