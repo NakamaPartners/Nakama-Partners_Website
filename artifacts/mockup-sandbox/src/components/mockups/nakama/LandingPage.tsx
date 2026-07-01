@@ -6,6 +6,7 @@ import nakamaPool     from '@/assets/nakama-pool.png';
 import nakamaBedroom  from '@/assets/nakama-bedroom.png';
 import nakamaLiving   from '@/assets/nakama-living.png';
 import nakamaSunset   from '@/assets/nakama-sunset.png';
+import nakamaTwilight from '@/assets/nakama-twilight.png';
 import ctaBg         from '@/assets/cta-bg.png';
 import airbnbLogo    from '@/assets/ota-airbnb.png';
 import bookingLogo   from '@/assets/ota-booking.png';
@@ -666,14 +667,11 @@ function ServiceVisual({ active }: { active: number }) {
 
           {/* After — branded listing card */}
           <div style={{ flex:1, background:'#0D201A', border:`1px solid rgba(61,138,98,0.4)`, borderRadius:8, overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:`0 6px 24px rgba(42,96,68,0.24)` }}>
-            <div style={{ height:68, background:C.sienna, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', flexShrink:0 }}>
-              <div style={{ position:'absolute', top:0, left:'-20%', width:'55%', height:'100%', background:'rgba(255,255,255,0.08)', transform:'skewX(-18deg)', animation:'svcShine 4s ease 0.8s infinite' }}/>
-              <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-                <polygon points="16,3 29,19 3,19" fill="white" opacity="0.9"/>
-                <rect x="10" y="19" width="12" height="10" rx="1.5" fill="white" opacity="0.9"/>
-              </svg>
-              <div style={{ position:'absolute', top:6, left:8, background:'rgba(255,255,255,0.12)', borderRadius:3, padding:'2px 6px' }}>
-                <span style={{ fontSize:7, color:'rgba(255,255,255,0.8)', fontFamily:"'Jost',sans-serif", letterSpacing:1 }}>AFTER</span>
+            <div style={{ height:110, position:'relative', overflow:'hidden', flexShrink:0 }}>
+              <img src={nakamaTwilight} alt="Luna House at twilight" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center 55%' }}/>
+              <div style={{ position:'absolute', inset:0, background:'linear-gradient(transparent 40%, rgba(13,32,26,0.72))' }}/>
+              <div style={{ position:'absolute', top:6, left:8, background:'rgba(13,32,26,0.55)', borderRadius:3, padding:'2px 6px', backdropFilter:'blur(4px)' }}>
+                <span style={{ fontSize:7, color:'rgba(255,255,255,0.85)', fontFamily:"'Jost',sans-serif", letterSpacing:1 }}>AFTER</span>
               </div>
             </div>
             <div style={{ padding:'9px 11px 11px' }}>
