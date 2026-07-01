@@ -265,7 +265,6 @@ const CSS = `
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
-    .onboard-left { height: auto !important; overflow: visible !important; }
 
     /* Section headers: single column */
     .sec-header { grid-template-columns: 1fr !important; margin-bottom: 36px !important; }
@@ -1131,9 +1130,9 @@ export function LandingPage() {
           {/* Main grid */}
           <div className="onboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
 
-            {/* Left: text */}
-            <div className="onboard-left" style={{ height: 440, overflow: 'hidden' }}>
-            <div key={`txt-${onstage}`} style={{ animation: 'obUp 0.4s ease both' }}>
+            {/* Left: text — fixed height on all devices, content cross-fades in absolute overlay */}
+            <div className="onboard-left" style={{ height: 440, overflow: 'hidden', position: 'relative' }}>
+              {/* Dot nav always visible at top */}
               <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
                 {ONBOARD.map((_, i) => (
                   <button
@@ -1149,13 +1148,25 @@ export function LandingPage() {
                   />
                 ))}
               </div>
-              <h3 className="display" style={{ fontSize: 'clamp(20px,2.5vw,28px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 16 }}>
-                {ONBOARD[onstage].title}
-              </h3>
-              <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
-                {ONBOARD[onstage].desc}
-              </p>
-            </div>
+              {/* Panels — position:absolute so layout never shifts */}
+              <div style={{ position: 'relative', flex: 1 }}>
+                {ONBOARD.map((stage, i) => (
+                  <div key={i} style={{
+                    position: 'absolute', inset: 0,
+                    opacity: onstage === i ? 1 : 0,
+                    transform: onstage === i ? 'translateY(0)' : 'translateY(8px)',
+                    transition: 'opacity 0.42s ease, transform 0.42s ease',
+                    pointerEvents: onstage === i ? 'auto' : 'none',
+                  }}>
+                    <h3 className="display" style={{ fontSize: 'clamp(20px,2.5vw,28px)', fontWeight: 700, color: C.cream, lineHeight: 1.25, marginBottom: 16 }}>
+                      {stage.title}
+                    </h3>
+                    <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.9, fontWeight: 300 }}>
+                      {stage.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Right: visual card — kept dark as a "device" mockup */}
