@@ -96,7 +96,7 @@ const CSS = `
   /* Navigation */
   .nav-links-center { display:flex; gap:32px; position:absolute; left:50%; transform:translateX(-50%); }
   .nav-link { font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em; color:${C.stone}; cursor:pointer; transition:color 0.2s ease; }
-  .nav-link:hover { color:${C.cream}; }
+  .nav-link:hover { color:${C.sienna} !important; }
 
   /* Buttons */
   .btn-primary {
@@ -104,10 +104,11 @@ const CSS = `
     border:none; cursor:pointer;
     padding:12px 28px;
     font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em;
-    transition:background 0.2s ease, transform 0.15s ease;
+    transition:background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     display:inline-block;
+    box-shadow: 0 4px 20px rgba(42,96,68,0.22);
   }
-  .btn-primary:hover { background:${C.siennaD}; transform:translateY(-1px); }
+  .btn-primary:hover { background:${C.siennaD}; transform:translateY(-1px); box-shadow: 0 8px 32px rgba(42,96,68,0.32); }
   .btn-ghost {
     background:transparent; color:${C.stone};
     border:1px solid rgba(0,0,0,0.15); cursor:pointer;
@@ -139,6 +140,9 @@ const CSS = `
   .svc-acc-num { font-family:'Jost',sans-serif; font-size:12px; color:${C.stoneL}; letter-spacing:2px; min-width:28px; }
   .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
   .svc-acc-title.active { color:${C.cream}; }
+  .svc-acc-row { transition: background 0.15s ease; }
+  .pain-cards > div { transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; }
+  .pain-cards > div:hover { transform: translateY(-4px); box-shadow: 0 16px 56px rgba(0,0,0,0.09); border-color: rgba(42,96,68,0.18) !important; }
 
   /* Service visual scenes */
   @keyframes svcDash      { to { stroke-dashoffset: -24; } }
@@ -241,7 +245,6 @@ const CSS = `
     /* Services: single column, show visual inline below accordion */
     .svc-grid       { grid-template-columns: 1fr !important; }
     .svc-visual-col { display: block !important; margin-top: 8px !important; }
-    .svc-acc-col    { height: auto !important; overflow: visible !important; }
     .svc-visual-col > div {
       position: relative !important;
       top: auto !important;
@@ -796,13 +799,13 @@ export function LandingPage() {
             style={{
               position: 'absolute', inset: 0, width: '100%', height: '100%',
               objectFit: 'cover', objectPosition: 'center 40%',
-              opacity: 0.14,
+              opacity: 0.19,
             }}
           />
           <div style={{
             position: 'absolute', inset: 0,
             background: `
-              linear-gradient(to right, ${C.bg} 38%, rgba(255,255,255,0.6) 65%, transparent 100%),
+              linear-gradient(to right, ${C.bg} 28%, rgba(255,255,255,0.28) 50%, transparent 86%),
               linear-gradient(to top, ${C.bg} 8%, transparent 55%)
             `,
           }} />
@@ -1046,7 +1049,8 @@ export function LandingPage() {
           {/* 2-col: accordion left · animated visual right */}
           <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 0.85fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
-            <div className="svc-acc-col reveal d2" style={{ height: 480, overflow: 'hidden' }}>
+            <div className="svc-acc-col reveal d2">
+              {/* Tab selector rows — these never change height regardless of active state */}
               {SERVICES_ACC.map((svc, i) => (
                 <div
                   key={i}
@@ -1058,27 +1062,33 @@ export function LandingPage() {
                     <div style={{ flex: 1 }}>
                       <div className={`svc-acc-title${svcOpen === i ? ' active' : ''}`}>{svc.title}</div>
                     </div>
-                    <svg
-                      width="16" height="16" viewBox="0 0 16 16"
-                      style={{ transition: 'transform 0.3s ease', transform: svcOpen === i ? 'rotate(180deg)' : 'none', flexShrink: 0 }}
-                    >
-                      <polyline points="4,6 8,10 12,6" stroke={svcOpen === i ? C.sienna : C.stoneL} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-
-                  <div style={{ overflow: 'hidden', maxHeight: svcOpen === i ? 480 : 0, transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)' }}>
-                    <div style={{ padding: '4px 0 32px clamp(24px,3vw,40px)' }}>
-                      <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 24 }}>
-                        {svc.desc}
-                      </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
-                        <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
-                      </div>
-                    </div>
+                    {/* Active indicator bar — replaces expanding chevron */}
+                    <div style={{ width: 22, height: 2, borderRadius: 2, flexShrink: 0, background: svcOpen === i ? C.sienna : 'rgba(0,0,0,0.10)', transition: 'background 0.3s ease' }}/>
                   </div>
                 </div>
               ))}
+
+              {/* Description panel — position:absolute overlay means zero layout impact when switching */}
+              <div style={{ position: 'relative', height: 210, marginTop: 16 }}>
+                {SERVICES_ACC.map((svc, i) => (
+                  <div key={i} style={{
+                    position: 'absolute', inset: 0,
+                    padding: '4px 0 0 clamp(24px,3vw,40px)',
+                    opacity: svcOpen === i ? 1 : 0,
+                    transform: svcOpen === i ? 'translateY(0)' : 'translateY(8px)',
+                    transition: 'opacity 0.45s ease, transform 0.45s ease',
+                    pointerEvents: svcOpen === i ? 'auto' : 'none',
+                  }}>
+                    <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 24 }}>
+                      {svc.desc}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                      <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="reveal d3 svc-visual-col">
