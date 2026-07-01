@@ -98,7 +98,7 @@ const CSS = `
   .label   { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; }
 
   /* Navigation */
-  .nav-links-center { display:flex; gap:32px; }
+  .nav-links-center { display:flex; gap:32px; white-space:nowrap; }
   .nav-link { font-family:'Jost',sans-serif; font-size:12px; letter-spacing:0.08em; color:${C.stone}; cursor:pointer; transition:color 0.2s ease; }
   .nav-link:hover { color:${C.sienna} !important; }
 
@@ -1293,9 +1293,9 @@ export function LandingPage() {
       {/* NAV */}
       <nav className="h-nav" style={{
         position: 'fixed', top: 0, width: '100%', zIndex: 100,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        display: 'flex', alignItems: 'center',
         padding: '0 clamp(20px,5vw,56px)', height: 72,
-        background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)',
+        background: '#ffffff',
         borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
