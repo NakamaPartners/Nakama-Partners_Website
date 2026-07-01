@@ -2031,9 +2031,13 @@ export function LandingPage() {
               display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
               minHeight: 240,
             }}>
-              <div className="display" style={{ fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 10 }}>{num}</div>
-              <div className="label" style={{ color: '#7FB89A', fontSize: 9, marginBottom: 'auto' }}>{unit}</div>
-              <p style={{ fontSize: 11.5, color: 'rgba(242,245,243,0.7)', lineHeight: 1.75, fontWeight: 300, borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: 14, marginTop: 20, width: '100%' }}>{sub}</p>
+              {/* Fixed-height block keeps the divider aligned across all cells */}
+              <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
+                <div className="display" style={{ fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 800, color: '#F2F5F3', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 10 }}>{num}</div>
+                <div className="label" style={{ color: '#7FB89A', fontSize: 9 }}>{unit}</div>
+              </div>
+              <div style={{ width: '100%', height: 1, background: 'rgba(255,255,255,0.12)', marginBottom: 16 }} />
+              <p style={{ fontSize: 11.5, color: 'rgba(242,245,243,0.7)', lineHeight: 1.75, fontWeight: 300 }}>{sub}</p>
             </div>
           ))}
         </div>
