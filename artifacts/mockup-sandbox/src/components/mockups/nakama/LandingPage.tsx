@@ -117,7 +117,7 @@ const CSS = `
     animation: previewGlow 2.4s ease-in-out infinite;
     display:inline-flex; align-items:center; gap:5px;
   }
-  .nav-preview-btn:hover {
+  .nav-links-center .nav-preview-btn:hover {
     background:${C.sienna}; color:#fff !important;
     animation:none; box-shadow: 0 4px 18px rgba(42,96,68,0.28) !important;
   }
