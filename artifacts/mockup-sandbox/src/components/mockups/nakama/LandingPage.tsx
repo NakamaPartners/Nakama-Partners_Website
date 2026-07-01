@@ -1270,10 +1270,11 @@ export function LandingPage() {
           {([['Services','services'],['Process','process'],['About','about'],['Stories','stories']] as [string,string][]).map(([l,id]) => (
             <span key={l} className="nav-link" style={{ cursor:'pointer' }} onClick={() => scrollToSection(id)}>{l}</span>
           ))}
+          <span className="nav-link" style={{ cursor:'pointer' }} onClick={() => setShowWork(true)}>See our work</span>
         </div>
         <div className="nav-desktop-only" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button className="btn-ghost nav-chat-btn" onClick={() => setShowWork(true)} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>See our work</button>
-          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-primary" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Chat with us</a>
+          <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ padding: '9px 20px', fontSize: 12, cursor: 'pointer' }}>Grow with Nakama</button>
+          <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost nav-chat-btn" style={{ padding: '9px 20px', fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>Chat with us</a>
         </div>
       </nav>
 
@@ -1325,8 +1326,8 @@ export function LandingPage() {
             </div>
             <div className="h-cta">
               <div className="cta-row">
-                <button className="btn-primary">Grow with Nakama</button>
-                <button className="btn-ghost" onClick={() => setShowWork(true)}>See our work</button>
+                <button className="btn-primary" onClick={() => scrollToSection('contact')}>Grow with Nakama</button>
+                <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-ghost" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Chat with us</a>
               </div>
             </div>
           </div>
@@ -2009,9 +2010,6 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 32 }}>
-              <button className="btn-primary">Talk to us directly</button>
-            </div>
           </div>
         </div>
       </section>
@@ -2122,8 +2120,8 @@ export function LandingPage() {
             You have the property. We have the brand, the systems, and the market knowledge. Together, we turn it into a destination that earns and grows. That is what Nakama means.
           </p>
           <div className="reveal d4" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary">Start onboarding</button>
-            <button className="btn-outline-cream">See how it works</button>
+            <button className="btn-primary" onClick={() => scrollToSection('contact')}>Grow with Nakama</button>
+            <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-outline-cream" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Chat with us</a>
           </div>
           <div className="reveal d4 trust-bar">
             {['Response within 24h', 'No lock-in contracts', 'Bilingual support', 'Bali market specialists'].map((item, i, arr) => (
