@@ -189,7 +189,19 @@ const CSS = `
   .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
   .svc-acc-title.active { color:${C.cream}; }
   .svc-acc-row { transition: background 0.15s ease; }
-  .svc-acc-inline { display:none; }
+  .svc-acc-panel { display: none; }
+  .svc-acc-inline {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    transition: max-height 0.48s cubic-bezier(.22,1,.36,1), opacity 0.35s ease, padding 0.35s ease;
+  }
+  .svc-acc-inline.open {
+    max-height: 320px;
+    opacity: 1;
+    padding: 14px 0 28px clamp(24px,3vw,40px);
+  }
   .pain-cards > div { transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; }
   .pain-cards > div:hover { transform: translateY(-4px); box-shadow: 0 16px 56px rgba(0,0,0,0.09); border-color: rgba(42,96,68,0.18) !important; }
 
@@ -351,9 +363,8 @@ const CSS = `
 
     /* Services: single column, visual renders inline under the active point */
     .svc-grid       { grid-template-columns: 1fr !important; }
-    /* Accordion: description sits under its own point, hide desktop overlay panel */
-    .svc-acc-inline.open { display: block !important; padding: 0 0 26px 0; }
-    .svc-acc-panel  { display: none !important; }
+    /* Accordion: tighten padding on mobile (no left indent) */
+    .svc-acc-inline.open { padding: 12px 0 26px 0 !important; }
     .svc-visual-col { display: none !important; }
     .svc-inline-visual { display: block !important; margin-top: 22px; }
     .svc-inline-visual > div {
