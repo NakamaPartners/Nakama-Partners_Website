@@ -1253,15 +1253,14 @@ export function LandingPage() {
     const text = encodeURIComponent(
       `New inquiry from the Nakama Partners website\n\n${lines.join('\n')}`,
     );
-    const opened = window.open(
-      `https://wa.me/6285110808158?text=${text}`,
-      '_blank',
-      'noopener,noreferrer',
-    );
-    if (!opened) {
-      setFormStatus('error');
-      return;
-    }
+    // Use a hidden anchor click — avoids popup-blocker on iOS/Safari
+    const a = document.createElement('a');
+    a.href = `https://wa.me/6285110808158?text=${text}`;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setFormStatus('success');
     setForm({ name: '', phone: '', email: '', needs: '', message: '' });
     setTouched({});
