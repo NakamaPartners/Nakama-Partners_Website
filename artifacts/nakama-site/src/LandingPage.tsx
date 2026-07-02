@@ -189,6 +189,7 @@ const CSS = `
   .svc-acc-title { font-family:'Sora',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:${C.stone}; transition:color 0.22s ease; flex:1; }
   .svc-acc-title.active { color:${C.cream}; }
   .svc-acc-row { transition: background 0.15s ease; }
+  .svc-acc-inline { display:none; }
   .pain-cards > div { transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; }
   .pain-cards > div:hover { transform: translateY(-4px); box-shadow: 0 16px 56px rgba(0,0,0,0.09); border-color: rgba(42,96,68,0.18) !important; }
 
@@ -329,11 +330,15 @@ const CSS = `
     /* Reduce nav height */
     nav { height: 58px !important; }
 
-    /* Hero: tighten bottom padding */
+    /* Hero: tighten bottom padding and reduce empty space above content */
+    .hero-sec { min-height: 72vh !important; padding-top: 88px !important; }
     .hero-lower { grid-template-columns: 1fr !important; gap: 28px !important; }
 
     /* Services: single column, show visual inline below accordion */
     .svc-grid       { grid-template-columns: 1fr !important; }
+    /* Accordion: description sits under its own point, hide desktop overlay panel */
+    .svc-acc-inline.open { display: block !important; padding: 0 0 26px 0; }
+    .svc-acc-panel  { display: none !important; }
     .svc-visual-col { display: block !important; margin-top: 8px !important; }
     .svc-visual-col > div {
       position: relative !important;
@@ -355,7 +360,7 @@ const CSS = `
 
     /* Onboarding: single column */
     .onboard-grid { grid-template-columns: 1fr !important; }
-    .onboard-left  { height: 300px !important; }
+    .onboard-left  { height: 470px !important; }
     .onboard-right { height: 360px !important; }
 
     /* Section headers: single column */
@@ -1291,7 +1296,7 @@ export function LandingPage() {
     const tick = (now: number) => {
       const dt = prev === null ? 0 : Math.min((now - prev) / 1000, 0.05);
       prev = now;
-      const SPEED = 0.7; // 30% slower than before
+      const SPEED = 0.4; // gentle drift, not a meteor
       PARTICLES.forEach((p, i) => {
         const el = particleRefs.current[i];
         if (!el) return;
@@ -1310,13 +1315,15 @@ export function LandingPage() {
           el.setAttribute('cy', y.toFixed(1));
           el.setAttribute('opacity', Math.max(0, fadeIn).toFixed(3));
         } else {
-          // Lost to competitors: peel off and fall straight down the gate line
+          // Lost to competitors: peel off and drift vertically off the gate line
+          // (alternating up/down per particle, at a slower pace)
           const uy = 40 + p.gate / 10;
           const ly = 240 - p.gate / 10;
           const yAtGate = uy + p.normY * (ly - uy);
           const dropDist = x - p.gate;
-          const y = yAtGate + dropDist * 1.4;
-          const fadeOut = Math.max(0, 1 - dropDist / 80);
+          const dir = i % 2 === 0 ? 1 : -1;
+          const y = yAtGate + dropDist * 0.6 * dir;
+          const fadeOut = Math.max(0, 1 - dropDist / 110);
           el.setAttribute('cx', p.gate.toFixed(1));
           el.setAttribute('cy', y.toFixed(1));
           el.setAttribute('opacity', fadeOut.toFixed(3));
@@ -1383,7 +1390,7 @@ export function LandingPage() {
       </div>
 
       {/* HERO */}
-      <section style={{
+      <section className="hero-sec" style={{
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         justifyContent: 'flex-end', padding: '0 clamp(22px,5vw,64px) clamp(60px,9vw,96px)',
         position: 'relative', background: C.bg, overflow: 'hidden',
@@ -1662,11 +1669,21 @@ export function LandingPage() {
                     {/* Active indicator bar — replaces expanding chevron */}
                     <div style={{ width: 22, height: 2, borderRadius: 2, flexShrink: 0, background: svcOpen === i ? C.sienna : 'rgba(0,0,0,0.10)', transition: 'background 0.3s ease' }}/>
                   </div>
+                  {/* Mobile-only inline description — sits directly under its own point */}
+                  <div className={`svc-acc-inline${svcOpen === i ? ' open' : ''}`}>
+                    <p style={{ fontSize: 15, color: C.stone, lineHeight: 2.0, fontWeight: 300, marginBottom: 20 }}>
+                      {svc.desc}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
+                      <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
+                    </div>
+                  </div>
                 </div>
               ))}
 
               {/* Description panel — position:absolute overlay means zero layout impact when switching */}
-              <div style={{ position: 'relative', height: 210, marginTop: 16 }}>
+              <div className="svc-acc-panel" style={{ position: 'relative', height: 210, marginTop: 16 }}>
                 {SERVICES_ACC.map((svc, i) => (
                   <div key={i} style={{
                     position: 'absolute', inset: 0,
@@ -2264,8 +2281,8 @@ export function LandingPage() {
             You have the property. We have the brand, the systems, and the market knowledge. Together, we turn it into a destination that earns and grows. That is what Nakama means.
           </p>
           <div className="reveal d4" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary" onClick={() => scrollToSection('contact')}>Grow with Nakama</button>
-            <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-outline-cream" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Chat with us</a>
+            <button className="btn-primary" onClick={() => scrollToSection('contact')} style={{ minWidth: 190, textAlign: 'center', boxSizing: 'border-box' }}>Grow with Nakama</button>
+            <a href="https://wa.me/6285110808158" target="_blank" rel="noreferrer" className="btn-outline-cream" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 190, boxSizing: 'border-box' }}>Chat with us</a>
           </div>
           <div className="reveal d4 trust-bar">
             {['Response within 24h', 'No lock-in contracts', 'Bilingual support', 'Bali market specialists'].map((item, i, arr) => (
