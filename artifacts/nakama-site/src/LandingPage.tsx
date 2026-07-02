@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import nakamaLogo    from '@/assets/nakama-logo-official.jpeg';
 import propertyHero  from '@/assets/property-hero.png';
 import propertyAbout from '@/assets/property-about2.png';
@@ -334,16 +334,32 @@ const CSS = `
     .hero-sec { min-height: 72vh !important; padding-top: 88px !important; }
     .hero-lower { grid-template-columns: 1fr !important; gap: 28px !important; }
 
-    /* Services: single column, show visual inline below accordion */
+    /* Hero CTAs: strictly equal width side by side */
+    .cta-row {
+      display: grid !important;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+      gap: 12px !important;
+    }
+    .cta-row .btn-primary, .cta-row .btn-ghost {
+      width: 100% !important;
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+      justify-content: center !important;
+      text-align: center !important;
+      white-space: nowrap !important;
+    }
+
+    /* Services: single column, visual renders inline under the active point */
     .svc-grid       { grid-template-columns: 1fr !important; }
     /* Accordion: description sits under its own point, hide desktop overlay panel */
     .svc-acc-inline.open { display: block !important; padding: 0 0 26px 0; }
     .svc-acc-panel  { display: none !important; }
-    .svc-visual-col { display: block !important; margin-top: 8px !important; }
-    .svc-visual-col > div {
+    .svc-visual-col { display: none !important; }
+    .svc-inline-visual { display: block !important; margin-top: 22px; }
+    .svc-inline-visual > div {
       position: relative !important;
       top: auto !important;
-      height: 360px !important;
+      height: 330px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
@@ -358,9 +374,15 @@ const CSS = `
     /* Pipeline grid: 2-col on mobile */
     .pipeline-grid { grid-template-columns: 1fr 1fr !important; }
 
-    /* Onboarding: single column */
+    /* Onboarding: single column, left panel sizes to its content */
     .onboard-grid { grid-template-columns: 1fr !important; }
-    .onboard-left  { height: 470px !important; }
+    .onboard-left  { height: auto !important; }
+    .ob-panel { display: none !important; }
+    .ob-panel.ob-active {
+      display: block !important;
+      position: relative !important;
+      inset: auto !important;
+    }
     .onboard-right { height: 360px !important; }
 
     /* Section headers: single column */
@@ -557,6 +579,8 @@ const OTA_BADGE: Record<string, { bw: number; bh: number; rx: number; pad: numbe
 /* ── Service Visual: animated illustration panel ── */
 function ServiceVisual({ active }: { active: number }) {
   const scene = active < 0 ? 0 : Math.min(active, 2);
+  const uid = useId();
+  const chipShadowId = `chipShadow-${uid}`;
 
   const pane = (idx: number): React.CSSProperties => ({
     position: 'absolute', inset: 0,
@@ -583,7 +607,7 @@ function ServiceVisual({ active }: { active: number }) {
       <div style={pane(0)}>
         <svg viewBox="0 0 320 296" width="320" height="296">
           <defs>
-            <filter id="chipShadow" x="-25%" y="-25%" width="150%" height="150%">
+            <filter id={chipShadowId} x="-25%" y="-25%" width="150%" height="150%">
               <feDropShadow dx="0" dy="1.5" stdDeviation="3" floodOpacity="0.11"/>
             </filter>
           </defs>
@@ -627,7 +651,7 @@ function ServiceVisual({ active }: { active: number }) {
           {platforms.map((p, i) => {
             const b = OTA_BADGE[p.label];
             return (
-              <g key={i} filter="url(#chipShadow)">
+              <g key={i} filter={`url(#${chipShadowId})`}>
                 <rect
                   x={p.x - b.bw / 2} y={p.y - b.bh / 2}
                   width={b.bw} height={b.bh} rx={b.rx}
@@ -1672,6 +1696,9 @@ export function LandingPage() {
                       <div style={{ width: 24, height: 1, background: C.sienna, flexShrink: 0 }}/>
                       <span style={{ fontSize: 13, color: C.sienna, fontWeight: 500, lineHeight: 1.6 }}>{svc.result}</span>
                     </div>
+                    <div className="svc-inline-visual" style={{ display: 'none' }}>
+                      {svcOpen === i && <ServiceVisual active={i} />}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1760,7 +1787,7 @@ export function LandingPage() {
               {/* Panels — position:absolute so layout never shifts */}
               <div style={{ position: 'relative', flex: 1 }}>
                 {ONBOARD.map((stage, i) => (
-                  <div key={i} style={{
+                  <div key={i} className={`ob-panel${onstage === i ? ' ob-active' : ''}`} style={{
                     position: 'absolute', inset: 0,
                     opacity: onstage === i ? 1 : 0,
                     transform: onstage === i ? 'translateY(0)' : 'translateY(8px)',
