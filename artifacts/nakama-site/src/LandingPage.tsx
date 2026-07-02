@@ -1238,32 +1238,27 @@ export function LandingPage() {
   };
   const isValid = !errors.name && !errors.email && !errors.needs;
 
-  const handleInquiry = (e: React.FormEvent) => {
+  const handleInquiry = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({ name: true, email: true, needs: true });
     if (!isValid) return;
     setFormStatus('sending');
-    const lines = [
-      `Name: ${form.name}`,
-      form.phone ? `Phone: ${form.phone}` : '',
-      `Email: ${form.email}`,
-      `Looking for: ${form.needs}`,
-      form.message ? `Message: ${form.message}` : '',
-    ].filter(Boolean);
-    const text = encodeURIComponent(
-      `New inquiry from the Nakama Partners website\n\n${lines.join('\n')}`,
-    );
-    // Use a hidden anchor click — avoids popup-blocker on iOS/Safari
-    const a = document.createElement('a');
-    a.href = `https://wa.me/6285110808158?text=${text}`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setFormStatus('success');
-    setForm({ name: '', phone: '', email: '', needs: '', message: '' });
-    setTouched({});
+    try {
+      const resp = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!resp.ok) {
+        setFormStatus('error');
+        return;
+      }
+      setFormStatus('success');
+      setForm({ name: '', phone: '', email: '', needs: '', message: '' });
+      setTouched({});
+    } catch {
+      setFormStatus('error');
+    }
   };
 
   const particleRefs = useRef<(SVGCircleElement | null)[]>(Array(PARTICLES.length).fill(null));
